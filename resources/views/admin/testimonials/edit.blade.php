@@ -21,7 +21,7 @@
 
                         <div class="space-y-6">
                             <div>
-                                <x-input-label for="client_name" :value="__('Client Name')" />
+                                <x-input-label for="client_name" :value="__('Client Name')" :required="true" />
                                 <x-text-input id="client_name" name="client_name" type="text" class="mt-1 block w-full" :value="old('client_name', $testimonial->client_name)" required />
                                 <x-input-error class="mt-2" :messages="$errors->get('client_name')" />
                             </div>
@@ -39,7 +39,7 @@
                             </div>
 
                             <div>
-                                <x-input-label for="content" :value="__('Testimonial')" />
+                                <x-input-label for="content" :value="__('Testimonial')" :required="true" />
                                 <textarea id="content" name="content" class="form-textarea mt-1" rows="5" required>{{ old('content', $testimonial->content) }}</textarea>
                                 <x-input-error class="mt-2" :messages="$errors->get('content')" />
                             </div>

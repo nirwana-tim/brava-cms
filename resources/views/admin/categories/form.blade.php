@@ -12,13 +12,13 @@
     @endif
 
     <div>
-        <x-input-label for="name" :value="__('Name')" />
+        <x-input-label for="name" :value="__('Name')" :required="true" />
         <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $category->name ?? '')" required autofocus />
         <x-input-error class="mt-2" :messages="$errors->get('name')" />
     </div>
 
     <div>
-        <x-input-label for="slug" :value="__('Slug')" />
+        <x-input-label for="slug" :value="__('Slug')" :required="true" />
         <x-text-input id="slug" name="slug" type="text" class="mt-1 block w-full" :value="old('slug', $category->slug ?? '')" required />
         <x-input-error class="mt-2" :messages="$errors->get('slug')" />
     </div>

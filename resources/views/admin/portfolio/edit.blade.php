@@ -32,13 +32,13 @@
                     </div>
 
                     <div>
-                        <x-input-label for="title" :value="__('Title')" />
+                        <x-input-label for="title" :value="__('Title')" :required="true" />
                         <x-text-input id="title" name="title" type="text" class="mt-1 block w-full" :value="old('title', $portfolio->title)" required />
                         <x-input-error class="mt-2" :messages="$errors->get('title')" />
                     </div>
 
                     <div>
-                        <x-input-label for="slug" :value="__('Slug')" />
+                        <x-input-label for="slug" :value="__('Slug')" :required="true" />
                         <x-text-input id="slug" name="slug" type="text" class="mt-1 block w-full" :value="old('slug', $portfolio->slug)" required />
                         <x-input-error class="mt-2" :messages="$errors->get('slug')" />
                     </div>

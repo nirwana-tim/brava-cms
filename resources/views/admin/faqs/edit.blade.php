@@ -21,13 +21,13 @@
 
                         <div class="space-y-6">
                             <div>
-                                <x-input-label for="question" :value="__('Question')" />
+                                <x-input-label for="question" :value="__('Question')" :required="true" />
                                 <x-text-input id="question" name="question" type="text" class="mt-1 block w-full" :value="old('question', $faq->question)" required />
                                 <x-input-error class="mt-2" :messages="$errors->get('question')" />
                             </div>
 
                             <div>
-                                <x-input-label for="answer" :value="__('Answer')" />
+                                <x-input-label for="answer" :value="__('Answer')" :required="true" />
                                 <textarea id="answer" name="answer" class="form-textarea mt-1" rows="5" required>{{ old('answer', $faq->answer) }}</textarea>
                                 <x-input-error class="mt-2" :messages="$errors->get('answer')" />
                             </div>

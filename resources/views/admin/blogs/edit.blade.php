@@ -21,13 +21,13 @@
 
                         <div class="space-y-6">
                             <div>
-                                <x-input-label for="title" :value="__('Title')" />
+                                <x-input-label for="title" :value="__('Title')" :required="true" />
                                 <x-text-input id="title" name="title" type="text" class="mt-1 block w-full" :value="old('title', $blog->title)" required />
                                 <x-input-error class="mt-2" :messages="$errors->get('title')" />
                             </div>
 
                             <div>
-                                <x-input-label for="slug" :value="__('Slug')" />
+                                <x-input-label for="slug" :value="__('Slug')" :required="true" />
                                 <x-text-input id="slug" name="slug" type="text" class="mt-1 block w-full" :value="old('slug', $blog->slug)" required />
                                 <x-input-error class="mt-2" :messages="$errors->get('slug')" />
                             </div>
@@ -53,7 +53,7 @@
                             </div>
 
                             <div>
-                                <x-input-label for="status" :value="__('Status')" />
+                                <x-input-label for="status" :value="__('Status')" :required="true" />
                                 <select id="status" name="status" class="form-select mt-1">
                                     <option value="draft" {{ old('status', $blog->status->value) === 'draft' ? 'selected' : '' }}>Draft</option>
                                     <option value="published" {{ old('status', $blog->status->value) === 'published' ? 'selected' : '' }}>Published</option>
