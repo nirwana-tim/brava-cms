@@ -29,7 +29,7 @@ class BlogController extends ApiController
     {
         $post = $this->service->getBySlug($slug);
 
-        if (!$post) {
+        if (! $post) {
             return $this->notFound('Blog post not found');
         }
 

@@ -29,7 +29,7 @@ class PortfolioController extends ApiController
     {
         $item = $this->service->getBySlug($slug);
 
-        if (!$item) {
+        if (! $item) {
             return $this->notFound('Portfolio item not found');
         }
 

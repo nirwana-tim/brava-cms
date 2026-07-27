@@ -15,6 +15,7 @@ class SettingController extends ApiController
     public function index(): JsonResponse
     {
         $settings = $this->service->all();
+
         return $this->success(SettingResource::collection($settings));
     }
 }

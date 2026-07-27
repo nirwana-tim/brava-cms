@@ -29,7 +29,7 @@ class ProductController extends ApiController
     {
         $product = $this->service->getBySlug($slug);
 
-        if (!$product) {
+        if (! $product) {
             return $this->notFound('Product not found');
         }
 

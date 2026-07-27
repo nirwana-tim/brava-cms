@@ -15,6 +15,33 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
+                        {{ __('Categories') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.products.index')" :active="request()->routeIs('admin.products.*')">
+                        {{ __('Products') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.blogs.index')" :active="request()->routeIs('admin.blogs.*')">
+                        {{ __('Blogs') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.portfolio.index')" :active="request()->routeIs('admin.portfolio.*')">
+                        {{ __('Portfolio') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.testimonials.index')" :active="request()->routeIs('admin.testimonials.*')">
+                        {{ __('Testimonials') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.faqs.index')" :active="request()->routeIs('admin.faqs.*')">
+                        {{ __('FAQs') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.team.index')" :active="request()->routeIs('admin.team.*')">
+                        {{ __('Team') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.media.index')" :active="request()->routeIs('admin.media.*')">
+                        {{ __('Media') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.settings.index')" :active="request()->routeIs('admin.settings.*')">
+                        {{ __('Settings') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -69,6 +96,33 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
+                {{ __('Categories') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.products.index')" :active="request()->routeIs('admin.products.*')">
+                {{ __('Products') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.blogs.index')" :active="request()->routeIs('admin.blogs.*')">
+                {{ __('Blogs') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.portfolio.index')" :active="request()->routeIs('admin.portfolio.*')">
+                {{ __('Portfolio') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.testimonials.index')" :active="request()->routeIs('admin.testimonials.*')">
+                {{ __('Testimonials') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.faqs.index')" :active="request()->routeIs('admin.faqs.*')">
+                {{ __('FAQs') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.team.index')" :active="request()->routeIs('admin.team.*')">
+                {{ __('Team') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.media.index')" :active="request()->routeIs('admin.media.*')">
+                {{ __('Media') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.settings.index')" :active="request()->routeIs('admin.settings.*')">
+                {{ __('Settings') }}
             </x-responsive-nav-link>
         </div>
 

@@ -15,6 +15,7 @@ class TeamController extends ApiController
     public function index(): JsonResponse
     {
         $members = $this->service->all();
+
         return $this->success(TeamMemberResource::collection($members));
     }
 }

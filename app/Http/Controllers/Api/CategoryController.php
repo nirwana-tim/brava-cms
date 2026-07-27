@@ -17,11 +17,12 @@ class CategoryController extends ApiController
     {
         $type = $request->query('type');
 
-        if (!$type) {
+        if (! $type) {
             return $this->error('Type parameter is required', 422);
         }
 
         $categories = $this->service->getByType($type);
+
         return $this->success(CategoryResource::collection($categories));
     }
 }

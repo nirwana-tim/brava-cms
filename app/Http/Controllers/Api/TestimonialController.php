@@ -15,6 +15,7 @@ class TestimonialController extends ApiController
     public function index(): JsonResponse
     {
         $testimonials = $this->service->all();
+
         return $this->success(TestimonialResource::collection($testimonials));
     }
 }
