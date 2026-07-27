@@ -3,7 +3,7 @@
 
     <div class="card">
         <div class="card-body">
-                    <form action="{{ route('admin.team.update', $teamMember) }}" method="POST">
+                    <form action="{{ route('admin.team.update', $team) }}" method="POST">
                         @csrf
                         @method('PUT')
 
@@ -22,48 +22,48 @@
                         <div class="space-y-6">
                             <div>
                                 <x-input-label for="name" :value="__('Name')" />
-                                <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $teamMember->name)" required />
+                                <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $team->name)" required />
                                 <x-input-error class="mt-2" :messages="$errors->get('name')" />
                             </div>
 
                             <div>
                                 <x-input-label for="position" :value="__('Position')" />
-                                <x-text-input id="position" name="position" type="text" class="mt-1 block w-full" :value="old('position', $teamMember->position)" />
+                                <x-text-input id="position" name="position" type="text" class="mt-1 block w-full" :value="old('position', $team->position)" />
                                 <x-input-error class="mt-2" :messages="$errors->get('position')" />
                             </div>
 
                             <div>
                                 <x-input-label for="bio" :value="__('Bio')" />
-                                <textarea id="bio" name="bio" class="form-textarea mt-1" rows="5">{{ old('bio', $teamMember->bio) }}</textarea>
+                                <textarea id="bio" name="bio" class="form-textarea mt-1" rows="5">{{ old('bio', $team->bio) }}</textarea>
                                 <x-input-error class="mt-2" :messages="$errors->get('bio')" />
                             </div>
 
                             <div>
                                 <x-input-label for="avatar" :value="__('Avatar URL')" />
-                                <x-text-input id="avatar" name="avatar" type="text" class="mt-1 block w-full" :value="old('avatar', $teamMember->avatar)" />
+                                <x-text-input id="avatar" name="avatar" type="text" class="mt-1 block w-full" :value="old('avatar', $team->avatar)" />
                                 <x-input-error class="mt-2" :messages="$errors->get('avatar')" />
                             </div>
 
                             <div>
                                 <x-input-label for="email" :value="__('Email')" />
-                                <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $teamMember->email)" />
+                                <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $team->email)" />
                                 <x-input-error class="mt-2" :messages="$errors->get('email')" />
                             </div>
 
                             <div>
                                 <x-input-label for="phone" :value="__('Phone')" />
-                                <x-text-input id="phone" name="phone" type="text" class="mt-1 block w-full" :value="old('phone', $teamMember->phone)" />
+                                <x-text-input id="phone" name="phone" type="text" class="mt-1 block w-full" :value="old('phone', $team->phone)" />
                                 <x-input-error class="mt-2" :messages="$errors->get('phone')" />
                             </div>
 
                             <div>
                                 <x-input-label for="sort_order" :value="__('Sort Order')" />
-                                <x-text-input id="sort_order" name="sort_order" type="number" class="mt-1 block w-full" :value="old('sort_order', $teamMember->sort_order ?? '0')" />
+                                <x-text-input id="sort_order" name="sort_order" type="number" class="mt-1 block w-full" :value="old('sort_order', $team->sort_order ?? '0')" />
                                 <x-input-error class="mt-2" :messages="$errors->get('sort_order')" />
                             </div>
 
                             <div class="flex items-center gap-2">
-                                <input type="checkbox" id="is_active" name="is_active" value="1" class="form-checkbox" {{ old('is_active', $teamMember->is_active) ? 'checked' : '' }} />
+                                <input type="checkbox" id="is_active" name="is_active" value="1" class="form-checkbox" {{ old('is_active', $team->is_active) ? 'checked' : '' }} />
                                 <x-input-label for="is_active" :value="__('Active')" />
                             </div>
                         </div>

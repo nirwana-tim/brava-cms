@@ -3,7 +3,7 @@
 
     <div class="card">
         <div class="card-body">
-                    <form action="{{ route('admin.media.update', $media) }}" method="POST">
+                    <form action="{{ route('admin.media.update', $medium) }}" method="POST">
                         @csrf
                         @method('PUT')
 
@@ -20,15 +20,15 @@
                         @endif
 
                         <div class="space-y-6">
-                            @if ($media->path)
+                            @if ($medium->path)
                                 <div class="mb-4">
-                                    <img src="{{ Storage::url($media->path) }}" alt="{{ $media->alt_text }}" class="max-w-xs rounded shadow-sm">
+                                    <img src="{{ Storage::url($medium->path) }}" alt="{{ $medium->alt_text }}" class="max-w-xs rounded shadow-sm">
                                 </div>
                             @endif
 
                             <div>
                                 <x-input-label for="alt_text" :value="__('Alt Text')" />
-                                <x-text-input id="alt_text" name="alt_text" type="text" class="mt-1 block w-full" :value="old('alt_text', $media->alt_text)" />
+                                <x-text-input id="alt_text" name="alt_text" type="text" class="mt-1 block w-full" :value="old('alt_text', $medium->alt_text)" />
                                 <x-input-error class="mt-2" :messages="$errors->get('alt_text')" />
                             </div>
                         </div>

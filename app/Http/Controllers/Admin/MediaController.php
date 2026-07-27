@@ -49,27 +49,27 @@ class MediaController extends Controller
             ->with('success', 'Media uploaded successfully.');
     }
 
-    public function edit(Media $media): View
+    public function edit(Media $medium): View
     {
-        return view('admin.media.edit', compact('media'));
+        return view('admin.media.edit', compact('medium'));
     }
 
-    public function update(Request $request, Media $media): RedirectResponse
+    public function update(Request $request, Media $medium): RedirectResponse
     {
         $validated = $request->validate([
             'alt_text' => ['nullable', 'string', 'max:255'],
         ]);
 
-        $media->update($validated);
+        $medium->update($validated);
 
         return redirect()->route('admin.media.index')
             ->with('success', 'Media updated successfully.');
     }
 
-    public function destroy(Media $media): RedirectResponse
+    public function destroy(Media $medium): RedirectResponse
     {
-        Storage::disk($media->disk)->delete($media->path);
-        $media->delete();
+        Storage::disk($medium->disk)->delete($medium->path);
+        $medium->delete();
 
         return redirect()->route('admin.media.index')
             ->with('success', 'Media deleted successfully.');

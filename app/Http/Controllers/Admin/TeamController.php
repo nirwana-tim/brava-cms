@@ -41,12 +41,12 @@ class TeamController extends Controller
             ->with('success', 'Team member created successfully.');
     }
 
-    public function edit(TeamMember $teamMember): View
+    public function edit(TeamMember $team): View
     {
-        return view('admin.team.edit', compact('teamMember'));
+        return view('admin.team.edit', compact('team'));
     }
 
-    public function update(Request $request, TeamMember $teamMember): RedirectResponse
+    public function update(Request $request, TeamMember $team): RedirectResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -59,15 +59,15 @@ class TeamController extends Controller
             'is_active' => ['boolean'],
         ]);
 
-        $teamMember->update($validated);
+        $team->update($validated);
 
         return redirect()->route('admin.team.index')
             ->with('success', 'Team member updated successfully.');
     }
 
-    public function destroy(TeamMember $teamMember): RedirectResponse
+    public function destroy(TeamMember $team): RedirectResponse
     {
-        $teamMember->delete();
+        $team->delete();
 
         return redirect()->route('admin.team.index')
             ->with('success', 'Team member deleted successfully.');
