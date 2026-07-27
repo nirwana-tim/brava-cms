@@ -5,6 +5,7 @@ namespace App\Models;
 use Database\Factories\CategoryFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
@@ -12,7 +13,7 @@ class Category extends Model
     /** @use HasFactory<CategoryFactory> */
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['name', 'slug', 'description', 'type', 'is_active', 'sort_order'];
+    protected $fillable = ['name', 'slug', 'description', 'is_active', 'sort_order'];
 
     protected function casts(): array
     {
@@ -26,8 +27,8 @@ class Category extends Model
         return $query->where('is_active', true);
     }
 
-    public function scopeByType($query, $type)
+    public function blogs(): BelongsToMany
     {
-        return $query->where('type', $type);
+        return $this->belongsToMany(Blog::class, 'blog_category');
     }
 }

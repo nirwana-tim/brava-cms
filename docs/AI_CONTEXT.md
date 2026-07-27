@@ -186,7 +186,7 @@ Example:
 
 /admin/dashboard
 
-/admin/products
+/admin/services
 
 /admin/blogs
 
@@ -206,9 +206,9 @@ REST conventions must be followed.
 
 Example:
 
-GET /api/products
+GET /api/services
 
-GET /api/products/{slug}
+GET /api/services/{slug}
 
 POST /api/contact
 
@@ -222,11 +222,11 @@ Never return Eloquent models directly.
 
 Good
 
-return ProductResource::collection($products);
+return ServiceResource::collection($services);
 
 Bad
 
-return Product::all();
+return Service::all();
 
 ---
 
@@ -236,9 +236,9 @@ Always use Form Request.
 
 Example
 
-StoreProductRequest
+StoreServiceRequest
 
-UpdateProductRequest
+UpdateServiceRequest
 
 Never validate directly inside controllers.
 
@@ -275,7 +275,7 @@ Admin authentication is session-based.
 Current roles:
 
 - Super Admin
-- Editor
+- Admin
 
 Do not implement complex permission systems.
 
@@ -307,11 +307,11 @@ id (BIGINT)
 
 Models
 
-Product
+Service
 
 Blog
 
-Portfolio
+PortfolioItem
 
 Testimonial
 
@@ -323,31 +323,31 @@ Setting
 
 Controllers
 
-ProductController
+ServiceController
 
 BlogController
 
 Services
 
-ProductService
+ServiceService
 
 BlogService
 
 Requests
 
-StoreProductRequest
+StoreServiceRequest
 
-UpdateProductRequest
+UpdateServiceRequest
 
 Resources
 
-ProductResource
+ServiceResource
 
 BlogResource
 
 Tables
 
-products
+services
 
 blogs
 
@@ -371,7 +371,7 @@ Every public content must have slug.
 
 Examples:
 
-products
+services
 
 blogs
 
@@ -441,7 +441,7 @@ logo
 
 Media is shared.
 
-Products
+Services
 
 Blogs
 
@@ -509,7 +509,7 @@ Current modules
 
 Dashboard
 
-Products
+Services
 
 Categories
 

@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Enums\CategoryType;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,7 +16,6 @@ class CategoryFactory extends Factory
             'name' => fake()->unique()->word(),
             'slug' => fake()->unique()->slug(),
             'description' => fake()->sentence(),
-            'type' => fake()->randomElement(CategoryType::cases())->value,
             'is_active' => true,
             'sort_order' => fake()->numberBetween(0, 100),
         ];

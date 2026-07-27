@@ -30,16 +30,6 @@
     </div>
 
     <div>
-        <x-input-label for="type" :value="__('Type')" />
-        <select id="type" name="type" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
-            <option value="product" {{ old('type', $category->type ?? '') === 'product' ? 'selected' : '' }}>Product</option>
-            <option value="blog" {{ old('type', $category->type ?? '') === 'blog' ? 'selected' : '' }}>Blog</option>
-            <option value="portfolio" {{ old('type', $category->type ?? '') === 'portfolio' ? 'selected' : '' }}>Portfolio</option>
-        </select>
-        <x-input-error class="mt-2" :messages="$errors->get('type')" />
-    </div>
-
-    <div>
         <x-input-label for="sort_order" :value="__('Sort Order')" />
         <x-text-input id="sort_order" name="sort_order" type="number" class="mt-1 block w-full" :value="old('sort_order', $category->sort_order ?? '0')" />
         <x-input-error class="mt-2" :messages="$errors->get('sort_order')" />

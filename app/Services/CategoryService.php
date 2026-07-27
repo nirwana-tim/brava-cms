@@ -10,10 +10,10 @@ class CategoryService
 {
     public function __construct(private readonly Category $model) {}
 
-    public function getByType(string $type): Collection
+    public function all(): Collection
     {
-        return Cache::flexible('categories.type.'.$type, [3600, 7200], function () use ($type) {
-            return $this->model->active()->byType($type)->orderBy('sort_order')->get();
+        return Cache::flexible('categories.all', [3600, 7200], function () {
+            return $this->model->active()->orderBy('sort_order')->get();
         });
     }
 

@@ -16,7 +16,7 @@ class PortfolioController extends ApiController
 
     public function index(Request $request): JsonResponse
     {
-        $filters = $request->only(['category', 'search', 'per_page']);
+        $filters = $request->only(['search', 'per_page']);
         $items = $this->service->list($filters);
 
         return $this->paginatedSuccess(

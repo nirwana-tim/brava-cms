@@ -2,36 +2,37 @@
 
 namespace App\Services;
 
-use App\Models\PortfolioItem;
+use App\Models\Service;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 
-class PortfolioService
+class ServiceService
 {
-    public function __construct(private readonly PortfolioItem $model) {}
+    public function __construct(private readonly Service $model) {}
 
     public function list(array $filters = []): LengthAwarePaginator
     {
         $perPage = $filters['per_page'] ?? 12;
 
-        return Cache::flexible('portfolio.list.'.md5(serialize($filters)), [1800, 3600], function () use ($filters, $perPage) {
-            return $this->model->with('service')
+        return Cache::flexible('services.list.'.md5(serialize($filters)), [900, 1800], function () use ($filters, $perPage) {
+            return $this->model->with('portfolioItems')
                 ->active()
+                ->published()
                 ->when($filters['search'] ?? null, function ($query, $search) {
                     $query->where(function ($q) use ($search) {
                         $q->where('title', 'like', '%'.$search.'%')
                             ->orWhere('description', 'like', '%'.$search.'%');
                     });
                 })
-                ->orderBy('sort_order')
+                ->orderByDesc('published_at')
                 ->paginate($perPage);
         });
     }
 
-    public function getBySlug(string $slug): ?PortfolioItem
+    public function getBySlug(string $slug): ?Service
     {
-        return Cache::remember('portfolio.slug.'.$slug, 1800, function () use ($slug) {
-            return $this->model->active()->where('slug', $slug)->with(['service', 'media'])->first();
+        return Cache::remember('services.slug.'.$slug, 1800, function () use ($slug) {
+            return $this->model->active()->published()->where('slug', $slug)->with(['portfolioItems', 'media'])->first();
         });
     }
 

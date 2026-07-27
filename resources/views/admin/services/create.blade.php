@@ -1,9 +1,9 @@
 <x-admin.layouts.app>
-    <x-slot name="title">{{ __('Create Portfolio Item') }}</x-slot>
+    <x-slot name="title">{{ __('Create Service') }}</x-slot>
 
     <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
         <div class="p-6">
-            <form action="{{ route('admin.portfolio.store') }}" method="POST">
+            <form action="{{ route('admin.services.store') }}" method="POST">
                 @csrf
 
                 @if ($errors->any())
@@ -19,17 +19,6 @@
                 @endif
 
                 <div class="space-y-6">
-                    <div>
-                        <x-input-label for="service_id" :value="__('Service')" />
-                        <select id="service_id" name="service_id" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
-                            <option value="">-- Select Service --</option>
-                            @foreach ($services as $id => $name)
-                                <option value="{{ $id }}" {{ old('service_id') == $id ? 'selected' : '' }}>{{ $name }}</option>
-                            @endforeach
-                        </select>
-                        <x-input-error class="mt-2" :messages="$errors->get('service_id')" />
-                    </div>
-
                     <div>
                         <x-input-label for="title" :value="__('Title')" />
                         <x-text-input id="title" name="title" type="text" class="mt-1 block w-full" :value="old('title')" required />
@@ -55,27 +44,15 @@
                     </div>
 
                     <div>
-                        <x-input-label for="client" :value="__('Client')" />
-                        <x-text-input id="client" name="client" type="text" class="mt-1 block w-full" :value="old('client')" />
-                        <x-input-error class="mt-2" :messages="$errors->get('client')" />
+                        <x-input-label for="photo" :value="__('Photo URL')" />
+                        <x-text-input id="photo" name="photo" type="text" class="mt-1 block w-full" :value="old('photo')" />
+                        <x-input-error class="mt-2" :messages="$errors->get('photo')" />
                     </div>
 
                     <div>
-                        <x-input-label for="project_url" :value="__('Project URL')" />
-                        <x-text-input id="project_url" name="project_url" type="url" class="mt-1 block w-full" :value="old('project_url')" />
-                        <x-input-error class="mt-2" :messages="$errors->get('project_url')" />
-                    </div>
-
-                    <div>
-                        <x-input-label for="completed_at" :value="__('Completed At')" />
-                        <x-text-input id="completed_at" name="completed_at" type="date" class="mt-1 block w-full" :value="old('completed_at')" />
-                        <x-input-error class="mt-2" :messages="$errors->get('completed_at')" />
-                    </div>
-
-                    <div>
-                        <x-input-label for="sort_order" :value="__('Sort Order')" />
-                        <x-text-input id="sort_order" name="sort_order" type="number" class="mt-1 block w-full" :value="old('sort_order', '0')" />
-                        <x-input-error class="mt-2" :messages="$errors->get('sort_order')" />
+                        <x-input-label for="published_at" :value="__('Published At')" />
+                        <x-text-input id="published_at" name="published_at" type="date" class="mt-1 block w-full" :value="old('published_at')" />
+                        <x-input-error class="mt-2" :messages="$errors->get('published_at')" />
                     </div>
 
                     <div class="flex items-center gap-2">
@@ -86,7 +63,7 @@
 
                 <div class="mt-6 flex items-center gap-4">
                     <x-primary-button>{{ __('Save') }}</x-primary-button>
-                    <a href="{{ route('admin.portfolio.index') }}">
+                    <a href="{{ route('admin.services.index') }}">
                         <x-secondary-button type="button">{{ __('Cancel') }}</x-secondary-button>
                     </a>
                 </div>

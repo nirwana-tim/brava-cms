@@ -2,15 +2,15 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
 use App\Models\PortfolioItem;
+use App\Models\Service;
 use Illuminate\Database\Seeder;
 
 class PortfolioSeeder extends Seeder
 {
     public function run(): void
     {
-        $categories = Category::where('type', 'portfolio')->pluck('id');
+        $serviceIds = Service::pluck('id');
 
         $items = [
             [
@@ -50,7 +50,10 @@ class PortfolioSeeder extends Seeder
 
         foreach ($items as $data) {
             $item = PortfolioItem::create($data);
-            $item->categories()->attach($categories->random(min(2, $categories->count())));
+            if ($serviceIds->isNotEmpty()) {
+                $item->service()->associate($serviceIds->random());
+                $item->save();
+            }
         }
     }
 }

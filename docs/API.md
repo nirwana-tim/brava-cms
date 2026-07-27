@@ -35,10 +35,10 @@ http://localhost:8000/api
         "to": 12,
         "total": 50,
         "links": {
-            "first": "http://localhost:8000/api/products?page=1",
-            "last": "http://localhost:8000/api/products?page=5",
+            "first": "http://localhost:8000/api/services?page=1",
+            "last": "http://localhost:8000/api/services?page=5",
             "prev": null,
-            "next": "http://localhost:8000/api/products?page=2"
+            "next": "http://localhost:8000/api/services?page=2"
         }
     }
 }
@@ -119,13 +119,9 @@ Response:
 ---
 
 ### Categories
-> Public, no auth. Shared categories polymorphically by `type`.
+> Public, no auth.
 
-#### `GET /api/categories?type=product`
-
-| Param | Type | Required | Description |
-|-------|------|----------|-------------|
-| `type` | string | Yes | `product`, `blog`, or `portfolio` |
+#### `GET /api/categories`
 
 Response:
 ```json
@@ -134,10 +130,10 @@ Response:
     "data": [
         {
             "id": 1,
-            "name": "Web Development",
-            "slug": "web-development",
-            "description": "Web development projects",
-            "sort_order": 0
+            "name": "Technology",
+            "slug": "technology",
+            "description": "Tech industry insights",
+            "sort_order": 1
         }
     ]
 }
@@ -145,15 +141,14 @@ Response:
 
 ---
 
-### Products
+### Services
 
-#### `GET /api/products`
+#### `GET /api/services`
 
 | Param | Type | Description |
 |-------|------|-------------|
-| `category` | string | Filter by category slug |
-| `featured` | bool | Only featured products |
 | `search` | string | Search in title/description |
+| `per_page` | int | Items per page (default: 12) |
 
 Response:
 ```json
@@ -162,22 +157,18 @@ Response:
     "data": [
         {
             "id": 1,
-            "title": "Product Name",
-            "slug": "product-name",
+            "title": "Corporate Website Package",
+            "slug": "corporate-website-package",
             "description": "Short description",
-            "price": 150000.00,
-            "featured_image": "/storage/products/img.jpg",
-            "categories": [
-                { "id": 1, "name": "Category", "slug": "category" }
-            ],
-            "created_at": "2026-07-27T10:00:00Z"
+            "photo": "/storage/services/img.jpg",
+            "published_at": "2026-07-27T10:00:00Z"
         }
     ],
-    "meta": { "current_page": 1, "last_page": 3, "per_page": 12, "total": 30 }
+    "meta": { "current_page": 1, "last_page": 1, "per_page": 12, "total": 3 }
 }
 ```
 
-#### `GET /api/products/{slug}`
+#### `GET /api/services/{slug}`
 
 Response:
 ```json
@@ -185,36 +176,26 @@ Response:
     "success": true,
     "data": {
         "id": 1,
-        "title": "Product Name",
-        "slug": "product-name",
+        "title": "Corporate Website Package",
+        "slug": "corporate-website-package",
         "description": "Full description",
         "content": "<p>HTML content</p>",
-        "price": 150000.00,
-        "is_featured": true,
-        "categories": [
-            { "id": 1, "name": "Category", "slug": "category" }
-        ],
-        "media": [
-            { "id": 1, "url": "/storage/products/img1.jpg", "alt_text": "Product image" }
-        ],
+        "photo": "/storage/services/img.jpg",
         "published_at": "2026-07-27T10:00:00Z",
-        "seo": {
-            "meta_title": "Product Name | Brava CMS",
-            "meta_description": "Product description for SEO",
-            "meta_keywords": "keyword1, keyword2",
-            "og_title": "Product Name",
-            "og_description": "Product description",
-            "og_image": "/storage/products/og.jpg",
-            "canonical_url": "https://example.com/products/product-name",
-            "robots_index": true,
-            "robots_follow": true,
-            "schema_type": "Product"
-        }
+        "portfolio_items": [
+            {
+                "id": 1,
+                "title": "TechCorp Corporate Website",
+                "slug": "techcorp-corporate-website",
+                "description": "A modern corporate website with integrated CMS.",
+                "client": "TechCorp Indonesia",
+                "project_url": "https://techcorp.example.com",
+                "completed_at": "2026-05-15"
+            }
+        ]
     }
 }
 ```
-
-> **SEO note:** Next.js should read `seo` object for `<head>` meta tags and JSON-LD schema.
 
 ---
 
@@ -297,8 +278,8 @@ Response:
 
 | Param | Type | Description |
 |-------|------|-------------|
-| `category` | string | Filter by category slug |
 | `search` | string | Search in title/description |
+| `per_page` | int | Items per page (default: 12) |
 
 Response:
 ```json
@@ -307,25 +288,43 @@ Response:
     "data": [
         {
             "id": 1,
-            "title": "Project Name",
-            "slug": "project-name",
+            "title": "TechCorp Corporate Website",
+            "slug": "techcorp-corporate-website",
             "description": "Short description",
-            "client": "Client Name",
-            "project_url": "https://example.com",
-            "completed_at": "2026-06-15",
-            "categories": [
-                { "id": 1, "name": "Web Design", "slug": "web-design" }
-            ],
-            "featured_image": "/storage/portfolio/img.jpg"
+            "client": "TechCorp Indonesia",
+            "project_url": "https://techcorp.example.com",
+            "completed_at": "2026-05-15",
+            "sort_order": 1
         }
     ],
-    "meta": { "current_page": 1, "last_page": 2, "per_page": 12, "total": 18 }
+    "meta": { "current_page": 1, "last_page": 1, "per_page": 12, "total": 3 }
 }
 ```
 
 #### `GET /api/portfolio/{slug}`
 
-Response similar structure with full data + `seo` object.
+Response:
+```json
+{
+    "success": true,
+    "data": {
+        "id": 1,
+        "title": "TechCorp Corporate Website",
+        "slug": "techcorp-corporate-website",
+        "description": "Full description",
+        "content": "<p>HTML content</p>",
+        "client": "TechCorp Indonesia",
+        "project_url": "https://techcorp.example.com",
+        "completed_at": "2026-05-15",
+        "sort_order": 1,
+        "service": {
+            "id": 1,
+            "title": "Corporate Website Package",
+            "slug": "corporate-website-package"
+        }
+    }
+}
+```
 
 ---
 
@@ -430,9 +429,9 @@ Response:
 ## SEO Strategy for Next.js
 
 ### Per-Page SEO
-Every detail endpoint returns a `seo` object. Next.js should map it to:
+Every detail endpoint returns a `seo` object where applicable. Next.js should map it to:
 ```tsx
-// Example: pages/products/[slug].tsx
+// Example: pages/blogs/[slug].tsx
 <Head>
   <title>{data.seo.meta_title}</title>
   <meta name="description" content={data.seo.meta_description} />
@@ -491,7 +490,7 @@ CORS is wide-open for GET requests (Next.js needs it). For production, restrict 
 
 ### Sparse Fieldsets
 ```
-GET /api/products?fields=id,title,slug,price,featured_image
+GET /api/services?fields=id,title,slug,description
 GET /api/blogs?fields=id,title,slug,excerpt,published_at,author
 ```
 
@@ -500,8 +499,8 @@ GET /api/blogs?fields=id,title,slug,excerpt,published_at,author
 |----------|-----|----------|
 | `/api/settings` | 1 hour | Cache::flexible([3600, 7200], ...) |
 | `/api/categories` | 1 hour | Cache::flexible |
-| `/api/products` | 15 min | Cache::flexible([900, 1800], ...) |
-| `/api/products/{slug}` | 30 min | Cache::flexible |
+| `/api/services` | 15 min | Cache::flexible([900, 1800], ...) |
+| `/api/services/{slug}` | 30 min | Cache::flexible |
 | `/api/blogs` | 15 min | Cache::flexible |
 | `/api/blogs/{slug}` | 30 min | Cache::flexible |
 | `/api/testimonials` | 1 hour | Cache::flexible |
@@ -517,4 +516,4 @@ Cache is invalidated on model `saved` / `deleted` events.
 - API Resources use `whenLoaded()` for optional relations
 
 ### Database Indexes
-Every `slug`, `is_active`, `status`, `published_at`, `sort_order`, and `type` column is indexed. See `docs/SCHEMA.md`.
+Every `slug`, `is_active`, `status`, `published_at`, `sort_order` column is indexed. See `docs/SCHEMA.md`.

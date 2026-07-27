@@ -1,19 +1,7 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Blog Posts') }}
-        </h2>
-    </x-slot>
+<x-admin.layouts.app>
+    <x-slot name="title">{{ __('Blog Posts') }}</x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if (session('success'))
-                <div class="mb-4 px-4 py-3 bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 rounded-lg text-green-600 dark:text-green-400 text-sm">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
                     <div class="flex justify-end mb-4">
                         <a href="{{ route('admin.blogs.create') }}">
@@ -39,10 +27,10 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $blog->author?->name ?? 'Unknown' }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                                @if ($blog->status === 'published') bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200
-                                                @elseif ($blog->status === 'draft') bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200
+                                                @if ($blog->status->value === 'published') bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200
+                                                @elseif ($blog->status->value === 'draft') bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200
                                                 @else bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 @endif">
-                                                {{ ucfirst($blog->status) }}
+                                                {{ ucfirst($blog->status->value) }}
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
@@ -73,6 +61,4 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</x-app-layout>
+</x-admin.layouts.app>

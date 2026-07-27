@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\PortfolioItem;
+use App\Models\Service;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<PortfolioItem>
+ * @extends Factory<Service>
  */
-class PortfolioItemFactory extends Factory
+class ServiceFactory extends Factory
 {
     public function definition(): array
     {
@@ -16,12 +16,10 @@ class PortfolioItemFactory extends Factory
             'title' => fake()->unique()->words(3, true),
             'slug' => fake()->unique()->slug(),
             'description' => fake()->paragraph(),
-            'content' => fake()->paragraphs(4, true),
-            'client' => fake()->company(),
-            'project_url' => fake()->url(),
-            'completed_at' => fake()->date(),
-            'sort_order' => fake()->numberBetween(0, 100),
+            'content' => fake()->paragraphs(3, true),
+            'photo' => null,
             'is_active' => true,
+            'published_at' => now(),
         ];
     }
 }

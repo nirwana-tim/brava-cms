@@ -13,7 +13,7 @@ class BlogSeeder extends Seeder
     public function run(): void
     {
         $author = User::first();
-        $categories = Category::where('type', 'blog')->pluck('id');
+        $categories = Category::pluck('id');
 
         $blogs = [
             [

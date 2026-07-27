@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PortfolioResource extends JsonResource
+class ServiceResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
@@ -15,11 +15,10 @@ class PortfolioResource extends JsonResource
             'slug' => $this->slug,
             'description' => $this->description,
             'content' => $this->content,
-            'client' => $this->client,
-            'project_url' => $this->project_url,
-            'completed_at' => $this->completed_at?->toIso8601String(),
-            'service' => new ServiceListResource($this->whenLoaded('service')),
+            'photo' => $this->photo,
+            'portfolio_items' => PortfolioResource::collection($this->whenLoaded('portfolioItems')),
             'media' => MediaResource::collection($this->whenLoaded('media')),
+            'published_at' => $this->published_at?->toIso8601String(),
             'created_at' => $this->created_at->toIso8601String(),
         ];
     }

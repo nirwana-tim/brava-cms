@@ -2,34 +2,34 @@
 
 namespace App\Models;
 
-use Database\Factories\PortfolioItemFactory;
+use Database\Factories\ServiceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class PortfolioItem extends Model
+class Service extends Model
 {
-    /** @use HasFactory<PortfolioItemFactory> */
+    /** @use HasFactory<ServiceFactory> */
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'service_id', 'title', 'slug', 'description', 'content',
-        'client', 'project_url', 'completed_at', 'sort_order', 'is_active',
+        'title', 'slug', 'description', 'content', 'photo',
+        'is_active', 'published_at',
     ];
 
     protected function casts(): array
     {
         return [
             'is_active' => 'boolean',
-            'completed_at' => 'date',
+            'published_at' => 'datetime',
         ];
     }
 
-    public function service(): BelongsTo
+    public function portfolioItems(): HasMany
     {
-        return $this->belongsTo(Service::class);
+        return $this->hasMany(PortfolioItem::class);
     }
 
     public function media(): MorphMany
@@ -40,5 +40,10 @@ class PortfolioItem extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    public function scopePublished($query)
+    {
+        return $query->whereNotNull('published_at');
     }
 }

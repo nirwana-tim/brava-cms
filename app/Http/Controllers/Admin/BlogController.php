@@ -20,7 +20,7 @@ class BlogController extends Controller
 
     public function create(): View
     {
-        $categories = Category::where('type', 'blog')->pluck('name', 'id');
+        $categories = Category::pluck('name', 'id');
 
         return view('admin.blogs.create', compact('categories'));
     }
@@ -55,7 +55,7 @@ class BlogController extends Controller
     public function edit(Blog $blog): View
     {
         $blog->load(['categories']);
-        $categories = Category::where('type', 'blog')->pluck('name', 'id');
+        $categories = Category::pluck('name', 'id');
 
         return view('admin.blogs.edit', compact('blog', 'categories'));
     }
