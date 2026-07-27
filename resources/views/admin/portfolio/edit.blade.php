@@ -49,11 +49,7 @@
                         <x-input-error class="mt-2" :messages="$errors->get('description')" />
                     </div>
 
-                    <div>
-                        <x-input-label for="content" :value="__('Content')" />
-                        <textarea id="content" name="content" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" rows="10">{{ old('content', $portfolioItem->content) }}</textarea>
-                        <x-input-error class="mt-2" :messages="$errors->get('content')" />
-                    </div>
+                    <x-admin.rich-text name="content" :value="old('content', $portfolioItem->content)" />
 
                     <div>
                         <x-input-label for="client" :value="__('Client')" />
