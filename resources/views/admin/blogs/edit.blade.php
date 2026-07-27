@@ -83,6 +83,41 @@
                                     <span class="text-sm" style="color: var(--label-text)">{{ __('Featured') }}</span>
                                 </label>
                             </div>
+
+                            <details class="mt-4">
+                                <summary class="text-sm font-medium cursor-pointer" style="color: var(--label-text)">SEO Settings</summary>
+                                <div class="mt-4 space-y-4">
+                                    <div>
+                                        <x-input-label for="meta_title" :value="__('Meta Title')" />
+                                        <x-text-input id="meta_title" name="meta_title" type="text" class="mt-1 block w-full" :value="old('meta_title', $blog->meta_title)" />
+                                        <p class="form-hint">Auto-filled from title. Edit to override.</p>
+                                    </div>
+                                    <div>
+                                        <x-input-label for="meta_description" :value="__('Meta Description')" />
+                                        <textarea id="meta_description" name="meta_description" class="form-textarea mt-1" rows="3">{{ old('meta_description', $blog->meta_description) }}</textarea>
+                                        <p class="form-hint">Auto-filled from excerpt. Edit to override.</p>
+                                    </div>
+                                    <div>
+                                        <x-input-label for="og_title" :value="__('OG Title')" />
+                                        <x-text-input id="og_title" name="og_title" type="text" class="mt-1 block w-full" :value="old('og_title', $blog->og_title)" />
+                                        <p class="form-hint">Defaults to meta title.</p>
+                                    </div>
+                                    <div>
+                                        <x-input-label for="og_description" :value="__('OG Description')" />
+                                        <textarea id="og_description" name="og_description" class="form-textarea mt-1" rows="2">{{ old('og_description', $blog->og_description) }}</textarea>
+                                        <p class="form-hint">Defaults to meta description.</p>
+                                    </div>
+                                    <div>
+                                        <x-input-label for="og_image" :value="__('OG Image URL')" />
+                                        <x-text-input id="og_image" name="og_image" type="text" class="mt-1 block w-full" :value="old('og_image', $blog->og_image)" />
+                                        <p class="form-hint">Defaults to featured image.</p>
+                                    </div>
+                                    <div>
+                                        <x-input-label for="canonical_url" :value="__('Canonical URL')" />
+                                        <x-text-input id="canonical_url" name="canonical_url" type="url" class="mt-1 block w-full" :value="old('canonical_url', $blog->canonical_url)" />
+                                    </div>
+                                </div>
+                            </details>
                         </div>
 
                         <div class="mt-6 flex items-center gap-4">
@@ -94,4 +129,33 @@
                     </form>
                 </div>
             </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const title = document.getElementById('title');
+        const metaTitle = document.getElementById('meta_title');
+        const metaDesc = document.getElementById('meta_description');
+        const excerpt = document.getElementById('excerpt');
+
+        if (title && metaTitle) {
+            let metaTitleEdited = metaTitle.value && metaTitle.value !== title.value;
+            metaTitle.addEventListener('input', function () { metaTitleEdited = true; });
+            title.addEventListener('input', function () {
+                if (metaTitleEdited) return;
+                metaTitle.value = this.value;
+            });
+        }
+
+        if (excerpt && metaDesc) {
+            let metaDescEdited = metaDesc.value && metaDesc.value !== excerpt.value;
+            metaDesc.addEventListener('input', function () { metaDescEdited = true; });
+            excerpt.addEventListener('input', function () {
+                if (metaDescEdited) return;
+                metaDesc.value = this.value;
+            });
+        }
+    });
+</script>
+@endpush
 </x-admin.layouts.app>

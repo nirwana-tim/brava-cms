@@ -66,4 +66,20 @@
             </form>
         </div>
     </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const title = document.getElementById('title');
+        const slug = document.getElementById('slug');
+        if (!title || !slug) return;
+        let slugEdited = false;
+        slug.addEventListener('input', function () { if (this.value) slugEdited = true; });
+        title.addEventListener('input', function () {
+            if (slugEdited) return;
+            slug.value = this.value.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+        });
+    });
+</script>
+@endpush
 </x-admin.layouts.app>
