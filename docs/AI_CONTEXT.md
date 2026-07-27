@@ -661,6 +661,7 @@ Avoid premature optimization.
 |------|---------|
 | `docs/SCHEMA.md` | Complete database schema for all modules |
 | `docs/API.md` | API endpoint specifications, request/response, SEO strategy |
+| `docs/ANALYTICS.md` | Google Analytics dashboard plan (post-MVP) |
 | `docs/AI_BEHAVIOUR.md` | AI coding behavior guidelines |
 
 # Code Generation Rules

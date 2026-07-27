@@ -450,6 +450,43 @@ If `meta_title` is empty on an entity, fallback to `default_meta_title` from `/a
 
 ---
 
+## Security & Rate Limiting
+
+All public API routes are protected by rate limiting in `RouteServiceProvider` or via route middleware:
+
+| Endpoint | Limit | Window | Notes |
+|----------|-------|--------|-------|
+| `GET /api/*` | 60 requests | 1 minute | Read-only endpoints |
+| `POST /api/contact` | 5 requests | 1 minute | Prevent spam |
+| `POST /api/contact` | 20 requests | 1 hour | Hard ceiling per IP |
+
+### Implementation
+```php
+// routes/api.php
+Route::middleware('throttle:60,1')->group(function () {
+    // all GET endpoints
+});
+
+Route::post('/contact', [ContactController::class, 'store'])
+    ->middleware('throttle:5,1');
+```
+
+### Contact Form Protection
+- Rate limit: 5/minute per IP
+- Optional: Honeypot hidden field (implement in Form Request)
+- No CAPTCHA for MVP — add later if spam becomes an issue
+
+### CORS
+CORS is wide-open for GET requests (Next.js needs it). For production, restrict `allowed_origins` to the actual frontend domain.
+
+```php
+// config/cors.php
+'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000')],
+'allowed_methods' => ['GET', 'POST'],
+```
+
+---
+
 ## Performance Optimizations
 
 ### Sparse Fieldsets

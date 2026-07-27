@@ -1,0 +1,23 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Faq;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends Factory<Faq>
+ */
+class FaqFactory extends Factory
+{
+    public function definition(): array
+    {
+        return [
+            'question' => fake()->sentence().'?',
+            'answer' => fake()->paragraphs(2, true),
+            'category' => fake()->randomElement(['general', 'pricing', 'support', 'features', 'billing']),
+            'sort_order' => fake()->numberBetween(0, 100),
+            'is_active' => true,
+        ];
+    }
+}
