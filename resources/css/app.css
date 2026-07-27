@@ -6,3 +6,110 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+:root {
+    --table-bg: #ffffff;
+    --table-header-bg: #f9fafb;
+    --table-header-text: #374151;
+    --table-border: #e5e7eb;
+    --table-row-hover: #f3f4f6;
+    --table-row-even: #fcfcfc;
+    --table-text: #111827;
+    --table-text-muted: #6b7280;
+}
+
+.dark {
+    --table-bg: #1f2937;
+    --table-header-bg: #374151;
+    --table-header-text: #e5e7eb;
+    --table-border: #4b5563;
+    --table-row-hover: #4b5563;
+    --table-row-even: #1f2937;
+    --table-text: #f3f4f6;
+    --table-text-muted: #9ca3af;
+}
+
+.admin-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--table-border);
+    border-radius: 0.5rem;
+}
+
+.admin-table-wrap table {
+    width: 100%;
+    min-width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table-wrap th {
+    background-color: var(--table-header-bg);
+    color: var(--table-header-text);
+    padding: 0.75rem 1.5rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--table-border);
+}
+
+.admin-table-wrap td {
+    padding: 1rem 1.5rem;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--table-border);
+}
+
+.admin-table-wrap tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-table-wrap tbody tr {
+    background-color: var(--table-bg);
+    transition: background-color 0.15s ease;
+}
+
+.admin-table-wrap tbody tr:hover {
+    background-color: var(--table-row-hover);
+}
+
+.admin-table-wrap tbody tr:nth-child(even) {
+    background-color: var(--table-row-even);
+}
+
+.admin-table-wrap tbody tr:nth-child(even):hover {
+    background-color: var(--table-row-hover);
+}
+
+.admin-table-empty {
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: var(--table-text-muted);
+}
+
+.admin-table-empty svg {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto 0.5rem;
+    color: #d1d5db;
+}
+
+.dark .admin-table-empty svg {
+    color: #4b5563;
+}
+
+.admin-table-empty a {
+    color: #4f46e5;
+    font-size: 0.875rem;
+}
+
+.admin-table-empty a:hover {
+    color: #4338ca;
+}
+
+.dark .admin-table-empty a {
+    color: #818cf8;
+}
+
+.dark .admin-table-empty a:hover {
+    color: #6366f1;
+}
