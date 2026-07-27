@@ -32,6 +32,9 @@
     --btn-delete-bg: #fef2f2;
     --btn-delete-text: #b91c1c;
     --btn-delete-hover-bg: #fee2e2;
+    --btn-show-bg: #fef9c3;
+    --btn-show-text: #854d0e;
+    --btn-show-hover-bg: #fef08a;
 
     --alert-error-bg: #fef2f2;
     --alert-error-border: #fecaca;
@@ -111,6 +114,9 @@
     --btn-delete-bg: #7f1d1d;
     --btn-delete-text: #fecaca;
     --btn-delete-hover-bg: #991b1b;
+    --btn-show-bg: #713f12;
+    --btn-show-text: #fef08a;
+    --btn-show-hover-bg: #854d0e;
 
     --alert-error-bg: #7f1d1d;
     --alert-error-border: #991b1b;
@@ -262,15 +268,6 @@
     color: var(--badge-default-text);
 }
 
-.btn-edit {
-    background-color: var(--btn-edit-bg);
-    color: var(--btn-edit-text);
-}
-
-.btn-edit:hover {
-    background-color: var(--btn-edit-hover-bg);
-}
-
 .btn-delete {
     background-color: var(--btn-delete-bg);
     color: var(--btn-delete-text);
@@ -278,6 +275,24 @@
 
 .btn-delete:hover {
     background-color: var(--btn-delete-hover-bg);
+}
+
+.btn-show {
+    background-color: var(--btn-primary-bg);
+    color: var(--btn-primary-text);
+}
+
+.btn-show:hover {
+    background-color: var(--btn-primary-hover);
+}
+
+.btn-edit {
+    background-color: var(--btn-show-bg);
+    color: var(--btn-show-text);
+}
+
+.btn-edit:hover {
+    background-color: var(--btn-show-hover-bg);
 }
 
 .alert-error {

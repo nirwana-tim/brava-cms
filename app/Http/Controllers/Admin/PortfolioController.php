@@ -46,6 +46,13 @@ class PortfolioController extends Controller
             ->with('success', 'Portfolio item created successfully.');
     }
 
+    public function show(PortfolioItem $portfolio): View
+    {
+        $portfolio->load('service');
+
+        return view('admin.portfolio.show', compact('portfolio'));
+    }
+
     public function edit(PortfolioItem $portfolio): View
     {
         $portfolio->load('service');

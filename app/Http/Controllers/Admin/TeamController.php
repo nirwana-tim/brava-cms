@@ -41,6 +41,11 @@ class TeamController extends Controller
             ->with('success', 'Team member created successfully.');
     }
 
+    public function show(TeamMember $team): View
+    {
+        return view('admin.team.show', compact('team'));
+    }
+
     public function edit(TeamMember $team): View
     {
         return view('admin.team.edit', compact('team'));

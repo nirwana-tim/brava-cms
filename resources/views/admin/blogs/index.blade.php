@@ -41,6 +41,7 @@
                                 </td>
                                 <td>
                                     <div class="flex items-center gap-2">
+                                        <a href="{{ route('admin.blogs.show', $blog) }}" class="inline-flex items-center px-3 py-1.5 btn-show rounded-md text-xs font-medium">Show</a>
                                         <a href="{{ route('admin.blogs.edit', $blog) }}" class="inline-flex items-center px-3 py-1.5 btn-edit rounded-md text-xs font-medium">Edit</a>
                                         <form action="{{ route('admin.blogs.destroy', $blog) }}" method="POST" onsubmit="return confirm('Are you sure?')">
                                             @csrf

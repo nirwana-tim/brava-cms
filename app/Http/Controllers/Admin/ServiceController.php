@@ -40,6 +40,11 @@ class ServiceController extends Controller
             ->with('success', 'Service created successfully.');
     }
 
+    public function show(Service $service): View
+    {
+        return view('admin.services.show', compact('service'));
+    }
+
     public function edit(Service $service): View
     {
         return view('admin.services.edit', compact('service'));

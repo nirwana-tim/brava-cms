@@ -16,17 +16,24 @@
 </div>
 
 @push('scripts')
-<script src="https://cdn.tiny.cloud/1/{{ config('services.tinymce.api_key') }}/tinymce/8/tinymce.min.js" referrerpolicy="origin"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/8.0.0/tinymce.min.js" crossorigin="anonymous" referrerpolicy="origin"></script>
 <script>
 tinymce.init({
     selector: '#{{ $editorId }}',
     height: 500,
     menubar: true,
     plugins: 'advlist autolink link image lists charmap preview anchor searchreplace visualblocks code fullscreen media table wordcount',
-    toolbar: 'undo redo | blocks | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | code | fullscreen | help',
+    toolbar: 'undo redo | blocks bold italic underline strikethrough | bullist numlist outdent indent | link image media | code | fullscreen | help',
     relative_urls: false,
     remove_script_host: false,
     document_base_url: '{{ url('/') }}/',
+    block_formats: 'Heading 2=h2; Heading 3=h3; Heading 4=h4; Paragraph=p; Blockquote=blockquote',
+    valid_elements: 'h2,h3,h4,p,blockquote,ul,ol,li,a[href|title|rel|target],img[alt|src|class|width|height],strong,em,u,s,br,pre,code,table[class],thead,tbody,tr,th[scope],td,span[class],div[class]',
+    invalid_styles: 'color font-size font-family background-color backgroundColor',
+    link_default_target: '_blank',
+    link_default_protocol: 'https',
+    target_list: [{ title: 'New window', value: '_blank' }, { title: 'Same window', value: '' }],
+    rel_list: [{ title: 'Noopener', value: 'noopener' }, { title: 'Nofollow', value: 'nofollow' }, { title: 'Noopener + Nofollow', value: 'noopener noreferrer' }],
     setup: function (editor) {
         editor.on('change', function () {
             editor.save();

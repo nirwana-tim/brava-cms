@@ -38,6 +38,11 @@ class FaqController extends Controller
             ->with('success', 'FAQ created successfully.');
     }
 
+    public function show(Faq $faq): View
+    {
+        return view('admin.faqs.show', compact('faq'));
+    }
+
     public function edit(Faq $faq): View
     {
         return view('admin.faqs.edit', compact('faq'));

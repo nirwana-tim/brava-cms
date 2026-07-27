@@ -32,6 +32,7 @@
                                 </td>
                                 <td>
                                     <div class="flex items-center gap-2">
+                                        <a href="{{ route('admin.services.show', $service) }}" class="inline-flex items-center px-3 py-1.5 btn-show rounded-md text-xs font-medium">Show</a>
                                         <a href="{{ route('admin.services.edit', $service) }}" class="inline-flex items-center px-3 py-1.5 btn-edit rounded-md text-xs font-medium">Edit</a>
                                         <form action="{{ route('admin.services.destroy', $service) }}" method="POST" onsubmit="return confirm('Are you sure?')">
                                             @csrf

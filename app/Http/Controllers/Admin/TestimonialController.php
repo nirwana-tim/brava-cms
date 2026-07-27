@@ -41,6 +41,11 @@ class TestimonialController extends Controller
             ->with('success', 'Testimonial created successfully.');
     }
 
+    public function show(Testimonial $testimonial): View
+    {
+        return view('admin.testimonials.show', compact('testimonial'));
+    }
+
     public function edit(Testimonial $testimonial): View
     {
         return view('admin.testimonials.edit', compact('testimonial'));

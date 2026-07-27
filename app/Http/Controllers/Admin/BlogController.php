@@ -52,6 +52,13 @@ class BlogController extends Controller
             ->with('success', 'Blog post created successfully.');
     }
 
+    public function show(Blog $blog): View
+    {
+        $blog->load(['author', 'categories']);
+
+        return view('admin.blogs.show', compact('blog'));
+    }
+
     public function edit(Blog $blog): View
     {
         $blog->load(['categories']);
