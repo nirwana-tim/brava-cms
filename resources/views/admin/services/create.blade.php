@@ -7,8 +7,8 @@
                 @csrf
 
                 @if ($errors->any())
-                    <div class="mb-4 rounded-lg bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 p-4">
-                        <div class="text-sm text-red-600 dark:text-red-400">
+                        <div class="mb-4 rounded-lg alert-error border p-4">
+                            <div class="text-sm">
                             <ul class="list-disc pl-5 space-y-1">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>

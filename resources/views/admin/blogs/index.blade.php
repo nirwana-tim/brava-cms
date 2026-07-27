@@ -2,8 +2,8 @@
     <x-slot name="title">{{ __('Blog Posts') }}</x-slot>
 
     <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-        <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Blog Posts</h2>
+        <div class="border-b px-6 py-4 flex items-center justify-between" style="border-color: var(--card-header-border)">
+            <h2 class="text-lg font-semibold" style="color: var(--heading-text)">Blog Posts</h2>
             <a href="{{ route('admin.blogs.create') }}">
                 <x-primary-button>{{ __('New Blog Post') }}</x-primary-button>
             </a>
@@ -28,24 +28,24 @@
                                 <td style="color: var(--table-text-muted)">{{ $blog->author?->name ?? 'Unknown' }}</td>
                                 <td>
                                     <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full
-                                        @if ($blog->status->value === 'published') bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200
-                                        @elseif ($blog->status->value === 'draft') bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200
-                                        @else bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 @endif">
+                                        @if ($blog->status->value === 'published') badge-active
+                                        @elseif ($blog->status->value === 'draft') badge-draft
+                                        @else badge-default @endif">
                                         {{ ucfirst($blog->status->value) }}
                                     </span>
                                 </td>
                                 <td>
                                     @foreach ($blog->categories as $cat)
-                                        <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 mr-1">{{ $cat->name }}</span>
+                                        <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full badge-default mr-1">{{ $cat->name }}</span>
                                     @endforeach
                                 </td>
                                 <td>
                                     <div class="flex items-center gap-2">
-                                        <a href="{{ route('admin.blogs.edit', $blog) }}" class="inline-flex items-center px-3 py-1.5 bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded-md hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors text-xs font-medium">Edit</a>
+                                        <a href="{{ route('admin.blogs.edit', $blog) }}" class="inline-flex items-center px-3 py-1.5 btn-edit rounded-md text-xs font-medium">Edit</a>
                                         <form action="{{ route('admin.blogs.destroy', $blog) }}" method="POST" onsubmit="return confirm('Are you sure?')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-50 dark:bg-red-900/50 text-red-700 dark:text-red-300 rounded-md hover:bg-red-100 dark:hover:bg-red-900 transition-colors text-xs font-medium">Delete</button>
+                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 btn-delete rounded-md text-xs font-medium">Delete</button>
                                         </form>
                                     </div>
                                 </td>

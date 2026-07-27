@@ -16,6 +16,54 @@
     --table-row-even: #fcfcfc;
     --table-text: #111827;
     --table-text-muted: #6b7280;
+
+    --badge-active-bg: #dcfce7;
+    --badge-active-text: #166534;
+    --badge-inactive-bg: #fee2e2;
+    --badge-inactive-text: #991b1b;
+    --badge-draft-bg: #fef9c3;
+    --badge-draft-text: #854d0e;
+    --badge-default-bg: #f3f4f6;
+    --badge-default-text: #1f2937;
+
+    --btn-edit-bg: #eef2ff;
+    --btn-edit-text: #4338ca;
+    --btn-edit-hover-bg: #e0e7ff;
+    --btn-delete-bg: #fef2f2;
+    --btn-delete-text: #b91c1c;
+    --btn-delete-hover-bg: #fee2e2;
+
+    --alert-error-bg: #fef2f2;
+    --alert-error-border: #fecaca;
+    --alert-error-text: #dc2626;
+
+    --flash-success-bg: #ecfdf5;
+    --flash-success-border: #a7f3d0;
+    --flash-success-text: #047857;
+    --flash-error-bg: #fef2f2;
+    --flash-error-border: #fecaca;
+    --flash-error-text: #b91c1c;
+
+    --card-bg: #ffffff;
+    --card-border: #e5e7eb;
+    --card-header-border: #e5e7eb;
+    --heading-text: #111827;
+    --muted-text: #6b7280;
+
+    --sidebar-bg: #ffffff;
+    --sidebar-border: #e5e7eb;
+    --sidebar-logo-bg: #4f46e5;
+    --sidebar-logo-text: #ffffff;
+    --sidebar-link-active-bg: #eef2ff;
+    --sidebar-link-active-text: #4338ca;
+    --sidebar-link-text: #4b5563;
+    --sidebar-link-hover-bg: #f3f4f6;
+    --sidebar-link-hover-text: #111827;
+    --sidebar-section-header: #9ca3af;
+    --sidebar-user-avatar-bg: #eef2ff;
+    --sidebar-user-avatar-text: #4f46e5;
+    --sidebar-user-name: #111827;
+    --sidebar-user-role: #6b7280;
 }
 
 .dark {
@@ -27,6 +75,54 @@
     --table-row-even: #1f2937;
     --table-text: #f3f4f6;
     --table-text-muted: #9ca3af;
+
+    --badge-active-bg: #14532d;
+    --badge-active-text: #bbf7d0;
+    --badge-inactive-bg: #7f1d1d;
+    --badge-inactive-text: #fecaca;
+    --badge-draft-bg: #713f12;
+    --badge-draft-text: #fef08a;
+    --badge-default-bg: #374151;
+    --badge-default-text: #e5e7eb;
+
+    --btn-edit-bg: #312e81;
+    --btn-edit-text: #a5b4fc;
+    --btn-edit-hover-bg: #3730a3;
+    --btn-delete-bg: #7f1d1d;
+    --btn-delete-text: #fecaca;
+    --btn-delete-hover-bg: #991b1b;
+
+    --alert-error-bg: #7f1d1d;
+    --alert-error-border: #991b1b;
+    --alert-error-text: #fca5a5;
+
+    --flash-success-bg: #064e3b;
+    --flash-success-border: #065f46;
+    --flash-success-text: #6ee7b7;
+    --flash-error-bg: #7f1d1d;
+    --flash-error-border: #991b1b;
+    --flash-error-text: #fca5a5;
+
+    --card-bg: #1f2937;
+    --card-border: #374151;
+    --card-header-border: #374151;
+    --heading-text: #f3f4f6;
+    --muted-text: #9ca3af;
+
+    --sidebar-bg: #1f2937;
+    --sidebar-border: #374151;
+    --sidebar-logo-bg: #4f46e5;
+    --sidebar-logo-text: #ffffff;
+    --sidebar-link-active-bg: #312e81;
+    --sidebar-link-active-text: #a5b4fc;
+    --sidebar-link-text: #9ca3af;
+    --sidebar-link-hover-bg: #374151;
+    --sidebar-link-hover-text: #f3f4f6;
+    --sidebar-section-header: #6b7280;
+    --sidebar-user-avatar-bg: #312e81;
+    --sidebar-user-avatar-text: #a5b4fc;
+    --sidebar-user-name: #f3f4f6;
+    --sidebar-user-role: #9ca3af;
 }
 
 .admin-table-wrap {
@@ -98,18 +194,76 @@
 }
 
 .admin-table-empty a {
-    color: #4f46e5;
+    color: var(--btn-edit-text);
     font-size: 0.875rem;
 }
 
 .admin-table-empty a:hover {
-    color: #4338ca;
+    color: var(--btn-edit-hover-bg);
 }
 
-.dark .admin-table-empty a {
-    color: #818cf8;
+.badge-active {
+    background-color: var(--badge-active-bg);
+    color: var(--badge-active-text);
 }
 
-.dark .admin-table-empty a:hover {
-    color: #6366f1;
+.badge-inactive {
+    background-color: var(--badge-inactive-bg);
+    color: var(--badge-inactive-text);
+}
+
+.badge-draft {
+    background-color: var(--badge-draft-bg);
+    color: var(--badge-draft-text);
+}
+
+.badge-default {
+    background-color: var(--badge-default-bg);
+    color: var(--badge-default-text);
+}
+
+.btn-edit {
+    background-color: var(--btn-edit-bg);
+    color: var(--btn-edit-text);
+}
+
+.btn-edit:hover {
+    background-color: var(--btn-edit-hover-bg);
+}
+
+.btn-delete {
+    background-color: var(--btn-delete-bg);
+    color: var(--btn-delete-text);
+}
+
+.btn-delete:hover {
+    background-color: var(--btn-delete-hover-bg);
+}
+
+.alert-error {
+    background-color: var(--alert-error-bg);
+    border-color: var(--alert-error-border);
+    color: var(--alert-error-text);
+}
+
+.sidebar-link-active {
+    background-color: var(--sidebar-link-active-bg);
+    color: var(--sidebar-link-active-text);
+}
+
+.sidebar-link-inactive {
+    color: var(--sidebar-link-text);
+}
+
+.sidebar-link-inactive:hover {
+    background-color: var(--sidebar-link-hover-bg);
+    color: var(--sidebar-link-hover-text);
+}
+
+.card-bg {
+    background-color: var(--card-bg);
+}
+
+.card-header-border {
+    border-color: var(--card-header-border);
 }

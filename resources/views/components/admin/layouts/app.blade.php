@@ -32,15 +32,15 @@
     {{-- Sidebar --}}
     <aside
         :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-        class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 lg:static lg:translate-x-0 lg:z-auto flex flex-col transition-transform duration-300 ease-in-out"
+        class="fixed inset-y-0 left-0 z-50 w-64 lg:static lg:translate-x-0 lg:z-auto flex flex-col transition-transform duration-300 ease-in-out" style="background-color: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border)"
     >
         {{-- Sidebar Header --}}
-        <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+        <div class="flex items-center justify-between h-16 px-6 border-b" style="border-color: var(--sidebar-border)">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-                    <span class="text-white font-bold text-sm">B</span>
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background-color: var(--sidebar-logo-bg)">
+                    <span class="font-bold text-sm" style="color: var(--sidebar-logo-text)">B</span>
                 </div>
-                <span class="text-lg font-semibold text-gray-900">Brava CMS</span>
+                <span class="text-lg font-semibold" style="color: var(--sidebar-user-name)">Brava CMS</span>
             </a>
             <button @click="sidebarOpen = false" class="lg:hidden text-gray-400 hover:text-gray-600">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,7 +59,7 @@
             </x-admin.sidebar-link>
 
             <div class="pt-4 pb-2">
-                <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Content</p>
+                <p class="px-3 text-xs font-semibold uppercase tracking-wider" style="color: var(--sidebar-section-header)">Content</p>
             </div>
             <x-admin.sidebar-link :href="route('admin.services.index')" :active="request()->routeIs('admin.services.*')">
                 <x-slot:icon>
@@ -87,7 +87,7 @@
             </x-admin.sidebar-link>
 
             <div class="pt-4 pb-2">
-                <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Engagement</p>
+                <p class="px-3 text-xs font-semibold uppercase tracking-wider" style="color: var(--sidebar-section-header)">Engagement</p>
             </div>
             <x-admin.sidebar-link :href="route('admin.testimonials.index')" :active="request()->routeIs('admin.testimonials.*')">
                 <x-slot:icon>
@@ -109,7 +109,7 @@
             </x-admin.sidebar-link>
 
             <div class="pt-4 pb-2">
-                <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">System</p>
+                <p class="px-3 text-xs font-semibold uppercase tracking-wider" style="color: var(--sidebar-section-header)">System</p>
             </div>
             <x-admin.sidebar-link :href="route('admin.media.index')" :active="request()->routeIs('admin.media.*')">
                 <x-slot:icon>
@@ -126,14 +126,14 @@
         </nav>
 
         {{-- Sidebar Footer --}}
-        <div class="p-4 border-t border-gray-200">
+        <div class="p-4 border-t" style="border-color: var(--sidebar-border)">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                    <span class="text-indigo-600 font-semibold text-sm">{{ substr(Auth::user()->name, 0, 1) }}</span>
+                <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background-color: var(--sidebar-user-avatar-bg)">
+                    <span class="font-semibold text-sm" style="color: var(--sidebar-user-avatar-text)">{{ substr(Auth::user()->name, 0, 1) }}</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-900 truncate">{{ Auth::user()->name }}</p>
-                    <p class="text-xs text-gray-500 truncate">{{ Auth::user()->role }}</p>
+                    <p class="text-sm font-medium truncate" style="color: var(--sidebar-user-name)">{{ Auth::user()->name }}</p>
+                    <p class="text-xs truncate" style="color: var(--sidebar-user-role)">{{ Auth::user()->role }}</p>
                 </div>
             </div>
         </div>
@@ -143,7 +143,7 @@
     <div class="flex-1 flex flex-col min-w-0">
 
         {{-- Top Header --}}
-        <header class="bg-white border-b border-gray-200 h-16 flex items-center px-4 lg:px-6 shrink-0">
+        <header class="h-16 flex items-center px-4 lg:px-6 shrink-0" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-header-border)">
             {{-- Mobile menu toggle --}}
             <button @click="sidebarOpen = true" class="lg:hidden text-gray-500 hover:text-gray-700 mr-3">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -154,7 +154,7 @@
             {{-- Breadcrumb / Page title --}}
             <div class="flex-1">
                 @isset($title)
-                    <h1 class="text-lg font-semibold text-gray-900">{{ $title }}</h1>
+                    <h1 class="text-lg font-semibold" style="color: var(--heading-text)">{{ $title }}</h1>
                 @endisset
             </div>
 
@@ -169,7 +169,7 @@
                 {{-- User Dropdown --}}
                 <div x-data="{ open: false }" class="relative">
                     <button @click="open = !open" class="flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900">
-                        <span class="hidden sm:block">{{ Auth::user()->name }}</span>
+                        <span class="hidden sm:block" style="color: var(--heading-text)">{{ Auth::user()->name }}</span>
                         <div class="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
                             <span class="text-white font-semibold text-xs">{{ substr(Auth::user()->name, 0, 1) }}</span>
                         </div>
@@ -196,7 +196,7 @@
         {{-- Flash Message --}}
         @if (session('success'))
             <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)" class="px-4 lg:px-6 pt-4">
-                <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg px-4 py-3 text-sm flex items-center gap-2">
+                <div class="rounded-lg px-4 py-3 text-sm flex items-center gap-2" style="background-color: var(--flash-success-bg); border-color: var(--flash-success-border); color: var(--flash-success-text)">
                     <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     {{ session('success') }}
                 </div>
@@ -205,7 +205,7 @@
 
         @if (session('error'))
             <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" class="px-4 lg:px-6 pt-4">
-                <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm flex items-center gap-2">
+                <div class="rounded-lg px-4 py-3 text-sm flex items-center gap-2" style="background-color: var(--flash-error-bg); border-color: var(--flash-error-border); color: var(--flash-error-text)">
                     <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     {{ session('error') }}
                 </div>
