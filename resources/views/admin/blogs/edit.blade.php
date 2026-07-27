@@ -1,8 +1,8 @@
 <x-admin.layouts.app>
     <x-slot name="title">{{ __('Edit Blog Post') }}</x-slot>
 
-    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-        <div class="p-6">
+    <div class="card">
+        <div class="card-body">
                     <form action="{{ route('admin.blogs.update', $blog) }}" method="POST">
                         @csrf
                         @method('PUT')
@@ -34,7 +34,7 @@
 
                             <div>
                                 <x-input-label for="excerpt" :value="__('Excerpt')" />
-                                <textarea id="excerpt" name="excerpt" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" rows="3">{{ old('excerpt', $blog->excerpt) }}</textarea>
+                                <textarea id="excerpt" name="excerpt" class="form-textarea mt-1" rows="3">{{ old('excerpt', $blog->excerpt) }}</textarea>
                                 <x-input-error class="mt-2" :messages="$errors->get('excerpt')" />
                             </div>
 
@@ -54,7 +54,7 @@
 
                             <div>
                                 <x-input-label for="status" :value="__('Status')" />
-                                <select id="status" name="status" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                                <select id="status" name="status" class="form-select mt-1">
                                     <option value="draft" {{ old('status', $blog->status->value) === 'draft' ? 'selected' : '' }}>Draft</option>
                                     <option value="published" {{ old('status', $blog->status->value) === 'published' ? 'selected' : '' }}>Published</option>
                                     <option value="archived" {{ old('status', $blog->status->value) === 'archived' ? 'selected' : '' }}>Archived</option>
@@ -67,11 +67,11 @@
                                 <div class="mt-2 space-y-2">
                                     @forelse ($categories as $id => $name)
                                         <label class="flex items-center gap-2">
-                                            <input type="checkbox" name="category_ids[]" value="{{ $id }}" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" {{ in_array($id, old('category_ids', $blog->categories->pluck('id')->toArray())) ? 'checked' : '' }} />
-                                            <span class="text-sm text-gray-700 dark:text-gray-300">{{ $name }}</span>
+                                            <input type="checkbox" name="category_ids[]" value="{{ $id }}" class="form-checkbox" {{ in_array($id, old('category_ids', $blog->categories->pluck('id')->toArray())) ? 'checked' : '' }} />
+                                            <span class="text-sm" style="color: var(--label-text)">{{ $name }}</span>
                                         </label>
                                     @empty
-                                        <p class="text-sm text-gray-500 dark:text-gray-400">No categories available.</p>
+                                        <p class="text-sm" style="color: var(--muted-text)">No categories available.</p>
                                     @endforelse
                                 </div>
                                 <x-input-error class="mt-2" :messages="$errors->get('category_ids')" />
@@ -79,8 +79,8 @@
 
                             <div class="flex items-center gap-4">
                                 <label class="flex items-center gap-2">
-                                    <input type="checkbox" name="is_featured" value="1" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" {{ old('is_featured', $blog->is_featured) ? 'checked' : '' }} />
-                                    <span class="text-sm text-gray-700 dark:text-gray-300">{{ __('Featured') }}</span>
+                                    <input type="checkbox" name="is_featured" value="1" class="form-checkbox" {{ old('is_featured', $blog->is_featured) ? 'checked' : '' }} />
+                                    <span class="text-sm" style="color: var(--label-text)">{{ __('Featured') }}</span>
                                 </label>
                             </div>
                         </div>

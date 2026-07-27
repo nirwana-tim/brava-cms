@@ -1,15 +1,15 @@
 <x-admin.layouts.app>
     <x-slot name="title">{{ __('FAQs') }}</x-slot>
 
-    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-        <div class="border-b" style="border-color: var(--card-header-border) px-6 py-4 flex items-center justify-between">
+    <div class="card">
+        <div class="card-header">
             <h2 class="text-lg font-semibold" style="color: var(--heading-text)">FAQs</h2>
             <a href="{{ route('admin.faqs.create') }}">
                 <x-primary-button>{{ __('New FAQ') }}</x-primary-button>
             </a>
         </div>
 
-        <div class="p-6">
+        <div class="card-body">
             <div class="admin-table-wrap">
                 <table>
                     <thead>

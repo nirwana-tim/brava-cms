@@ -1,8 +1,8 @@
 <x-admin.layouts.app>
     <x-slot name="title">{{ __('Upload Media') }}</x-slot>
 
-    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-        <div class="p-6">
+    <div class="card">
+        <div class="card-body">
                     <form action="{{ route('admin.media.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 

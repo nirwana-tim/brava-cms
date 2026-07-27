@@ -1,8 +1,8 @@
 <x-admin.layouts.app>
     <x-slot name="title">{{ __('Create FAQ') }}</x-slot>
 
-    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-        <div class="p-6">
+    <div class="card">
+        <div class="card-body">
                     <form action="{{ route('admin.faqs.store') }}" method="POST">
                         @csrf
 
@@ -27,7 +27,7 @@
 
                             <div>
                                 <x-input-label for="answer" :value="__('Answer')" />
-                                <textarea id="answer" name="answer" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" rows="5" required>{{ old('answer') }}</textarea>
+                                <textarea id="answer" name="answer" class="form-textarea mt-1" rows="5" required>{{ old('answer') }}</textarea>
                                 <x-input-error class="mt-2" :messages="$errors->get('answer')" />
                             </div>
 
@@ -44,7 +44,7 @@
                             </div>
 
                             <div class="flex items-center gap-2">
-                                <input type="checkbox" id="is_active" name="is_active" value="1" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" {{ old('is_active', true) ? 'checked' : '' }} />
+                                <input type="checkbox" id="is_active" name="is_active" value="1" class="form-checkbox" {{ old('is_active', true) ? 'checked' : '' }} />
                                 <x-input-label for="is_active" :value="__('Active')" />
                             </div>
                         </div>

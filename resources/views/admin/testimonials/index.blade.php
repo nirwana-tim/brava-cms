@@ -1,15 +1,15 @@
 <x-admin.layouts.app>
     <x-slot name="title">{{ __('Testimonials') }}</x-slot>
 
-    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-        <div class="border-b px-6 py-4 flex items-center justify-between" style="border-color: var(--card-header-border)">
+    <div class="card">
+        <div class="card-header">
             <h2 class="text-lg font-semibold" style="color: var(--heading-text)">Testimonials</h2>
             <a href="{{ route('admin.testimonials.create') }}">
                 <x-primary-button>{{ __('New Testimonial') }}</x-primary-button>
             </a>
         </div>
 
-        <div class="p-6">
+        <div class="card-body">
             <div class="admin-table-wrap">
                 <table>
                     <thead>

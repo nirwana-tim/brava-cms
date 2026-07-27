@@ -1,15 +1,15 @@
 <x-admin.layouts.app>
     <x-slot name="title">{{ __('Media') }}</x-slot>
 
-    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-        <div class="border-b px-6 py-4 flex items-center justify-between" style="border-color: var(--card-header-border)">
+    <div class="card">
+        <div class="card-header">
             <h2 class="text-lg font-semibold" style="color: var(--heading-text)">Media</h2>
             <a href="{{ route('admin.media.create') }}">
                 <x-primary-button>{{ __('Upload Media') }}</x-primary-button>
             </a>
         </div>
 
-        <div class="p-6">
+        <div class="card-body">
             <div class="admin-table-wrap">
                 <table>
                     <thead>
