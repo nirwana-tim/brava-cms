@@ -16,10 +16,6 @@
         <div class="card-body">
             <div class="grid grid-cols-2 gap-6 mb-6">
                 <div>
-                    <p class="section-title">Category</p>
-                    <p style="color: var(--table-text)">{{ $faq->category ?? 'Uncategorized' }}</p>
-                </div>
-                <div>
                     <p class="section-title">Active</p>
                     <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $faq->is_active ? 'badge-active' : 'badge-inactive' }}">
                         {{ $faq->is_active ? 'Active' : 'Inactive' }}

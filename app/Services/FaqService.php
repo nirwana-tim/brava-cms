@@ -10,13 +10,10 @@ class FaqService
 {
     public function __construct(private readonly Faq $model) {}
 
-    public function all(?string $category = null): Collection
+    public function all(): Collection
     {
-        $cacheKey = $category ? 'faqs.category.'.$category : 'faqs.all';
-
-        return Cache::flexible($cacheKey, [3600, 7200], function () use ($category) {
+        return Cache::flexible('faqs.all', [3600, 7200], function () {
             return $this->model->active()
-                ->when($category, fn ($query, $cat) => $query->inCategory($cat))
                 ->orderBy('sort_order')
                 ->get();
         });

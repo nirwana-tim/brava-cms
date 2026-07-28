@@ -15,7 +15,6 @@ class FaqFactory extends Factory
         return [
             'question' => fake()->sentence().'?',
             'answer' => fake()->paragraphs(2, true),
-            'category' => fake()->randomElement(['general', 'pricing', 'support', 'features', 'billing']),
             'sort_order' => fake()->numberBetween(0, 100),
             'is_active' => true,
         ];

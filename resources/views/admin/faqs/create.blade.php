@@ -32,12 +32,6 @@
                             </div>
 
                             <div>
-                                <x-input-label for="category" :value="__('Category')" />
-                                <x-text-input id="category" name="category" type="text" class="mt-1 block w-full" :value="old('category')" />
-                                <x-input-error class="mt-2" :messages="$errors->get('category')" />
-                            </div>
-
-                            <div>
                                 <x-input-label for="sort_order" :value="__('Sort Order')" />
                                 <x-text-input id="sort_order" name="sort_order" type="number" class="mt-1 block w-full" :value="old('sort_order', '0')" />
                                 <x-input-error class="mt-2" :messages="$errors->get('sort_order')" />

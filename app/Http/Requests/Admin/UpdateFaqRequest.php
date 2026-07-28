@@ -17,7 +17,6 @@ class UpdateFaqRequest extends FormRequest
         return [
             'question' => ['required', 'string', 'max:255'],
             'answer' => ['required', 'string'],
-            'category' => ['nullable', 'string', 'max:255'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['boolean'],
         ];

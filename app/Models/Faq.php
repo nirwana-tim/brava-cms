@@ -12,7 +12,7 @@ class Faq extends Model
     /** @use HasFactory<FaqFactory> */
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['question', 'answer', 'category', 'sort_order', 'is_active'];
+    protected $fillable = ['question', 'answer', 'sort_order', 'is_active'];
 
     protected function casts(): array
     {
@@ -24,10 +24,5 @@ class Faq extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
-    }
-
-    public function scopeInCategory($query, $category)
-    {
-        return $query->where('category', $category);
     }
 }

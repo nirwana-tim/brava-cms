@@ -13,7 +13,6 @@ class FaqResource extends JsonResource
             'id' => $this->id,
             'question' => $this->question,
             'answer' => $this->answer,
-            'category' => $this->category,
         ];
     }
 }
