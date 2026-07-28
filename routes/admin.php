@@ -19,9 +19,15 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('services', ServiceController::class);
     Route::resource('blogs', BlogController::class);
     Route::resource('portfolio', PortfolioController::class);
+    Route::post('portfolio/{portfolio}/media/attach', [PortfolioController::class, 'attachMedia'])->name('portfolio.media.attach');
+    Route::delete('portfolio/{portfolio}/media/{medium}/detach', [PortfolioController::class, 'detachMedia'])->name('portfolio.media.detach');
     Route::resource('testimonials', TestimonialController::class);
     Route::resource('faqs', FaqController::class);
+    Route::get('team/{team}/reset-password', [TeamController::class, 'resetPassword'])->name('team.reset-password');
+    Route::put('team/{team}/password', [TeamController::class, 'updatePassword'])->name('team.password');
     Route::resource('team', TeamController::class);
+    Route::get('media/picker-list', [MediaController::class, 'pickerList'])->name('media.picker-list');
+    Route::post('media/upload-ajax', [MediaController::class, 'uploadAjax'])->name('media.upload-ajax');
     Route::resource('media', MediaController::class)->except(['show']);
     Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
     Route::put('settings', [SettingController::class, 'update'])->name('settings.update');

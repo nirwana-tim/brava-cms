@@ -14,7 +14,6 @@ class TestimonialFactory extends Factory
     {
         return [
             'client_name' => fake()->name(),
-            'client_position' => fake()->jobTitle(),
             'company' => fake()->company(),
             'content' => fake()->paragraphs(2, true),
             'rating' => fake()->numberBetween(1, 5),

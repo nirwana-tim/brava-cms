@@ -14,6 +14,13 @@
             </div>
         </div>
         <div class="card-body">
+            @if ($portfolio->photo)
+                <div class="mb-6">
+                    <p class="section-title">Cover Photo</p>
+                    <img src="{{ $portfolio->photo }}" alt="{{ $portfolio->title }}" class="mt-2 rounded-lg" style="max-width: 100%; max-height: 400px;">
+                </div>
+            @endif
+
             <div class="grid grid-cols-2 gap-6 mb-6">
                 <div>
                     <p class="section-title">Slug</p>
@@ -25,6 +32,16 @@
                         {{ $portfolio->is_active ? 'Active' : 'Inactive' }}
                     </span>
                 </div>
+                @if ($portfolio->categories->isNotEmpty())
+                <div class="col-span-2">
+                    <p class="section-title">Categories</p>
+                    <div class="mt-1 flex flex-wrap gap-1.5">
+                        @foreach ($portfolio->categories as $category)
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium badge-default">{{ $category->name }}</span>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
                 @if ($portfolio->service)
                 <div>
                     <p class="section-title">Service</p>
@@ -55,6 +72,32 @@
                 </div>
             </div>
 
+            @if ($portfolio->meta_title || $portfolio->meta_description || $portfolio->og_image)
+                <div class="mb-6">
+                    <p class="section-title mb-2">SEO</p>
+                    <div class="grid grid-cols-2 gap-4 text-sm" style="color: var(--table-text)">
+                        @if ($portfolio->meta_title)
+                            <div><span class="font-medium">Meta Title:</span> {{ $portfolio->meta_title }}</div>
+                        @endif
+                        @if ($portfolio->meta_description)
+                            <div><span class="font-medium">Meta Description:</span> {{ $portfolio->meta_description }}</div>
+                        @endif
+                        @if ($portfolio->og_image)
+                            <div class="col-span-2">
+                                <span class="font-medium">OG Image:</span>
+                                <img src="{{ $portfolio->og_image }}" alt="OG Image" class="mt-1 rounded max-h-32">
+                            </div>
+                        @endif
+                        <div>
+                            <span class="font-medium">Indexing:</span>
+                            <span class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full {{ $portfolio->robots_index ? 'badge-active' : 'badge-inactive' }}">
+                                {{ $portfolio->robots_index ? 'Allowed' : 'Noindex' }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             @if ($portfolio->description)
                 <div class="mb-6">
                     <p class="section-title">Description</p>
@@ -68,6 +111,21 @@
                     {!! $portfolio->content !!}
                 </div>
             </div>
+
+            @if ($portfolio->media->isNotEmpty())
+                <div class="mt-8">
+                    <p class="section-title mb-3">Gallery Photos</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                        @foreach ($portfolio->media as $media)
+                            <div class="rounded-lg border overflow-hidden" style="border-color: var(--table-border)">
+                                <div class="aspect-video bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden">
+                                    <img src="{{ $media->url }}" alt="{{ $media->alt_text }}" class="w-full h-full object-cover">
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 </x-admin.layouts.app>

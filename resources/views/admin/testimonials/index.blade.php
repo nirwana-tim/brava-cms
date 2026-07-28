@@ -24,7 +24,14 @@
                     <tbody>
                         @forelse ($testimonials as $testimonial)
                             <tr>
-                                <td class="font-medium" style="color: var(--table-text)">{{ $testimonial->client_name }}</td>
+                                <td>
+                                    <div class="flex items-center gap-3">
+                                        @if ($testimonial->avatar)
+                                            <img src="{{ $testimonial->avatar }}" alt="" class="rounded-full" style="width: 32px; height: 32px; object-fit: cover;">
+                                        @endif
+                                        <span class="font-medium" style="color: var(--table-text)">{{ $testimonial->client_name }}</span>
+                                    </div>
+                                </td>
                                 <td style="color: var(--table-text-muted)">{{ $testimonial->company ?? '-' }}</td>
                                 <td style="color: var(--table-text-muted)">{{ $testimonial->rating ? str_repeat('★', $testimonial->rating) : '-' }}</td>
                                 <td>

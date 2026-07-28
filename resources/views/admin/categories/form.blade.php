@@ -24,6 +24,15 @@
     </div>
 
     <div>
+        <x-input-label for="type" :value="__('Type')" :required="true" />
+        <select id="type" name="type" class="form-select mt-1">
+            <option value="blog" {{ old('type', $category->type ?? '') === 'blog' ? 'selected' : '' }}>Blog</option>
+            <option value="portfolio" {{ old('type', $category->type ?? '') === 'portfolio' ? 'selected' : '' }}>Portfolio</option>
+        </select>
+        <x-input-error class="mt-2" :messages="$errors->get('type')" />
+    </div>
+
+    <div>
         <x-input-label for="description" :value="__('Description')" />
         <textarea id="description" name="description" class="form-textarea mt-1" rows="3">{{ old('description', $category->description ?? '') }}</textarea>
         <x-input-error class="mt-2" :messages="$errors->get('description')" />

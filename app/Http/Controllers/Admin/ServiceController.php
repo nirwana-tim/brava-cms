@@ -28,10 +28,10 @@ class ServiceController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', 'unique:services,slug'],
             'description' => ['nullable', 'string'],
-            'content' => ['nullable', 'string'],
             'photo' => ['nullable', 'string', 'max:255'],
+            'photo_alt' => ['nullable', 'string', 'max:255'],
+            'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['boolean'],
-            'published_at' => ['nullable', 'date'],
         ]);
 
         Service::create($validated);
@@ -56,10 +56,10 @@ class ServiceController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', 'unique:services,slug,'.$service->id],
             'description' => ['nullable', 'string'],
-            'content' => ['nullable', 'string'],
             'photo' => ['nullable', 'string', 'max:255'],
+            'photo_alt' => ['nullable', 'string', 'max:255'],
+            'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['boolean'],
-            'published_at' => ['nullable', 'date'],
         ]);
 
         $service->update($validated);

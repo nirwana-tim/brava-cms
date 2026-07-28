@@ -30,7 +30,6 @@ class BlogFactory extends Factory
             'og_title' => fake()->sentence(2),
             'og_description' => fake()->sentence(),
             'og_image' => 'uploads/'.fake()->uuid().'.jpg',
-            'canonical_url' => fake()->url(),
             'robots_index' => true,
             'robots_follow' => true,
             'schema_type' => 'BlogPosting',

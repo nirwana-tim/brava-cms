@@ -26,11 +26,11 @@ class TestimonialController extends Controller
     {
         $validated = $request->validate([
             'client_name' => ['required', 'string', 'max:255'],
-            'client_position' => ['nullable', 'string', 'max:255'],
             'company' => ['nullable', 'string', 'max:255'],
             'content' => ['required', 'string'],
             'rating' => ['nullable', 'integer', 'min:1', 'max:5'],
             'avatar' => ['nullable', 'string', 'max:255'],
+            'avatar_alt' => ['nullable', 'string', 'max:255'],
             'is_active' => ['boolean'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ]);
@@ -55,11 +55,11 @@ class TestimonialController extends Controller
     {
         $validated = $request->validate([
             'client_name' => ['required', 'string', 'max:255'],
-            'client_position' => ['nullable', 'string', 'max:255'],
             'company' => ['nullable', 'string', 'max:255'],
             'content' => ['required', 'string'],
             'rating' => ['nullable', 'integer', 'min:1', 'max:5'],
             'avatar' => ['nullable', 'string', 'max:255'],
+            'avatar_alt' => ['nullable', 'string', 'max:255'],
             'is_active' => ['boolean'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ]);

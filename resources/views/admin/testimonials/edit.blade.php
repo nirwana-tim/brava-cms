@@ -27,12 +27,6 @@
                             </div>
 
                             <div>
-                                <x-input-label for="client_position" :value="__('Client Position')" />
-                                <x-text-input id="client_position" name="client_position" type="text" class="mt-1 block w-full" :value="old('client_position', $testimonial->client_position)" />
-                                <x-input-error class="mt-2" :messages="$errors->get('client_position')" />
-                            </div>
-
-                            <div>
                                 <x-input-label for="company" :value="__('Company')" />
                                 <x-text-input id="company" name="company" type="text" class="mt-1 block w-full" :value="old('company', $testimonial->company)" />
                                 <x-input-error class="mt-2" :messages="$errors->get('company')" />
@@ -50,9 +44,22 @@
                                 <x-input-error class="mt-2" :messages="$errors->get('rating')" />
                             </div>
 
-                            <div>
-                                <x-input-label for="avatar" :value="__('Avatar URL')" />
-                                <x-text-input id="avatar" name="avatar" type="text" class="mt-1 block w-full" :value="old('avatar', $testimonial->avatar)" />
+                            <div x-data="{ avatarUrl: '{{ $testimonial->avatar }}', avatarAlt: '{{ $testimonial->avatar_alt }}' }">
+                                <x-input-label for="avatar" :value="__('Avatar')" />
+                                <input type="hidden" name="avatar" id="avatar"
+                                    :value="avatarUrl" x-on:input="avatarUrl = $event.target.value" />
+                                <input type="hidden" name="avatar_alt" id="avatar_alt"
+                                    :value="avatarAlt" x-on:input="avatarAlt = $event.target.value" />
+                                <template x-if="avatarUrl">
+                                    <div class="mb-2">
+                                        <img :src="avatarUrl" :alt="avatarAlt"
+                                            class="rounded-full mb-2"
+                                            style="width:64px;height:64px;object-fit:cover">
+                                        <p x-show="avatarAlt" class="text-xs mt-1" x-text="'Alt: ' + avatarAlt"
+                                            style="color:var(--muted-text)"></p>
+                                    </div>
+                                </template>
+                                <x-admin.media-picker target="avatar" collection="testimonials" />
                                 <x-input-error class="mt-2" :messages="$errors->get('avatar')" />
                             </div>
 

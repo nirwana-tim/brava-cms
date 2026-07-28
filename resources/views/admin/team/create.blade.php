@@ -32,12 +32,6 @@
                             </div>
 
                             <div>
-                                <x-input-label for="bio" :value="__('Bio')" />
-                                <textarea id="bio" name="bio" class="form-textarea mt-1" rows="5">{{ old('bio') }}</textarea>
-                                <x-input-error class="mt-2" :messages="$errors->get('bio')" />
-                            </div>
-
-                            <div>
                                 <x-input-label for="avatar" :value="__('Avatar URL')" />
                                 <x-text-input id="avatar" name="avatar" type="text" class="mt-1 block w-full" :value="old('avatar')" />
                                 <x-input-error class="mt-2" :messages="$errors->get('avatar')" />
@@ -53,6 +47,18 @@
                                 <x-input-label for="phone" :value="__('Phone')" />
                                 <x-text-input id="phone" name="phone" type="text" class="mt-1 block w-full" :value="old('phone')" />
                                 <x-input-error class="mt-2" :messages="$errors->get('phone')" />
+                            </div>
+
+                            <div>
+                                <x-input-label for="password" :value="__('Password')" :required="true" />
+                                <x-text-input id="password" name="password" type="password" class="mt-1 block w-full" required />
+                                <x-input-error class="mt-2" :messages="$errors->get('password')" />
+                            </div>
+
+                            <div>
+                                <x-input-label for="password_confirmation" :value="__('Confirm Password')" :required="true" />
+                                <x-text-input id="password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" required />
+                                <x-input-error class="mt-2" :messages="$errors->get('password_confirmation')" />
                             </div>
 
                             <div>

@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Enums\UserRole;
 use App\Models\TeamMember;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class TeamSeeder extends Seeder
@@ -37,7 +39,19 @@ class TeamSeeder extends Seeder
         ];
 
         foreach ($members as $data) {
-            TeamMember::create($data);
+            $team = TeamMember::create($data);
+
+            if ($team->email) {
+                $user = User::create([
+                    'name' => $team->name,
+                    'email' => $team->email,
+                    'password' => bcrypt('password'),
+                    'role' => UserRole::Admin,
+                    'position' => $team->position,
+                ]);
+
+                $team->user()->associate($user)->save();
+            }
         }
     }
 }

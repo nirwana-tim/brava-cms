@@ -2,7 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Enums\UserRole;
 use App\Models\TeamMember;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -22,5 +24,21 @@ class TeamMemberFactory extends Factory
             'sort_order' => fake()->numberBetween(0, 100),
             'is_active' => true,
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function (TeamMember $member) {
+            if ($member->email && ! $member->user_id) {
+                $user = User::factory()->create([
+                    'name' => $member->name,
+                    'email' => $member->email,
+                    'role' => UserRole::Admin,
+                    'position' => $member->position,
+                ]);
+
+                $member->user()->associate($user)->save();
+            }
+        });
     }
 }

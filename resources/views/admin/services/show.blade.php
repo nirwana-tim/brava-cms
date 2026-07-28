@@ -26,8 +26,8 @@
                     </span>
                 </div>
                 <div>
-                    <p class="section-title">Published At</p>
-                    <p style="color: var(--table-text)">{{ $service->published_at?->format('M d, Y') ?? 'Not set' }}</p>
+                    <p class="section-title">Sort Order</p>
+                    <p style="color: var(--table-text)">{{ $service->sort_order ?? '0' }}</p>
                 </div>
             </div>
 
@@ -44,13 +44,6 @@
                     <p class="mt-2" style="color: var(--table-text)">{{ $service->description }}</p>
                 </div>
             @endif
-
-            <div>
-                <p class="section-title">Content</p>
-                <div class="mt-2 prose prose-sm max-w-none" style="color: var(--table-text); line-height: 1.8">
-                    {!! $service->content !!}
-                </div>
-            </div>
         </div>
     </div>
 </x-admin.layouts.app>

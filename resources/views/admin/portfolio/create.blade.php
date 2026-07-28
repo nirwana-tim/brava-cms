@@ -50,6 +50,40 @@
 
                     <x-admin.rich-text name="content" :value="old('content')" />
 
+                    <div x-data="{ photoUrl: '', photoAlt: '' }">
+                        <x-input-label for="photo" :value="__('Photo')" />
+                        <input type="hidden" name="photo" id="photo"
+                            :value="photoUrl" x-on:input="photoUrl = $event.target.value" />
+                        <input type="hidden" name="photo_alt" id="photo_alt"
+                            :value="photoAlt" x-on:input="photoAlt = $event.target.value" />
+                        <template x-if="photoUrl">
+                            <div class="mb-2">
+                                <img :src="photoUrl" :alt="photoAlt"
+                                    class="rounded-lg"
+                                    style="max-width:240px;max-height:160px;object-fit:cover">
+                                <p x-show="photoAlt" class="text-xs mt-1" x-text="'Alt: ' + photoAlt"
+                                    style="color:var(--muted-text)"></p>
+                            </div>
+                        </template>
+                        <x-admin.media-picker target="photo" collection="portfolio" />
+                        <x-input-error class="mt-2" :messages="$errors->get('photo')" />
+                    </div>
+
+                    @if ($categories->isNotEmpty())
+                        <div>
+                            <x-input-label :value="__('Categories')" />
+                            <div class="mt-2 space-y-2">
+                                @foreach ($categories as $id => $name)
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" name="categories[]" value="{{ $id }}" class="form-checkbox" {{ in_array($id, old('categories', [])) ? 'checked' : '' }} />
+                                        <span class="text-sm" style="color: var(--label-text)">{{ $name }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                            <x-input-error class="mt-2" :messages="$errors->get('categories')" />
+                        </div>
+                    @endif
+
                     <div>
                         <x-input-label for="client" :value="__('Client')" />
                         <x-text-input id="client" name="client" type="text" class="mt-1 block w-full" :value="old('client')" />
@@ -78,6 +112,44 @@
                         <input type="checkbox" id="is_active" name="is_active" value="1" class="form-checkbox" {{ old('is_active', true) ? 'checked' : '' }} />
                         <x-input-label for="is_active" :value="__('Active')" />
                     </div>
+
+                    <details class="mt-4">
+                        <summary class="text-sm font-medium cursor-pointer" style="color: var(--label-text)">{{ __('SEO Settings') }}</summary>
+                        <div class="mt-4 space-y-4">
+                            <div>
+                                <x-input-label for="meta_title" :value="__('Meta Title')" />
+                                <x-text-input id="meta_title" name="meta_title" type="text" class="mt-1 block w-full" :value="old('meta_title')" />
+                                <p class="form-hint">Auto-filled from title. Edit to override.</p>
+                            </div>
+                            <div>
+                                <x-input-label for="meta_description" :value="__('Meta Description')" />
+                                <textarea id="meta_description" name="meta_description" class="form-textarea mt-1" rows="3">{{ old('meta_description') }}</textarea>
+                                <p class="form-hint">Auto-filled from description. Edit to override.</p>
+                            </div>
+                            <div x-data="{ ogImage: '', ogImageAlt: '' }">
+                                <x-input-label for="og_image" :value="__('OG Image')" />
+                                <input type="hidden" name="og_image" id="og_image"
+                                    :value="ogImage" x-on:input="ogImage = $event.target.value" />
+                                <input type="hidden" name="og_image_alt" id="og_image_alt"
+                                    :value="ogImageAlt" x-on:input="ogImageAlt = $event.target.value" />
+                                <template x-if="ogImage">
+                                    <div class="mb-2">
+                                        <img :src="ogImage" :alt="ogImageAlt"
+                                            class="rounded-lg"
+                                            style="max-width:240px;max-height:120px;object-fit:cover">
+                                        <p x-show="ogImageAlt" class="text-xs mt-1" x-text="'Alt: ' + ogImageAlt"
+                                            style="color:var(--muted-text)"></p>
+                                    </div>
+                                </template>
+                                <x-admin.media-picker target="og_image" collection="portfolio" />
+                                <p class="form-hint">Defaults to cover photo.</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" id="robots_index" name="robots_index" value="1" class="form-checkbox" {{ old('robots_index', true) ? 'checked' : '' }} />
+                                <x-input-label for="robots_index" :value="__('Allow indexing')" />
+                            </div>
+                        </div>
+                    </details>
                 </div>
 
                 <div class="mt-6 flex items-center gap-4">
@@ -95,13 +167,36 @@
     document.addEventListener('DOMContentLoaded', function () {
         const title = document.getElementById('title');
         const slug = document.getElementById('slug');
-        if (!title || !slug) return;
-        let slugEdited = false;
-        slug.addEventListener('input', function () { if (this.value) slugEdited = true; });
-        title.addEventListener('input', function () {
-            if (slugEdited) return;
-            slug.value = this.value.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-        });
+        const metaTitle = document.getElementById('meta_title');
+        const metaDesc = document.getElementById('meta_description');
+        const description = document.getElementById('description');
+
+        if (title && slug) {
+            let slugEdited = false;
+            slug.addEventListener('input', function () { if (this.value) slugEdited = true; });
+            title.addEventListener('input', function () {
+                if (slugEdited) return;
+                slug.value = this.value.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+            });
+        }
+
+        if (title && metaTitle) {
+            let metaTitleEdited = false;
+            metaTitle.addEventListener('input', function () { if (this.value) metaTitleEdited = true; });
+            title.addEventListener('input', function () {
+                if (metaTitleEdited) return;
+                metaTitle.value = this.value;
+            });
+        }
+
+        if (description && metaDesc) {
+            let metaDescEdited = false;
+            metaDesc.addEventListener('input', function () { if (this.value) metaDescEdited = true; });
+            description.addEventListener('input', function () {
+                if (metaDescEdited) return;
+                metaDesc.value = this.value;
+            });
+        }
     });
 </script>
 @endpush

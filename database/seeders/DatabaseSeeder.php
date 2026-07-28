@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             SettingSeeder::class,
+            ContactSettingSeeder::class,
             CategorySeeder::class,
             ServiceSeeder::class,
             BlogSeeder::class,

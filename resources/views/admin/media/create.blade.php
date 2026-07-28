@@ -28,6 +28,7 @@
                             <div>
                                 <x-input-label for="alt_text" :value="__('Alt Text')" />
                                 <x-text-input id="alt_text" name="alt_text" type="text" class="mt-1 block w-full" :value="old('alt_text')" />
+                                <p class="form-hint">Describes the image for accessibility and SEO. Screen readers and search engines use this text.</p>
                                 <x-input-error class="mt-2" :messages="$errors->get('alt_text')" />
                             </div>
 

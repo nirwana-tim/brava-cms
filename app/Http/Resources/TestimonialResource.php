@@ -12,11 +12,11 @@ class TestimonialResource extends JsonResource
         return [
             'id' => $this->id,
             'client_name' => $this->client_name,
-            'client_position' => $this->client_position,
             'company' => $this->company,
             'content' => $this->content,
             'rating' => $this->rating,
             'avatar' => $this->avatar,
+            'avatar_alt' => $this->avatar_alt,
         ];
     }
 }

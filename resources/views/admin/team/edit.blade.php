@@ -33,12 +33,6 @@
                             </div>
 
                             <div>
-                                <x-input-label for="bio" :value="__('Bio')" />
-                                <textarea id="bio" name="bio" class="form-textarea mt-1" rows="5">{{ old('bio', $team->bio) }}</textarea>
-                                <x-input-error class="mt-2" :messages="$errors->get('bio')" />
-                            </div>
-
-                            <div>
                                 <x-input-label for="avatar" :value="__('Avatar URL')" />
                                 <x-text-input id="avatar" name="avatar" type="text" class="mt-1 block w-full" :value="old('avatar', $team->avatar)" />
                                 <x-input-error class="mt-2" :messages="$errors->get('avatar')" />
@@ -72,6 +66,9 @@
                             <x-primary-button>{{ __('Update') }}</x-primary-button>
                             <a href="{{ route('admin.team.index') }}">
                                 <x-secondary-button type="button">{{ __('Cancel') }}</x-secondary-button>
+                            </a>
+                            <a href="{{ route('admin.team.reset-password', $team) }}" class="ms-auto">
+                                <x-secondary-button type="button">{{ __('Reset Password') }}</x-secondary-button>
                             </a>
                         </div>
                     </form>

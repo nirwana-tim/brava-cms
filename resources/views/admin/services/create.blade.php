@@ -37,18 +37,29 @@
                         <x-input-error class="mt-2" :messages="$errors->get('description')" />
                     </div>
 
-                    <x-admin.rich-text name="content" :value="old('content')" />
-
-                    <div>
-                        <x-input-label for="photo" :value="__('Photo URL')" />
-                        <x-text-input id="photo" name="photo" type="text" class="mt-1 block w-full" :value="old('photo')" />
+                    <div x-data="{ photoUrl: '', photoAlt: '' }">
+                        <x-input-label for="photo" :value="__('Photo')" />
+                        <input type="hidden" name="photo" id="photo"
+                            :value="photoUrl" x-on:input="photoUrl = $event.target.value" />
+                        <input type="hidden" name="photo_alt" id="photo_alt"
+                            :value="photoAlt" x-on:input="photoAlt = $event.target.value" />
+                        <template x-if="photoUrl">
+                            <div class="mb-2">
+                                <img :src="photoUrl" :alt="photoAlt"
+                                    class="rounded-lg"
+                                    style="max-width:240px;max-height:160px;object-fit:cover">
+                                <p x-show="photoAlt" class="text-xs mt-1" x-text="'Alt: ' + photoAlt"
+                                    style="color:var(--muted-text)"></p>
+                            </div>
+                        </template>
+                        <x-admin.media-picker target="photo" collection="services" />
                         <x-input-error class="mt-2" :messages="$errors->get('photo')" />
                     </div>
 
                     <div>
-                        <x-input-label for="published_at" :value="__('Published At')" />
-                        <x-text-input id="published_at" name="published_at" type="date" class="mt-1 block w-full" :value="old('published_at')" />
-                        <x-input-error class="mt-2" :messages="$errors->get('published_at')" />
+                        <x-input-label for="sort_order" :value="__('Sort Order')" />
+                        <x-text-input id="sort_order" name="sort_order" type="number" class="mt-1 block w-full" :value="old('sort_order', '0')" />
+                        <x-input-error class="mt-2" :messages="$errors->get('sort_order')" />
                     </div>
 
                     <div class="flex items-center gap-2">

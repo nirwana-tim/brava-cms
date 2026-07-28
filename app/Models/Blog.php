@@ -18,10 +18,10 @@ class Blog extends Model
 
     protected $fillable = [
         'author_id', 'title', 'slug', 'excerpt', 'content', 'featured_image',
-        'published_at', 'is_featured', 'status',
+        'featured_image_alt', 'published_at', 'is_featured', 'status',
         'meta_title', 'meta_description', 'meta_keywords',
-        'og_title', 'og_description', 'og_image',
-        'canonical_url', 'robots_index', 'robots_follow', 'schema_type',
+        'og_title', 'og_description', 'og_image', 'og_image_alt',
+        'robots_index', 'robots_follow', 'schema_type',
     ];
 
     protected function casts(): array

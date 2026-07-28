@@ -13,8 +13,8 @@ class Testimonial extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'client_name', 'client_position', 'company', 'content',
-        'rating', 'avatar', 'is_active', 'sort_order',
+        'client_name', 'company', 'content',
+        'rating', 'avatar', 'avatar_alt', 'is_active', 'sort_order',
     ];
 
     protected function casts(): array

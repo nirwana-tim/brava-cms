@@ -15,12 +15,6 @@
         </div>
         <div class="card-body">
             <div class="grid grid-cols-2 gap-6 mb-6">
-                @if ($testimonial->client_position)
-                <div>
-                    <p class="section-title">Position</p>
-                    <p style="color: var(--table-text)">{{ $testimonial->client_position }}</p>
-                </div>
-                @endif
                 @if ($testimonial->company)
                 <div>
                     <p class="section-title">Company</p>

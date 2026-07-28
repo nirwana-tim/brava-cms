@@ -8,6 +8,9 @@
                 <a href="{{ route('admin.team.edit', $team) }}">
                     <x-secondary-button type="button">{{ __('Edit') }}</x-secondary-button>
                 </a>
+                <a href="{{ route('admin.team.reset-password', $team) }}">
+                    <x-secondary-button type="button">{{ __('Reset Password') }}</x-secondary-button>
+                </a>
                 <a href="{{ route('admin.team.index') }}">
                     <x-secondary-button type="button">{{ __('Back') }}</x-secondary-button>
                 </a>
@@ -39,21 +42,17 @@
                 @endif
             </div>
 
-            @if ($team->avatar)
                 <div class="mb-6">
                     <p class="section-title">Avatar</p>
-                    <img src="{{ $team->avatar }}" alt="{{ $team->name }}" class="mt-2 rounded-full" style="width: 100px; height: 100px; object-fit: cover;">
+                    @if ($team->avatar)
+                        <img src="{{ $team->avatar }}" alt="{{ $team->name }}" class="mt-2 rounded-full" style="width: 100px; height: 100px; object-fit: cover;">
+                    @else
+                        <div class="mt-2 rounded-full flex items-center justify-center text-2xl font-bold" style="width: 100px; height: 100px; background: var(--heading-text, #e5e7eb); color: var(--body-bg, #9ca3af);">
+                            {{ strtoupper(substr($team->name, 0, 1)) }}
+                        </div>
+                    @endif
                 </div>
-            @endif
 
-            @if ($team->bio)
-            <div>
-                <p class="section-title">Bio</p>
-                <div class="mt-2" style="color: var(--table-text); line-height: 1.8">
-                    {!! nl2br(e($team->bio)) !!}
-                </div>
-            </div>
-            @endif
         </div>
     </div>
 </x-admin.layouts.app>

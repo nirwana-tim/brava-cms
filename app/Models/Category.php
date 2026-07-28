@@ -13,7 +13,7 @@ class Category extends Model
     /** @use HasFactory<CategoryFactory> */
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['name', 'slug', 'description', 'is_active', 'sort_order'];
+    protected $fillable = ['name', 'slug', 'type', 'description', 'is_active', 'sort_order'];
 
     protected function casts(): array
     {
@@ -27,8 +27,18 @@ class Category extends Model
         return $query->where('is_active', true);
     }
 
+    public function scopeByType($query, string $type)
+    {
+        return $query->where('is_active', true);
+    }
+
     public function blogs(): BelongsToMany
     {
         return $this->belongsToMany(Blog::class, 'blog_category');
+    }
+
+    public function portfolioItems(): BelongsToMany
+    {
+        return $this->belongsToMany(PortfolioItem::class, 'category_portfolio_item');
     }
 }

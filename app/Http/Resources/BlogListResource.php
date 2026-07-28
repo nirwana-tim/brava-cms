@@ -15,6 +15,7 @@ class BlogListResource extends JsonResource
             'slug' => $this->slug,
             'excerpt' => $this->excerpt,
             'featured_image' => $this->featured_image,
+            'featured_image_alt' => $this->featured_image_alt,
             'author' => $this->whenLoaded('author', fn () => [
                 'id' => $this->author->id,
                 'name' => $this->author->name,

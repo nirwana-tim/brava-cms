@@ -20,6 +20,12 @@ class PortfolioResource extends JsonResource
             'completed_at' => $this->completed_at?->toIso8601String(),
             'service' => new ServiceListResource($this->whenLoaded('service')),
             'media' => MediaResource::collection($this->whenLoaded('media')),
+            'photo_alt' => $this->photo_alt,
+            'meta_title' => $this->meta_title,
+            'meta_description' => $this->meta_description,
+            'og_image' => $this->og_image,
+            'og_image_alt' => $this->og_image_alt,
+            'robots_index' => $this->robots_index,
             'created_at' => $this->created_at->toIso8601String(),
         ];
     }

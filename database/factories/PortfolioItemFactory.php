@@ -22,6 +22,9 @@ class PortfolioItemFactory extends Factory
             'completed_at' => fake()->date(),
             'sort_order' => fake()->numberBetween(0, 100),
             'is_active' => true,
+            'meta_title' => fake()->words(5, true),
+            'meta_description' => fake()->sentence(),
+            'robots_index' => true,
         ];
     }
 }

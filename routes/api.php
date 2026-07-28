@@ -15,7 +15,6 @@ Route::middleware('throttle:60,1')->group(function () {
     Route::get('/settings', [SettingController::class, 'index']);
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/services', [ServiceController::class, 'index']);
-    Route::get('/services/{slug}', [ServiceController::class, 'show']);
     Route::get('/blogs', [BlogController::class, 'index']);
     Route::get('/blogs/{slug}', [BlogController::class, 'show']);
     Route::get('/portfolio', [PortfolioController::class, 'index']);

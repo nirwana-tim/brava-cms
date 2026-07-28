@@ -16,6 +16,7 @@ class BlogResource extends JsonResource
             'excerpt' => $this->excerpt,
             'content' => $this->content,
             'featured_image' => $this->featured_image,
+            'featured_image_alt' => $this->featured_image_alt,
             'author' => $this->whenLoaded('author', fn () => [
                 'id' => $this->author->id,
                 'name' => $this->author->name,
@@ -31,7 +32,7 @@ class BlogResource extends JsonResource
                 'og_title' => $this->og_title,
                 'og_description' => $this->og_description,
                 'og_image' => $this->og_image,
-                'canonical_url' => $this->canonical_url,
+                'og_image_alt' => $this->og_image_alt,
                 'robots_index' => $this->robots_index,
                 'robots_follow' => $this->robots_follow,
                 'schema_type' => $this->schema_type,

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\ServiceListResource;
-use App\Http\Resources\ServiceResource;
 use App\Services\ServiceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -23,16 +22,5 @@ class ServiceController extends ApiController
             ServiceListResource::collection($services),
             $this->formatPagination($services)
         );
-    }
-
-    public function show(string $slug): JsonResponse
-    {
-        $service = $this->service->getBySlug($slug);
-
-        if (! $service) {
-            return $this->notFound('Service not found');
-        }
-
-        return $this->success(new ServiceResource($service));
     }
 }

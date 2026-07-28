@@ -24,15 +24,8 @@ class ServiceService
                             ->orWhere('description', 'like', '%'.$search.'%');
                     });
                 })
-                ->orderByDesc('published_at')
+                ->orderBy('sort_order')
                 ->paginate($perPage);
-        });
-    }
-
-    public function getBySlug(string $slug): ?Service
-    {
-        return Cache::remember('services.slug.'.$slug, 1800, function () use ($slug) {
-            return $this->model->active()->published()->where('slug', $slug)->with(['portfolioItems', 'media'])->first();
         });
     }
 

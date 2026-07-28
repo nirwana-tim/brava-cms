@@ -16,13 +16,14 @@
 </div>
 
 @push('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/8.0.0/tinymce.min.js" crossorigin="anonymous" referrerpolicy="origin"></script>
+<script src="{{ asset('tinymce/tinymce.min.js') }}" referrerpolicy="origin"></script>
 <script>
 tinymce.init({
     selector: '#{{ $editorId }}',
+    license_key: 'gpl',
     height: 500,
     menubar: true,
-    plugins: 'advlist autolink link image lists charmap preview anchor searchreplace visualblocks code fullscreen media table wordcount',
+    plugins: 'advlist autolink link image lists charmap preview anchor searchreplace visualblocks code fullscreen media table wordcount help',
     toolbar: 'undo redo | blocks bold italic underline strikethrough | bullist numlist outdent indent | link image media | code | fullscreen | help',
     relative_urls: false,
     remove_script_host: false,

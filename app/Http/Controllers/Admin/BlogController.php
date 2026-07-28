@@ -20,7 +20,7 @@ class BlogController extends Controller
 
     public function create(): View
     {
-        $categories = Category::pluck('name', 'id');
+        $categories = Category::byType('blog')->pluck('name', 'id');
 
         return view('admin.blogs.create', compact('categories'));
     }
@@ -33,6 +33,7 @@ class BlogController extends Controller
             'excerpt' => ['nullable', 'string', 'max:500'],
             'content' => ['nullable', 'string'],
             'featured_image' => ['nullable', 'string', 'max:255'],
+            'featured_image_alt' => ['nullable', 'string', 'max:255'],
             'published_at' => ['nullable', 'date'],
             'is_featured' => ['boolean'],
             'status' => ['required', 'string', 'in:draft,published,archived'],
@@ -43,7 +44,7 @@ class BlogController extends Controller
             'og_title' => ['nullable', 'string', 'max:255'],
             'og_description' => ['nullable', 'string', 'max:500'],
             'og_image' => ['nullable', 'string', 'max:255'],
-            'canonical_url' => ['nullable', 'string', 'max:255'],
+            'og_image_alt' => ['nullable', 'string', 'max:255'],
         ]);
 
         $validated['author_id'] = auth()->id();
@@ -68,7 +69,7 @@ class BlogController extends Controller
     public function edit(Blog $blog): View
     {
         $blog->load(['categories']);
-        $categories = Category::pluck('name', 'id');
+        $categories = Category::byType('blog')->pluck('name', 'id');
 
         return view('admin.blogs.edit', compact('blog', 'categories'));
     }
@@ -81,6 +82,7 @@ class BlogController extends Controller
             'excerpt' => ['nullable', 'string', 'max:500'],
             'content' => ['nullable', 'string'],
             'featured_image' => ['nullable', 'string', 'max:255'],
+            'featured_image_alt' => ['nullable', 'string', 'max:255'],
             'published_at' => ['nullable', 'date'],
             'is_featured' => ['boolean'],
             'status' => ['required', 'string', 'in:draft,published,archived'],
@@ -91,7 +93,7 @@ class BlogController extends Controller
             'og_title' => ['nullable', 'string', 'max:255'],
             'og_description' => ['nullable', 'string', 'max:500'],
             'og_image' => ['nullable', 'string', 'max:255'],
-            'canonical_url' => ['nullable', 'string', 'max:255'],
+            'og_image_alt' => ['nullable', 'string', 'max:255'],
         ]);
 
         $validated['author_id'] = auth()->id();

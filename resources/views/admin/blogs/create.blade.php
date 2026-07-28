@@ -39,9 +39,22 @@
 
                             <x-admin.rich-text name="content" :value="old('content')" />
 
-                            <div>
-                                <x-input-label for="featured_image" :value="__('Featured Image URL')" />
-                                <x-text-input id="featured_image" name="featured_image" type="text" class="mt-1 block w-full" :value="old('featured_image')" />
+                            <div x-data="{ featuredImage: '', featuredImageAlt: '' }">
+                                <x-input-label for="featured_image" :value="__('Featured Image')" />
+                                <input type="hidden" name="featured_image" id="featured_image"
+                                    :value="featuredImage" x-on:input="featuredImage = $event.target.value" />
+                                <input type="hidden" name="featured_image_alt" id="featured_image_alt"
+                                    :value="featuredImageAlt" x-on:input="featuredImageAlt = $event.target.value" />
+                                <template x-if="featuredImage">
+                                    <div class="mb-2">
+                                        <img :src="featuredImage" :alt="featuredImageAlt"
+                                            class="rounded-lg"
+                                            style="max-width:240px;max-height:160px;object-fit:cover">
+                                        <p x-show="featuredImageAlt" class="text-xs mt-1" x-text="'Alt: ' + featuredImageAlt"
+                                            style="color:var(--muted-text)"></p>
+                                    </div>
+                                </template>
+                                <x-admin.media-picker target="featured_image" collection="blogs" />
                                 <x-input-error class="mt-2" :messages="$errors->get('featured_image')" />
                             </div>
 
@@ -106,14 +119,23 @@
                                         <textarea id="og_description" name="og_description" class="form-textarea mt-1" rows="2">{{ old('og_description') }}</textarea>
                                         <p class="form-hint">Defaults to meta description.</p>
                                     </div>
-                                    <div>
-                                        <x-input-label for="og_image" :value="__('OG Image URL')" />
-                                        <x-text-input id="og_image" name="og_image" type="text" class="mt-1 block w-full" :value="old('og_image')" />
+                                    <div x-data="{ ogImage: '', ogImageAlt: '' }">
+                                        <x-input-label for="og_image" :value="__('OG Image')" />
+                                        <input type="hidden" name="og_image" id="og_image"
+                                            :value="ogImage" x-on:input="ogImage = $event.target.value" />
+                                        <input type="hidden" name="og_image_alt" id="og_image_alt"
+                                            :value="ogImageAlt" x-on:input="ogImageAlt = $event.target.value" />
+                                        <template x-if="ogImage">
+                                            <div class="mb-2">
+                                                <img :src="ogImage" :alt="ogImageAlt"
+                                                    class="rounded-lg"
+                                                    style="max-width:240px;max-height:120px;object-fit:cover">
+                                                <p x-show="ogImageAlt" class="text-xs mt-1" x-text="'Alt: ' + ogImageAlt"
+                                                    style="color:var(--muted-text)"></p>
+                                            </div>
+                                        </template>
+                                        <x-admin.media-picker target="og_image" collection="blogs" />
                                         <p class="form-hint">Defaults to featured image.</p>
-                                    </div>
-                                    <div>
-                                        <x-input-label for="canonical_url" :value="__('Canonical URL')" />
-                                        <x-text-input id="canonical_url" name="canonical_url" type="url" class="mt-1 block w-full" :value="old('canonical_url')" />
                                     </div>
                                 </div>
                             </details>

@@ -15,15 +15,14 @@ class Service extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'title', 'slug', 'description', 'content', 'photo',
-        'is_active', 'published_at',
+        'title', 'slug', 'description', 'photo', 'photo_alt', 'sort_order',
+        'is_active',
     ];
 
     protected function casts(): array
     {
         return [
             'is_active' => 'boolean',
-            'published_at' => 'datetime',
         ];
     }
 
@@ -40,10 +39,5 @@ class Service extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
-    }
-
-    public function scopePublished($query)
-    {
-        return $query->whereNotNull('published_at');
     }
 }

@@ -16,10 +16,9 @@ class ServiceFactory extends Factory
             'title' => fake()->unique()->words(3, true),
             'slug' => fake()->unique()->slug(),
             'description' => fake()->paragraph(),
-            'content' => fake()->paragraphs(3, true),
             'photo' => null,
+            'sort_order' => fake()->numberBetween(0, 100),
             'is_active' => true,
-            'published_at' => now(),
         ];
     }
 }
