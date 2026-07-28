@@ -10,10 +10,16 @@ use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TeamController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\TrashController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('trash', [TrashController::class, 'index'])->name('trash.index');
+    Route::post('trash/{type}/{id}/restore', [TrashController::class, 'restore'])->name('trash.restore');
+    Route::delete('trash/{type}/{id}/force-delete', [TrashController::class, 'forceDelete'])->name('trash.force-delete');
+    Route::delete('trash/{type}/empty', [TrashController::class, 'emptyTrash'])->name('trash.empty');
 
     Route::resource('categories', CategoryController::class);
     Route::resource('services', ServiceController::class);

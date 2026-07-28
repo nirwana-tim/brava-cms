@@ -529,6 +529,8 @@ Settings
 
 Users
 
+Recycle Bin (Trash - Super Admin only)
+
 Future modules
 
 Career
@@ -649,7 +651,9 @@ Use pagination.
 
 Use eager loading.
 
-Cache only when necessary.
+API endpoints use caching via cache services (`Cache::flexible` / `Cache::remember`).
+
+Cache is automatically flushed via the `App\Traits\ClearsApiCache` trait when CMS models are saved or deleted.
 
 Avoid premature optimization.
 

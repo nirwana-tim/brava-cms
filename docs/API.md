@@ -293,8 +293,15 @@ Response:
             "description": "Short description",
             "client": "TechCorp Indonesia",
             "project_url": "https://techcorp.example.com",
+            "photo": "/storage/portfolio/cover.jpg",
+            "photo_alt": "TechCorp Cover Photo",
+            "featured_image": "/storage/portfolio/cover.jpg",
             "completed_at": "2026-05-15",
-            "sort_order": 1
+            "service": {
+                "id": 1,
+                "title": "Corporate Website Package",
+                "slug": "corporate-website-package"
+            }
         }
     ],
     "meta": { "current_page": 1, "last_page": 1, "per_page": 12, "total": 3 }
@@ -315,13 +322,22 @@ Response:
         "content": "<p>HTML content</p>",
         "client": "TechCorp Indonesia",
         "project_url": "https://techcorp.example.com",
+        "photo": "/storage/portfolio/cover.jpg",
+        "photo_alt": "TechCorp Cover Photo",
+        "featured_image": "/storage/portfolio/cover.jpg",
         "completed_at": "2026-05-15",
-        "sort_order": 1,
         "service": {
             "id": 1,
             "title": "Corporate Website Package",
             "slug": "corporate-website-package"
-        }
+        },
+        "media": [
+            {
+                "id": 10,
+                "url": "/storage/portfolio/gallery1.jpg",
+                "alt_text": "Detail View 1"
+            }
+        ]
     }
 }
 ```
@@ -339,9 +355,8 @@ Response (no pagination — returns all active, sorted by `sort_order`):
     "data": [
         {
             "id": 1,
-            "client_name": "John Doe",
-            "client_position": "CEO",
-            "company": "Tech Corp",
+            "client_name": "TechCorp Indonesia",
+            "company": "TechCorp Indonesia",
             "content": "Great service! Highly recommended.",
             "rating": 5,
             "avatar": "/storage/testimonials/avatar.jpg"
@@ -508,7 +523,7 @@ GET /api/blogs?fields=id,title,slug,excerpt,published_at,author
 | `/api/team` | 1 hour | Cache::flexible |
 | `/api/portfolio` | 30 min | Cache::flexible |
 
-Cache is invalidated on model `saved` / `deleted` events.
+Cache is automatically flushed via the `App\Traits\ClearsApiCache` trait on model `saved` / `deleted` events across all CMS models.
 
 ### N+1 Prevention
 - Always use `with()` for relationships in controllers

@@ -29,6 +29,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === UserRole::SuperAdmin;
+    }
+
     public function blogs(): HasMany
     {
         return $this->hasMany(Blog::class, 'author_id');

@@ -106,9 +106,16 @@
 | content | longText | nullable |
 | client | string(255) | nullable |
 | project_url | string(255) | nullable |
+| photo | string(255) | Cover photo, required |
+| photo_alt | string(255) | nullable |
 | completed_at | date | nullable |
 | sort_order | integer | default 0 |
 | is_active | boolean | default true |
+| meta_title | string(70) | nullable |
+| meta_description | string(160) | nullable |
+| og_image | string(255) | nullable |
+| og_image_alt | string(255) | nullable |
+| robots_index | boolean | default true |
 | timestamps | | |
 | softDeletes | | |
 
@@ -122,12 +129,11 @@
 | Column | Type | Notes |
 |--------|------|-------|
 | id | bigIncrements | |
-| client_name | string(255) | |
-| client_position | string(255) | nullable |
-| company | string(255) | nullable |
+| client_name | string(255) | Holds Company/Organization name |
 | content | text | |
 | rating | tinyInteger | 1-5, nullable |
 | avatar | string(255) | nullable |
+| avatar_alt | string(255) | nullable |
 | is_active | boolean | default true |
 | sort_order | integer | default 0 |
 | timestamps | | |
@@ -139,7 +145,6 @@
 | id | bigIncrements | |
 | question | string(255) | |
 | answer | text | |
-| category | string(255) | nullable, for grouping FAQs |
 | sort_order | integer | default 0 |
 | is_active | boolean | default true |
 | timestamps | | |
@@ -149,11 +154,11 @@
 | Column | Type | Notes |
 |--------|------|-------|
 | id | bigIncrements | |
+| user_id | bigInteger | FK to users.id, nullable |
 | name | string(255) | |
 | position | string(255) | nullable |
-| bio | text | nullable |
 | avatar | string(255) | nullable |
-| email | string(255) | nullable |
+| email | string(255) | nullable, unique |
 | phone | string(50) | nullable |
 | sort_order | integer | default 0 |
 | is_active | boolean | default true |
