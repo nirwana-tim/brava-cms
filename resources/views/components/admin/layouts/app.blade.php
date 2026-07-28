@@ -7,6 +7,11 @@
 
     <title>{{ config('app.name', 'Laravel') }} @isset($title) - {{ $title }} @endisset</title>
 
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="alternate icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600&display=swap" rel="stylesheet" />
 
@@ -37,9 +42,7 @@
         {{-- Sidebar Header --}}
         <div class="flex items-center justify-between h-16 px-6 border-b" style="border-color: var(--sidebar-border)">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background-color: var(--sidebar-logo-bg)">
-                    <span class="font-bold text-sm" style="color: var(--sidebar-logo-text)">B</span>
-                </div>
+                <img src="/favicon.svg" alt="Brava CMS" class="w-8 h-8">
                 <span class="text-lg font-semibold" style="color: var(--sidebar-user-name)">Brava CMS</span>
             </a>
             <button @click="sidebarOpen = false" class="lg:hidden" style="color: var(--muted-text)">
