@@ -21,6 +21,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('portfolio', PortfolioController::class);
     Route::post('portfolio/{portfolio}/media/attach', [PortfolioController::class, 'attachMedia'])->name('portfolio.media.attach');
     Route::delete('portfolio/{portfolio}/media/{medium}/detach', [PortfolioController::class, 'detachMedia'])->name('portfolio.media.detach');
+    Route::post('portfolio/{portfolio}/media/{medium}/set-cover', [PortfolioController::class, 'setCover'])->name('portfolio.media.set-cover');
     Route::resource('testimonials', TestimonialController::class);
     Route::resource('faqs', FaqController::class);
     Route::get('team/{team}/reset-password', [TeamController::class, 'resetPassword'])->name('team.reset-password');

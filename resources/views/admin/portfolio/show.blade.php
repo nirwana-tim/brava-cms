@@ -54,22 +54,12 @@
                     <p style="color: var(--table-text)">{{ $portfolio->client }}</p>
                 </div>
                 @endif
-                @if ($portfolio->project_url)
-                <div>
-                    <p class="section-title">Project URL</p>
-                    <a href="{{ $portfolio->project_url }}" target="_blank" rel="noopener noreferrer" style="color: var(--btn-edit-text)">{{ $portfolio->project_url }}</a>
-                </div>
-                @endif
                 @if ($portfolio->completed_at)
                 <div>
                     <p class="section-title">Completed At</p>
                     <p style="color: var(--table-text)">{{ $portfolio->completed_at->format('M d, Y') }}</p>
                 </div>
                 @endif
-                <div>
-                    <p class="section-title">Sort Order</p>
-                    <p style="color: var(--table-text)">{{ $portfolio->sort_order ?? '0' }}</p>
-                </div>
             </div>
 
             @if ($portfolio->meta_title || $portfolio->meta_description || $portfolio->og_image)

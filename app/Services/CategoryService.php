@@ -13,7 +13,7 @@ class CategoryService
     public function all(): Collection
     {
         return Cache::flexible('categories.all', [3600, 7200], function () {
-            return $this->model->active()->orderBy('sort_order')->get();
+            return $this->model->latest()->get();
         });
     }
 

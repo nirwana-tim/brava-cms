@@ -77,11 +77,14 @@
 
                             <div>
                                 <x-input-label :value="__('Categories')" />
-                                <div class="mt-2 space-y-2">
+                                <div class="flex flex-wrap gap-2 mt-2">
                                     @forelse ($categories as $id => $name)
-                                        <label class="flex items-center gap-2">
-                                            <input type="checkbox" name="category_ids[]" value="{{ $id }}" class="form-checkbox" {{ in_array($id, old('category_ids', [])) ? 'checked' : '' }} />
-                                            <span class="text-sm" style="color: var(--label-text)">{{ $name }}</span>
+                                        <label class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm border cursor-pointer transition-colors"
+                                               x-data="{ checked: {{ in_array($id, old('category_ids', [])) ? 'true' : 'false' }} }"
+                                               :class="checked && 'bg-blue-600 text-white border-blue-600'"
+                                               style="border-color: var(--table-border); background-color: var(--card-bg)">
+                                            <input type="checkbox" name="category_ids[]" value="{{ $id }}" x-model="checked" class="form-checkbox">
+                                            <span :class="checked && 'text-white'" style="color: var(--label-text)">{{ $name }}</span>
                                         </label>
                                     @empty
                                         <p class="text-sm" style="color: var(--muted-text)">No categories available. <a href="{{ route('admin.categories.create') }}" class="hover:underline" style="color: var(--btn-edit-text)">Create one</a>.</p>
@@ -90,11 +93,8 @@
                                 <x-input-error class="mt-2" :messages="$errors->get('category_ids')" />
                             </div>
 
-                            <div class="flex items-center gap-4">
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" name="is_featured" value="1" class="form-checkbox" {{ old('is_featured') ? 'checked' : '' }} />
-                                    <span class="text-sm" style="color: var(--label-text)">{{ __('Featured') }}</span>
-                                </label>
+                            <div>
+                                <x-admin.toggle name="is_featured" :checked="old('is_featured')" label="Featured" />
                             </div>
 
                             <details class="mt-4">

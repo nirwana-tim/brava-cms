@@ -23,7 +23,7 @@ class PortfolioService
                             ->orWhere('description', 'like', '%'.$search.'%');
                     });
                 })
-                ->orderBy('sort_order')
+                ->latest()
                 ->paginate($perPage);
         });
     }

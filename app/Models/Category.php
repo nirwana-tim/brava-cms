@@ -13,23 +13,11 @@ class Category extends Model
     /** @use HasFactory<CategoryFactory> */
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['name', 'slug', 'type', 'description', 'is_active', 'sort_order'];
-
-    protected function casts(): array
-    {
-        return [
-            'is_active' => 'boolean',
-        ];
-    }
-
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', true);
-    }
+    protected $fillable = ['name', 'slug', 'type', 'description'];
 
     public function scopeByType($query, string $type)
     {
-        return $query->where('is_active', true);
+        return $query->where('type', $type);
     }
 
     public function blogs(): BelongsToMany

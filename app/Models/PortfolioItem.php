@@ -17,7 +17,7 @@ class PortfolioItem extends Model
 
     protected $fillable = [
         'service_id', 'title', 'slug', 'description', 'content',
-        'client', 'project_url', 'photo', 'photo_alt', 'completed_at', 'sort_order', 'is_active',
+        'client', 'photo', 'photo_alt', 'completed_at', 'is_active',
         'meta_title', 'meta_description', 'og_image', 'og_image_alt', 'robots_index',
     ];
 

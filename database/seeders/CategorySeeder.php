@@ -10,9 +10,11 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            ['name' => 'Technology', 'slug' => 'technology', 'description' => 'Tech industry insights', 'sort_order' => 1],
-            ['name' => 'Business', 'slug' => 'business', 'description' => 'Business and entrepreneurship', 'sort_order' => 2],
-            ['name' => 'Design', 'slug' => 'design', 'description' => 'Design tips and inspiration', 'sort_order' => 3],
+            ['name' => 'Technology', 'slug' => 'technology', 'type' => 'blog', 'description' => 'Tech industry insights'],
+            ['name' => 'Business', 'slug' => 'business', 'type' => 'blog', 'description' => 'Business and entrepreneurship'],
+            ['name' => 'Design', 'slug' => 'design', 'type' => 'blog', 'description' => 'Design tips and inspiration'],
+            ['name' => 'Web', 'slug' => 'web', 'type' => 'portfolio', 'description' => 'Web development projects'],
+            ['name' => 'Mobile', 'slug' => 'mobile', 'type' => 'portfolio', 'description' => 'Mobile app projects'],
         ];
 
         foreach ($categories as $category) {

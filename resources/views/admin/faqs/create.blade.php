@@ -38,8 +38,7 @@
                             </div>
 
                             <div class="flex items-center gap-2">
-                                <input type="checkbox" id="is_active" name="is_active" value="1" class="form-checkbox" {{ old('is_active', true) ? 'checked' : '' }} />
-                                <x-input-label for="is_active" :value="__('Active')" />
+                                <x-admin.toggle name="is_active" :checked="old('is_active', true)" label="Active" />
                             </div>
                         </div>
 

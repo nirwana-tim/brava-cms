@@ -38,16 +38,6 @@
         <x-input-error class="mt-2" :messages="$errors->get('description')" />
     </div>
 
-    <div>
-        <x-input-label for="sort_order" :value="__('Sort Order')" />
-        <x-text-input id="sort_order" name="sort_order" type="number" class="mt-1 block w-full" :value="old('sort_order', $category->sort_order ?? '0')" />
-        <x-input-error class="mt-2" :messages="$errors->get('sort_order')" />
-    </div>
-
-    <div class="flex items-center gap-2">
-        <input type="checkbox" id="is_active" name="is_active" value="1" class="form-checkbox" {{ old('is_active', $category->is_active ?? true) ? 'checked' : '' }} />
-        <x-input-label for="is_active" :value="__('Active')" />
-    </div>
 </div>
 
 @push('scripts')

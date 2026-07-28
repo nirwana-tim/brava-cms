@@ -16,8 +16,6 @@ class CategoryFactory extends Factory
             'name' => fake()->unique()->word(),
             'slug' => fake()->unique()->slug(),
             'description' => fake()->sentence(),
-            'is_active' => true,
-            'sort_order' => fake()->numberBetween(0, 100),
         ];
     }
 }

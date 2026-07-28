@@ -45,6 +45,14 @@ class PortfolioController extends Controller
             $portfolio->categories()->sync($request->categories);
         }
 
+        if ($galleryIds = $request->input('gallery_media_ids')) {
+            $ids = array_filter(explode(',', $galleryIds));
+            Media::whereIn('id', $ids)->update([
+                'mediable_type' => PortfolioItem::class,
+                'mediable_id' => $portfolio->id,
+            ]);
+        }
+
         return redirect()->route('admin.portfolio.index')
             ->with('success', 'Portfolio item created successfully.');
     }
@@ -94,6 +102,15 @@ class PortfolioController extends Controller
             'media_id' => ['required', 'exists:media,id'],
         ]);
 
+        if (empty($portfolio->photo)) {
+            return response()->json(['success' => false, 'message' => 'Upload dan simpan Cover Photo terlebih dahulu sebelum menambahkan foto detail.'], 422);
+        }
+
+        $count = $portfolio->media()->count();
+        if ($count >= 4) {
+            return response()->json(['success' => false, 'message' => 'Maksimal 4 foto detail gallery.'], 422);
+        }
+
         $media = Media::findOrFail($request->media_id);
         $media->update([
             'mediable_type' => PortfolioItem::class,
@@ -113,6 +130,22 @@ class PortfolioController extends Controller
             'mediable_type' => null,
             'mediable_id' => null,
         ]);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function setCover(PortfolioItem $portfolio, Media $medium): JsonResponse
+    {
+        if ($medium->mediable_id !== $portfolio->id || $medium->mediable_type !== PortfolioItem::class) {
+            return response()->json(['success' => false], 404);
+        }
+
+        $portfolio->update([
+            'photo' => $medium->url,
+            'photo_alt' => $medium->alt_text,
+        ]);
+
+        $medium->delete();
 
         return response()->json(['success' => true]);
     }

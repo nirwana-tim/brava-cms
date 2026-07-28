@@ -20,12 +20,10 @@ class StorePortfolioRequest extends FormRequest
             'slug' => ['required', 'string', 'max:255', 'unique:portfolio_items,slug'],
             'description' => ['nullable', 'string'],
             'content' => ['nullable', 'string'],
-            'photo' => ['nullable', 'string', 'max:255'],
+            'photo' => ['required', 'string', 'max:255'],
             'photo_alt' => ['nullable', 'string', 'max:255'],
             'client' => ['nullable', 'string', 'max:255'],
-            'project_url' => ['nullable', 'string', 'max:255'],
             'completed_at' => ['nullable', 'date'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['boolean'],
             'categories' => ['nullable', 'array'],
             'categories.*' => ['exists:categories,id'],
@@ -34,6 +32,7 @@ class StorePortfolioRequest extends FormRequest
             'og_image' => ['nullable', 'string', 'max:255'],
             'og_image_alt' => ['nullable', 'string', 'max:255'],
             'robots_index' => ['boolean'],
+            'gallery_media_ids' => ['nullable', 'string'],
         ];
     }
 }

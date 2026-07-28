@@ -19,8 +19,6 @@ class StoreCategoryRequest extends FormRequest
             'slug' => ['required', 'string', 'max:255', 'unique:categories,slug'],
             'type' => ['required', 'string', 'in:blog,portfolio'],
             'description' => ['nullable', 'string'],
-            'is_active' => ['boolean'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
         ];
     }
 }
