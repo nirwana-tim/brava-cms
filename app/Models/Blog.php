@@ -36,6 +36,19 @@ class Blog extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::saving(function (Blog $blog) {
+            if ($blog->status === PostStatus::Published && empty($blog->published_at)) {
+                $blog->published_at = now();
+            }
+
+            if ($blog->status === PostStatus::Draft) {
+                $blog->published_at = null;
+            }
+        });
+    }
+
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');

@@ -14,8 +14,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Client</th>
-                            <th>Company</th>
+                            <th>Company / Organization</th>
                             <th>Rating</th>
                             <th>Active</th>
                             <th>Actions</th>
@@ -32,7 +31,6 @@
                                         <span class="font-medium" style="color: var(--table-text)">{{ $testimonial->client_name }}</span>
                                     </div>
                                 </td>
-                                <td style="color: var(--table-text-muted)">{{ $testimonial->company ?? '-' }}</td>
                                 <td style="color: var(--table-text-muted)">{{ $testimonial->rating ? str_repeat('★', $testimonial->rating) : '-' }}</td>
                                 <td>
                                     @if ($testimonial->is_active)
@@ -55,7 +53,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="admin-table-empty">
+                                <td colspan="4" class="admin-table-empty">
                                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
                                     <p>No testimonials found.</p>
                                     <a href="{{ route('admin.testimonials.create') }}">Add your first testimonial</a>

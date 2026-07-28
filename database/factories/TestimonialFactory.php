@@ -13,8 +13,7 @@ class TestimonialFactory extends Factory
     public function definition(): array
     {
         return [
-            'client_name' => fake()->name(),
-            'company' => fake()->company(),
+            'client_name' => fake()->company(),
             'content' => fake()->paragraphs(2, true),
             'rating' => fake()->numberBetween(1, 5),
             'avatar' => 'avatars/'.fake()->uuid().'.jpg',

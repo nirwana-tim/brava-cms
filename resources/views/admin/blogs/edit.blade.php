@@ -62,6 +62,7 @@
                             <div>
                                 <x-input-label for="published_at" :value="__('Published At')" />
                                 <x-text-input id="published_at" name="published_at" type="date" class="mt-1 block w-full" :value="old('published_at', $blog->published_at?->format('Y-m-d'))" />
+                                <p class="form-hint">Opsional. Kosongkan agar otomatis diisi tanggal hari ini saat status Published.</p>
                                 <x-input-error class="mt-2" :messages="$errors->get('published_at')" />
                             </div>
 

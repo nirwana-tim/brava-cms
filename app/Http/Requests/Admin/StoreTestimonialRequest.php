@@ -16,7 +16,6 @@ class StoreTestimonialRequest extends FormRequest
     {
         return [
             'client_name' => ['required', 'string', 'max:255'],
-            'company' => ['nullable', 'string', 'max:255'],
             'content' => ['required', 'string'],
             'rating' => ['nullable', 'integer', 'min:1', 'max:5'],
             'avatar' => ['nullable', 'string', 'max:255'],

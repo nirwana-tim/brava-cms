@@ -21,15 +21,10 @@
 
                         <div class="space-y-6">
                             <div>
-                                <x-input-label for="client_name" :value="__('Client Name')" :required="true" />
+                                <x-input-label for="client_name" :value="__('Company / Organization')" :required="true" />
                                 <x-text-input id="client_name" name="client_name" type="text" class="mt-1 block w-full" :value="old('client_name', $testimonial->client_name)" required />
+                                <p class="form-hint">Nama perusahaan, organisasi, atau instansi klien.</p>
                                 <x-input-error class="mt-2" :messages="$errors->get('client_name')" />
-                            </div>
-
-                            <div>
-                                <x-input-label for="company" :value="__('Company')" />
-                                <x-text-input id="company" name="company" type="text" class="mt-1 block w-full" :value="old('company', $testimonial->company)" />
-                                <x-input-error class="mt-2" :messages="$errors->get('company')" />
                             </div>
 
                             <div>
