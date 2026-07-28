@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\ClearsApiCache;
 use Database\Factories\PortfolioItemFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class PortfolioItem extends Model
 {
     /** @use HasFactory<PortfolioItemFactory> */
-    use HasFactory, SoftDeletes;
+    use ClearsApiCache, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'service_id', 'title', 'slug', 'description', 'content',

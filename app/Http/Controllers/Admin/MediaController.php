@@ -161,10 +161,14 @@ class MediaController extends Controller
             ->with('success', 'Media updated successfully.');
     }
 
-    public function destroy(Media $medium): RedirectResponse
+    public function destroy(Request $request, Media $medium)
     {
         Storage::disk($medium->disk)->delete($medium->path);
         $medium->delete();
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['success' => true]);
+        }
 
         return redirect()->route('admin.media.index')
             ->with('success', 'Media deleted successfully.');

@@ -16,9 +16,11 @@ class PortfolioListResource extends JsonResource
             'description' => $this->description,
             'client' => $this->client,
             'project_url' => $this->project_url,
+            'photo' => $this->photo,
+            'photo_alt' => $this->photo_alt,
+            'featured_image' => $this->photo,
             'completed_at' => $this->completed_at?->toIso8601String(),
             'service' => new ServiceListResource($this->whenLoaded('service')),
-            'featured_image' => $this->whenLoaded('media', fn () => $this->media->first()?->url),
         ];
     }
 }

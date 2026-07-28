@@ -70,6 +70,8 @@ class BlogController extends Controller
 
         if ($request->has('category_ids')) {
             $blog->categories()->sync($request->category_ids ?? []);
+        } else {
+            $blog->categories()->sync([]);
         }
 
         return redirect()->route('admin.blogs.index')

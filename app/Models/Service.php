@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\ClearsApiCache;
 use Database\Factories\ServiceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Service extends Model
 {
     /** @use HasFactory<ServiceFactory> */
-    use HasFactory, SoftDeletes;
+    use ClearsApiCache, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'title', 'slug', 'description', 'photo', 'photo_alt', 'sort_order',

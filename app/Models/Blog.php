@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\PostStatus;
+use App\Traits\ClearsApiCache;
 use Database\Factories\BlogFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Blog extends Model
 {
     /** @use HasFactory<BlogFactory> */
-    use HasFactory, SoftDeletes;
+    use ClearsApiCache, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'author_id', 'title', 'slug', 'excerpt', 'content', 'featured_image',
