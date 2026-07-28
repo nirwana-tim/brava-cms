@@ -27,8 +27,6 @@ class BlogFactory extends Factory
             'meta_title' => fake()->sentence(2),
             'meta_description' => fake()->sentence(),
             'meta_keywords' => implode(', ', fake()->words(5)),
-            'og_title' => fake()->sentence(2),
-            'og_description' => fake()->sentence(),
             'og_image' => 'uploads/'.fake()->uuid().'.jpg',
             'robots_index' => true,
             'robots_follow' => true,

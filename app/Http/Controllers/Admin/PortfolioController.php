@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StorePortfolioRequest;
+use App\Http\Requests\Admin\UpdatePortfolioRequest;
 use App\Models\Category;
 use App\Models\Media;
 use App\Models\PortfolioItem;
@@ -14,6 +16,11 @@ use Illuminate\View\View;
 
 class PortfolioController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(PortfolioItem::class, 'portfolio');
+    }
+
     public function index(): View
     {
         $items = PortfolioItem::with('service', 'categories')->latest()->paginate(15);
@@ -29,30 +36,9 @@ class PortfolioController extends Controller
         return view('admin.portfolio.create', compact('services', 'categories'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StorePortfolioRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'service_id' => ['nullable', 'exists:services,id'],
-            'title' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'max:255', 'unique:portfolio_items,slug'],
-            'description' => ['nullable', 'string'],
-            'content' => ['nullable', 'string'],
-            'photo' => ['nullable', 'string', 'max:255'],
-            'photo_alt' => ['nullable', 'string', 'max:255'],
-            'client' => ['nullable', 'string', 'max:255'],
-            'project_url' => ['nullable', 'string', 'max:255'],
-            'completed_at' => ['nullable', 'date'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
-            'is_active' => ['boolean'],
-            'categories' => ['nullable', 'array'],
-            'categories.*' => ['exists:categories,id'],
-            'meta_title' => ['nullable', 'string', 'max:70'],
-            'meta_description' => ['nullable', 'string', 'max:160'],
-            'og_image' => ['nullable', 'string', 'max:255'],
-            'og_image_alt' => ['nullable', 'string', 'max:255'],
-            'robots_index' => ['boolean'],
-        ]);
-
+        $validated = $this->applySeoFallbacks($request->validated());
         $portfolio = PortfolioItem::create($validated);
 
         if ($request->has('categories')) {
@@ -79,30 +65,9 @@ class PortfolioController extends Controller
         return view('admin.portfolio.edit', compact('portfolio', 'services', 'categories'));
     }
 
-    public function update(Request $request, PortfolioItem $portfolio): RedirectResponse
+    public function update(UpdatePortfolioRequest $request, PortfolioItem $portfolio): RedirectResponse
     {
-        $validated = $request->validate([
-            'service_id' => ['nullable', 'exists:services,id'],
-            'title' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'max:255', 'unique:portfolio_items,slug,'.$portfolio->id],
-            'description' => ['nullable', 'string'],
-            'content' => ['nullable', 'string'],
-            'photo' => ['nullable', 'string', 'max:255'],
-            'photo_alt' => ['nullable', 'string', 'max:255'],
-            'client' => ['nullable', 'string', 'max:255'],
-            'project_url' => ['nullable', 'string', 'max:255'],
-            'completed_at' => ['nullable', 'date'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
-            'is_active' => ['boolean'],
-            'categories' => ['nullable', 'array'],
-            'categories.*' => ['exists:categories,id'],
-            'meta_title' => ['nullable', 'string', 'max:70'],
-            'meta_description' => ['nullable', 'string', 'max:160'],
-            'og_image' => ['nullable', 'string', 'max:255'],
-            'og_image_alt' => ['nullable', 'string', 'max:255'],
-            'robots_index' => ['boolean'],
-        ]);
-
+        $validated = $this->applySeoFallbacks($request->validated());
         $portfolio->update($validated);
 
         if ($request->has('categories')) {
@@ -150,5 +115,35 @@ class PortfolioController extends Controller
         ]);
 
         return response()->json(['success' => true]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $validated
+     * @return array<string, mixed>
+     */
+    private function applySeoFallbacks(array $validated): array
+    {
+        $title = $validated['title'] ?? null;
+        $description = ! empty($validated['description'])
+            ? $validated['description']
+            : str(strip_tags($validated['content'] ?? ''))->limit(160)->toString();
+
+        $validated['meta_title'] = ! empty($validated['meta_title'])
+            ? $validated['meta_title']
+            : $title;
+
+        $validated['meta_description'] = ! empty($validated['meta_description'])
+            ? $validated['meta_description']
+            : $description;
+
+        $validated['og_image'] = ! empty($validated['og_image'])
+            ? $validated['og_image']
+            : ($validated['photo'] ?? null);
+
+        $validated['og_image_alt'] = ! empty($validated['og_image_alt'])
+            ? $validated['og_image_alt']
+            : ($validated['photo_alt'] ?? null);
+
+        return $validated;
     }
 }

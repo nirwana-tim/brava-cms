@@ -62,7 +62,7 @@
                 <p class="text-lg leading-relaxed mb-6" style="color: var(--table-text-muted)">{{ $blog->excerpt }}</p>
             @endif
 
-            <div class="prose prose-sm max-w-none leading-relaxed" style="color: var(--table-text); line-height: 1.8">
+            <div class="prose max-w-none leading-relaxed overflow-x-auto" style="color: var(--table-text); line-height: 1.8">
                 {!! $blog->content !!}
             </div>
         </div>

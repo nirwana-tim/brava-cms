@@ -3,13 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreServiceRequest;
+use App\Http\Requests\Admin\UpdateServiceRequest;
 use App\Models\Service;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ServiceController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Service::class, 'service');
+    }
+
     public function index(): View
     {
         $services = Service::latest()->paginate(15);
@@ -22,19 +28,9 @@ class ServiceController extends Controller
         return view('admin.services.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreServiceRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'max:255', 'unique:services,slug'],
-            'description' => ['nullable', 'string'],
-            'photo' => ['nullable', 'string', 'max:255'],
-            'photo_alt' => ['nullable', 'string', 'max:255'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
-            'is_active' => ['boolean'],
-        ]);
-
-        Service::create($validated);
+        Service::create($request->validated());
 
         return redirect()->route('admin.services.index')
             ->with('success', 'Service created successfully.');
@@ -50,19 +46,9 @@ class ServiceController extends Controller
         return view('admin.services.edit', compact('service'));
     }
 
-    public function update(Request $request, Service $service): RedirectResponse
+    public function update(UpdateServiceRequest $request, Service $service): RedirectResponse
     {
-        $validated = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'max:255', 'unique:services,slug,'.$service->id],
-            'description' => ['nullable', 'string'],
-            'photo' => ['nullable', 'string', 'max:255'],
-            'photo_alt' => ['nullable', 'string', 'max:255'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
-            'is_active' => ['boolean'],
-        ]);
-
-        $service->update($validated);
+        $service->update($request->validated());
 
         return redirect()->route('admin.services.index')
             ->with('success', 'Service updated successfully.');

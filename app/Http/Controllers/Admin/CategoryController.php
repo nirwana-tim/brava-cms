@@ -3,13 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreCategoryRequest;
+use App\Http\Requests\Admin\UpdateCategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Category::class, 'category');
+    }
+
     public function index(): View
     {
         $categories = Category::latest()->paginate(15);
@@ -22,18 +28,9 @@ class CategoryController extends Controller
         return view('admin.categories.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreCategoryRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'max:255', 'unique:categories,slug'],
-            'type' => ['required', 'string', 'in:blog,portfolio'],
-            'description' => ['nullable', 'string'],
-            'is_active' => ['boolean'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
-        ]);
-
-        Category::create($validated);
+        Category::create($request->validated());
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Category created successfully.');
@@ -44,18 +41,9 @@ class CategoryController extends Controller
         return view('admin.categories.edit', compact('category'));
     }
 
-    public function update(Request $request, Category $category): RedirectResponse
+    public function update(UpdateCategoryRequest $request, Category $category): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'max:255', 'unique:categories,slug,'.$category->id],
-            'type' => ['required', 'string', 'in:blog,portfolio'],
-            'description' => ['nullable', 'string'],
-            'is_active' => ['boolean'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
-        ]);
-
-        $category->update($validated);
+        $category->update($request->validated());
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Category updated successfully.');

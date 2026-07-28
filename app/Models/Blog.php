@@ -20,7 +20,7 @@ class Blog extends Model
         'author_id', 'title', 'slug', 'excerpt', 'content', 'featured_image',
         'featured_image_alt', 'published_at', 'is_featured', 'status',
         'meta_title', 'meta_description', 'meta_keywords',
-        'og_title', 'og_description', 'og_image', 'og_image_alt',
+        'og_image', 'og_image_alt',
         'robots_index', 'robots_follow', 'schema_type',
     ];
 
@@ -49,11 +49,6 @@ class Blog extends Model
     public function media(): MorphMany
     {
         return $this->morphMany(Media::class, 'mediable');
-    }
-
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', true);
     }
 
     public function scopePublished($query)

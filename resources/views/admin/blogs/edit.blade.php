@@ -43,9 +43,9 @@
                             <div x-data="{ featuredImage: '{{ old('featured_image', $blog->featured_image) }}', featuredImageAlt: '{{ old('featured_image_alt', $blog->featured_image_alt) }}' }">
                                 <x-input-label for="featured_image" :value="__('Featured Image')" />
                                 <input type="hidden" name="featured_image" id="featured_image"
-                                    :value="featuredImage" x-on:input="featuredImage = $event.target.value" />
+                                    value="{{ old('featured_image', $blog->featured_image) }}" />
                                 <input type="hidden" name="featured_image_alt" id="featured_image_alt"
-                                    :value="featuredImageAlt" x-on:input="featuredImageAlt = $event.target.value" />
+                                    value="{{ old('featured_image_alt', $blog->featured_image_alt) }}" />
                                 <template x-if="featuredImage">
                                     <div class="mb-2">
                                         <img :src="featuredImage" :alt="featuredImageAlt"
@@ -103,29 +103,19 @@
                                     <div>
                                         <x-input-label for="meta_title" :value="__('Meta Title')" />
                                         <x-text-input id="meta_title" name="meta_title" type="text" class="mt-1 block w-full" :value="old('meta_title', $blog->meta_title)" />
-                                        <p class="form-hint">Auto-filled from title. Edit to override.</p>
+                                        <p class="form-hint">Optimal 50–60 karakter untuk Google Search. Otomatis menjadi judul share WhatsApp/Sosmed (OG Title) dan mengikuti judul utama jika dikosongkan.</p>
                                     </div>
                                     <div>
                                         <x-input-label for="meta_description" :value="__('Meta Description')" />
                                         <textarea id="meta_description" name="meta_description" class="form-textarea mt-1" rows="3">{{ old('meta_description', $blog->meta_description) }}</textarea>
-                                        <p class="form-hint">Auto-filled from excerpt. Edit to override.</p>
-                                    </div>
-                                    <div>
-                                        <x-input-label for="og_title" :value="__('OG Title')" />
-                                        <x-text-input id="og_title" name="og_title" type="text" class="mt-1 block w-full" :value="old('og_title', $blog->og_title)" />
-                                        <p class="form-hint">Defaults to meta title.</p>
-                                    </div>
-                                    <div>
-                                        <x-input-label for="og_description" :value="__('OG Description')" />
-                                        <textarea id="og_description" name="og_description" class="form-textarea mt-1" rows="2">{{ old('og_description', $blog->og_description) }}</textarea>
-                                        <p class="form-hint">Defaults to meta description.</p>
+                                        <p class="form-hint">Optimal 150–160 karakter (termasuk spasi). Otomatis menjadi deskripsi share WhatsApp/Sosmed (OG Description) dan mengikuti ringkasan artikel jika dikosongkan.</p>
                                     </div>
                                     <div x-data="{ ogImage: '{{ old('og_image', $blog->og_image) }}', ogImageAlt: '{{ old('og_image_alt', $blog->og_image_alt) }}' }">
                                         <x-input-label for="og_image" :value="__('OG Image')" />
                                         <input type="hidden" name="og_image" id="og_image"
-                                            :value="ogImage" x-on:input="ogImage = $event.target.value" />
+                                            value="{{ old('og_image', $blog->og_image) }}" />
                                         <input type="hidden" name="og_image_alt" id="og_image_alt"
-                                            :value="ogImageAlt" x-on:input="ogImageAlt = $event.target.value" />
+                                            value="{{ old('og_image_alt', $blog->og_image_alt) }}" />
                                         <template x-if="ogImage">
                                             <div class="mb-2">
                                                 <img :src="ogImage" :alt="ogImageAlt"
@@ -136,7 +126,7 @@
                                             </div>
                                         </template>
                                         <x-admin.media-picker target="og_image" collection="blogs" />
-                                        <p class="form-hint">Defaults to featured image.</p>
+                                        <p class="form-hint">Optimal rasio 1.91:1 (1200x630 px) untuk banner sosmed. Otomatis mengikuti Featured Image jika dikosongkan.</p>
                                     </div>
                                 </div>
                             </details>

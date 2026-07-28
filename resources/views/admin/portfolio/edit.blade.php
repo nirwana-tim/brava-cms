@@ -54,9 +54,9 @@
                     <div>
                         <x-input-label for="photo" :value="__('Cover Photo')" />
                         <input type="hidden" name="photo" id="photo"
-                            :value="photoUrl" x-on:input="photoUrl = $event.target.value" />
+                            value="{{ old('photo', $portfolio->photo) }}" />
                         <input type="hidden" name="photo_alt" id="photo_alt"
-                            :value="photoAlt" x-on:input="photoAlt = $event.target.value" />
+                            value="{{ old('photo_alt', $portfolio->photo_alt) }}" />
                         <template x-if="photoUrl">
                             <div class="mb-2">
                                 <img :src="photoUrl" :alt="photoAlt"
@@ -120,19 +120,19 @@
                             <div>
                                 <x-input-label for="meta_title" :value="__('Meta Title')" />
                                 <x-text-input id="meta_title" name="meta_title" type="text" class="mt-1 block w-full" :value="old('meta_title', $portfolio->meta_title)" />
-                                <p class="form-hint">Auto-filled from title. Edit to override.</p>
+                                <p class="form-hint">Optimal 50–60 karakter untuk Google Search. Otomatis menjadi judul share WhatsApp/Sosmed (OG Title) dan mengikuti judul utama jika dikosongkan.</p>
                             </div>
                             <div>
                                 <x-input-label for="meta_description" :value="__('Meta Description')" />
                                 <textarea id="meta_description" name="meta_description" class="form-textarea mt-1" rows="3">{{ old('meta_description', $portfolio->meta_description) }}</textarea>
-                                <p class="form-hint">Auto-filled from description. Edit to override.</p>
+                                <p class="form-hint">Optimal 150–160 karakter (termasuk spasi). Otomatis menjadi deskripsi share WhatsApp/Sosmed (OG Description) dan mengikuti deskripsi/konten jika dikosongkan.</p>
                             </div>
                             <div x-data="{ ogImage: '{{ old('og_image', $portfolio->og_image) }}', ogImageAlt: '{{ old('og_image_alt', $portfolio->og_image_alt) }}' }">
                                 <x-input-label for="og_image" :value="__('OG Image')" />
                                 <input type="hidden" name="og_image" id="og_image"
-                                    :value="ogImage" x-on:input="ogImage = $event.target.value" />
+                                    value="{{ old('og_image', $portfolio->og_image) }}" />
                                 <input type="hidden" name="og_image_alt" id="og_image_alt"
-                                    :value="ogImageAlt" x-on:input="ogImageAlt = $event.target.value" />
+                                    value="{{ old('og_image_alt', $portfolio->og_image_alt) }}" />
                                 <template x-if="ogImage">
                                     <div class="mb-2">
                                         <img :src="ogImage" :alt="ogImageAlt"
@@ -143,7 +143,7 @@
                                     </div>
                                 </template>
                                 <x-admin.media-picker target="og_image" collection="portfolio" />
-                                <p class="form-hint">Defaults to cover photo.</p>
+                                <p class="form-hint">Optimal rasio 1.91:1 (1200x630 px) untuk banner sosmed. Otomatis mengikuti Cover Photo jika dikosongkan.</p>
                             </div>
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" id="robots_index" name="robots_index" value="1" class="form-checkbox" {{ old('robots_index', $portfolio->robots_index ?? true) ? 'checked' : '' }} />

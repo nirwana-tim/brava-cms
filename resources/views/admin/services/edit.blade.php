@@ -41,9 +41,9 @@
                     <div x-data="{ photoUrl: '{{ old('photo', $service->photo) }}', photoAlt: '{{ old('photo_alt', $service->photo_alt) }}' }">
                         <x-input-label for="photo" :value="__('Photo')" />
                         <input type="hidden" name="photo" id="photo"
-                            :value="photoUrl" x-on:input="photoUrl = $event.target.value" />
+                            value="{{ old('photo', $service->photo) }}" />
                         <input type="hidden" name="photo_alt" id="photo_alt"
-                            :value="photoAlt" x-on:input="photoAlt = $event.target.value" />
+                            value="{{ old('photo_alt', $service->photo_alt) }}" />
                         <template x-if="photoUrl">
                             <div class="mb-2">
                                 <img :src="photoUrl" :alt="photoAlt"

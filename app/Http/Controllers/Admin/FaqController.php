@@ -3,13 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreFaqRequest;
+use App\Http\Requests\Admin\UpdateFaqRequest;
 use App\Models\Faq;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class FaqController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Faq::class, 'faq');
+    }
+
     public function index(): View
     {
         $faqs = Faq::latest()->paginate(15);
@@ -22,17 +28,9 @@ class FaqController extends Controller
         return view('admin.faqs.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreFaqRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'question' => ['required', 'string', 'max:255'],
-            'answer' => ['required', 'string'],
-            'category' => ['nullable', 'string', 'max:255'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
-            'is_active' => ['boolean'],
-        ]);
-
-        Faq::create($validated);
+        Faq::create($request->validated());
 
         return redirect()->route('admin.faqs.index')
             ->with('success', 'FAQ created successfully.');
@@ -48,17 +46,9 @@ class FaqController extends Controller
         return view('admin.faqs.edit', compact('faq'));
     }
 
-    public function update(Request $request, Faq $faq): RedirectResponse
+    public function update(UpdateFaqRequest $request, Faq $faq): RedirectResponse
     {
-        $validated = $request->validate([
-            'question' => ['required', 'string', 'max:255'],
-            'answer' => ['required', 'string'],
-            'category' => ['nullable', 'string', 'max:255'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
-            'is_active' => ['boolean'],
-        ]);
-
-        $faq->update($validated);
+        $faq->update($request->validated());
 
         return redirect()->route('admin.faqs.index')
             ->with('success', 'FAQ updated successfully.');

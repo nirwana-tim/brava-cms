@@ -96,7 +96,7 @@
     </div>
 </div>
 
-@push('scripts')
+@pushOnce('scripts')
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('mediaHandler', (targetId, collectionName) => ({
@@ -168,8 +168,25 @@
                     altInput.value = alt;
                     altInput.dispatchEvent(new Event('input', { bubbles: true }));
                 }
+
+                const parentScope = this.$el?.parentElement?.closest('[x-data]')?.__x?.$data;
+                if (parentScope) {
+                    const camelVar = targetId.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+                    if (camelVar in parentScope) {
+                        parentScope[camelVar] = url;
+                    } else if ((targetId + 'Url') in parentScope) {
+                        parentScope[targetId + 'Url'] = url;
+                    }
+
+                    const camelAltVar = (targetId + '_alt').replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+                    if (camelAltVar in parentScope) {
+                        parentScope[camelAltVar] = alt || '';
+                    } else if ((targetId + 'Alt') in parentScope) {
+                        parentScope[targetId + 'Alt'] = alt || '';
+                    }
+                }
             },
         }));
     });
 </script>
-@endpush
+@endPushOnce

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreTeamRequest;
+use App\Http\Requests\Admin\UpdateTeamRequest;
 use App\Models\TeamMember;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -13,6 +15,11 @@ use Illuminate\View\View;
 
 class TeamController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(TeamMember::class, 'team');
+    }
+
     public function index(): View
     {
         $members = TeamMember::latest()->paginate(15);
@@ -25,26 +32,15 @@ class TeamController extends Controller
         return view('admin.team.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreTeamRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'position' => ['nullable', 'string', 'max:255'],
-            'avatar' => ['nullable', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:50'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
-            'is_active' => ['boolean'],
-        ]);
-
-        $team = TeamMember::create($validated);
+        $team = TeamMember::create($request->validated());
 
         if ($team->email) {
             $user = User::create([
                 'name' => $team->name,
                 'email' => $team->email,
-                'password' => Hash::make($validated['password']),
+                'password' => Hash::make($request->password),
                 'role' => UserRole::Admin,
                 'position' => $team->position,
             ]);
@@ -66,25 +62,15 @@ class TeamController extends Controller
         return view('admin.team.edit', compact('team'));
     }
 
-    public function update(Request $request, TeamMember $team): RedirectResponse
+    public function update(UpdateTeamRequest $request, TeamMember $team): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'position' => ['nullable', 'string', 'max:255'],
-            'avatar' => ['nullable', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:50'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
-            'is_active' => ['boolean'],
-        ]);
-
-        $team->update($validated);
+        $team->update($request->validated());
 
         if ($team->user) {
             $team->user->update([
-                'name' => $validated['name'],
-                'email' => $validated['email'] ?? $team->user->email,
-                'position' => $validated['position'],
+                'name' => $request->name,
+                'email' => $request->email ?? $team->user->email,
+                'position' => $request->position,
             ]);
         }
 

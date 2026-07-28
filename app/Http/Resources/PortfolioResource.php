@@ -26,6 +26,15 @@ class PortfolioResource extends JsonResource
             'og_image' => $this->og_image,
             'og_image_alt' => $this->og_image_alt,
             'robots_index' => $this->robots_index,
+            'seo' => [
+                'meta_title' => $this->meta_title ?: $this->title,
+                'meta_description' => $this->meta_description ?: $this->description,
+                'og_title' => $this->meta_title ?: $this->title,
+                'og_description' => $this->meta_description ?: $this->description,
+                'og_image' => $this->og_image ?: $this->photo,
+                'og_image_alt' => $this->og_image_alt ?: $this->photo_alt,
+                'robots_index' => $this->robots_index,
+            ],
             'created_at' => $this->created_at->toIso8601String(),
         ];
     }

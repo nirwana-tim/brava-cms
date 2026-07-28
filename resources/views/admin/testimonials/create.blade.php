@@ -43,12 +43,12 @@
                                 <x-input-error class="mt-2" :messages="$errors->get('rating')" />
                             </div>
 
-                            <div x-data="{ avatarUrl: '', avatarAlt: '' }">
+                            <div x-data="{ avatarUrl: '{{ old('avatar') }}', avatarAlt: '{{ old('avatar_alt') }}' }">
                                 <x-input-label for="avatar" :value="__('Avatar')" />
                                 <input type="hidden" name="avatar" id="avatar"
-                                    :value="avatarUrl" x-on:input="avatarUrl = $event.target.value" />
+                                    value="{{ old('avatar') }}" />
                                 <input type="hidden" name="avatar_alt" id="avatar_alt"
-                                    :value="avatarAlt" x-on:input="avatarAlt = $event.target.value" />
+                                    value="{{ old('avatar_alt') }}" />
                                 <template x-if="avatarUrl">
                                     <div class="mb-2">
                                         <img :src="avatarUrl" :alt="avatarAlt"

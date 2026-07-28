@@ -3,13 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreTestimonialRequest;
+use App\Http\Requests\Admin\UpdateTestimonialRequest;
 use App\Models\Testimonial;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class TestimonialController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Testimonial::class, 'testimonial');
+    }
+
     public function index(): View
     {
         $testimonials = Testimonial::latest()->paginate(15);
@@ -22,20 +28,9 @@ class TestimonialController extends Controller
         return view('admin.testimonials.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreTestimonialRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'client_name' => ['required', 'string', 'max:255'],
-            'company' => ['nullable', 'string', 'max:255'],
-            'content' => ['required', 'string'],
-            'rating' => ['nullable', 'integer', 'min:1', 'max:5'],
-            'avatar' => ['nullable', 'string', 'max:255'],
-            'avatar_alt' => ['nullable', 'string', 'max:255'],
-            'is_active' => ['boolean'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
-        ]);
-
-        Testimonial::create($validated);
+        Testimonial::create($request->validated());
 
         return redirect()->route('admin.testimonials.index')
             ->with('success', 'Testimonial created successfully.');
@@ -51,20 +46,9 @@ class TestimonialController extends Controller
         return view('admin.testimonials.edit', compact('testimonial'));
     }
 
-    public function update(Request $request, Testimonial $testimonial): RedirectResponse
+    public function update(UpdateTestimonialRequest $request, Testimonial $testimonial): RedirectResponse
     {
-        $validated = $request->validate([
-            'client_name' => ['required', 'string', 'max:255'],
-            'company' => ['nullable', 'string', 'max:255'],
-            'content' => ['required', 'string'],
-            'rating' => ['nullable', 'integer', 'min:1', 'max:5'],
-            'avatar' => ['nullable', 'string', 'max:255'],
-            'avatar_alt' => ['nullable', 'string', 'max:255'],
-            'is_active' => ['boolean'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
-        ]);
-
-        $testimonial->update($validated);
+        $testimonial->update($request->validated());
 
         return redirect()->route('admin.testimonials.index')
             ->with('success', 'Testimonial updated successfully.');

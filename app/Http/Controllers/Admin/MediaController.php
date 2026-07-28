@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreMediaRequest;
+use App\Http\Requests\Admin\UpdateMediaRequest;
 use App\Models\Media;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -14,6 +16,11 @@ use Intervention\Image\ImageManager;
 
 class MediaController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Media::class, 'medium');
+    }
+
     public function index(Request $request): View
     {
         $query = Media::latest();
@@ -53,14 +60,8 @@ class MediaController extends Controller
         return view('admin.media.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreMediaRequest $request): RedirectResponse
     {
-        $request->validate([
-            'file' => ['required', 'file', 'mimes:jpg,jpeg,png,gif,webp,pdf,doc,docx', 'max:10240'],
-            'alt_text' => ['nullable', 'string', 'max:255'],
-            'collection' => ['nullable', 'string', 'max:255'],
-        ]);
-
         $file = $request->file('file');
         $path = $this->storeWithCompression($file, 'media', 'public');
 
@@ -152,13 +153,9 @@ class MediaController extends Controller
         return view('admin.media.edit', compact('medium'));
     }
 
-    public function update(Request $request, Media $medium): RedirectResponse
+    public function update(UpdateMediaRequest $request, Media $medium): RedirectResponse
     {
-        $validated = $request->validate([
-            'alt_text' => ['nullable', 'string', 'max:255'],
-        ]);
-
-        $medium->update($validated);
+        $medium->update($request->validated());
 
         return redirect()->route('admin.media.index')
             ->with('success', 'Media updated successfully.');
