@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TeamController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\TrashController;
+use App\Http\Controllers\Admin\UploadController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
@@ -35,6 +36,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('team', TeamController::class);
     Route::get('media/picker-list', [MediaController::class, 'pickerList'])->name('media.picker-list');
     Route::post('media/upload-ajax', [MediaController::class, 'uploadAjax'])->name('media.upload-ajax');
+    Route::post('upload', [UploadController::class, 'store'])->name('upload');
     Route::resource('media', MediaController::class)->except(['show']);
     Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
     Route::put('settings', [SettingController::class, 'update'])->name('settings.update');

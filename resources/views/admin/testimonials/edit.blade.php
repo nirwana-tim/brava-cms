@@ -39,22 +39,11 @@
                                 <x-input-error class="mt-2" :messages="$errors->get('rating')" />
                             </div>
 
-                            <div x-data="{ avatarUrl: '{{ old('avatar', $testimonial->avatar) }}', avatarAlt: '{{ old('avatar_alt', $testimonial->avatar_alt) }}' }">
+                            <div>
                                 <x-input-label for="avatar" :value="__('Avatar')" />
                                 <input type="hidden" name="avatar" id="avatar"
                                     value="{{ old('avatar', $testimonial->avatar) }}" />
-                                <input type="hidden" name="avatar_alt" id="avatar_alt"
-                                    value="{{ old('avatar_alt', $testimonial->avatar_alt) }}" />
-                                <template x-if="avatarUrl">
-                                    <div class="mb-2">
-                                        <img :src="avatarUrl" :alt="avatarAlt"
-                                            class="rounded-full mb-2"
-                                            style="width:64px;height:64px;object-fit:cover">
-                                        <p x-show="avatarAlt" class="text-xs mt-1" x-text="'Alt: ' + avatarAlt"
-                                            style="color:var(--muted-text)"></p>
-                                    </div>
-                                </template>
-                                <x-admin.media-picker target="avatar" collection="testimonials" />
+                                <x-admin.image-upload target="avatar" />
                                 <x-input-error class="mt-2" :messages="$errors->get('avatar')" />
                             </div>
 

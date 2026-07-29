@@ -43,6 +43,7 @@ class TeamController extends Controller
                 'password' => Hash::make($request->password),
                 'role' => UserRole::Admin,
                 'position' => $team->position,
+                'avatar' => $team->avatar,
             ]);
 
             $team->user()->associate($user)->save();
@@ -71,6 +72,7 @@ class TeamController extends Controller
                 'name' => $request->name,
                 'email' => $request->email ?? $team->user->email,
                 'position' => $request->position,
+                'avatar' => $request->avatar ?? $team->user->avatar,
             ]);
         }
 

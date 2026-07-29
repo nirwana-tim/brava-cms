@@ -32,8 +32,9 @@
                             </div>
 
                             <div>
-                                <x-input-label for="avatar" :value="__('Avatar URL')" />
-                                <x-text-input id="avatar" name="avatar" type="text" class="mt-1 block w-full" :value="old('avatar')" />
+                                <x-input-label for="avatar" :value="__('Avatar')" />
+                                <input type="hidden" name="avatar" id="avatar" value="{{ old('avatar') }}" />
+                                <x-admin.image-upload target="avatar" />
                                 <x-input-error class="mt-2" :messages="$errors->get('avatar')" />
                             </div>
 

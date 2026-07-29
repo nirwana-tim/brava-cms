@@ -47,6 +47,13 @@
             @endif
         </div>
 
+        <div>
+            <x-input-label for="avatar" :value="__('Avatar')" />
+            <input type="hidden" name="avatar" id="avatar" value="{{ old('avatar', $user->avatar) }}" />
+            <x-admin.image-upload target="avatar" />
+            <x-input-error class="mt-2" :messages="$errors->get('avatar')" />
+        </div>
+
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 

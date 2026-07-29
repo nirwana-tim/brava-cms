@@ -58,7 +58,30 @@
             </div>
 
             <div class="card-body flex-1 overflow-y-auto">
-                <template x-if="items.length === 0 && !loadingPicker">
+                <div class="mb-4 pb-4 border-b" style="border-color: var(--table-border)">
+                    <p class="text-xs font-medium mb-2" style="color: var(--muted-text)">Upload Media Baru</p>
+                    <div class="flex items-center gap-2">
+                        <input type="file" accept="image/*" x-ref="modalFileInput" @change="uploadFromModal($event)" class="hidden">
+                        <button type="button" @click="$refs.modalFileInput.click()"
+                            class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium btn-edit"
+                            :disabled="uploadingFromModal">
+                            <template x-if="!uploadingFromModal">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/>
+                                </svg>
+                            </template>
+                            <template x-if="uploadingFromModal">
+                                <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+                                </svg>
+                            </template>
+                            <span x-text="uploadingFromModal ? 'Uploading...' : 'Upload'"></span>
+                        </button>
+                        <p class="text-xs" style="color: var(--muted-text)">JPG, PNG, GIF, WebP max 10MB</p>
+                    </div>
+                </div>
+
+                <template x-if="items.length === 0 && !loadingPicker && !uploadingFromModal">
                     <div class="admin-table-empty">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         <p>Belum ada media. Upload dulu lewat tombol Upload.</p>
@@ -101,6 +124,7 @@
     document.addEventListener('alpine:init', () => {
         Alpine.data('mediaHandler', (targetId, collectionName) => ({
             uploading: false,
+            uploadingFromModal: false,
             showPicker: false,
             loadingPicker: false,
             items: [],
@@ -127,6 +151,33 @@
                     alert('Upload failed. Please try again.');
                 } finally {
                     this.uploading = false;
+                    event.target.value = '';
+                }
+            },
+
+            async uploadFromModal(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                this.uploadingFromModal = true;
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('collection', collectionName);
+
+                try {
+                    const res = await fetch('{{ route("admin.media.upload-ajax") }}', {
+                        method: 'POST',
+                        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                        body: formData,
+                    });
+                    const data = await res.json();
+                    this.setMedia(data.url, data.alt_text);
+                    await this.loadPicker();
+                } catch (e) {
+                    console.error('Upload failed', e);
+                    alert('Upload failed. Please try again.');
+                } finally {
+                    this.uploadingFromModal = false;
                     event.target.value = '';
                 }
             },
