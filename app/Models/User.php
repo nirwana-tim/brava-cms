@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Validation\ValidationException;
 
 #[Fillable(['name', 'email', 'password', 'role', 'position', 'avatar'])]
 #[Hidden(['password', 'remember_token'])]
@@ -27,6 +28,18 @@ class User extends Authenticatable
             'password' => 'hashed',
             'role' => UserRole::class,
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (User $user) {
+            if ($user->blogs()->exists()) {
+                throw new ValidationException(
+                    validator([], []),
+                    ['user' => 'Cannot delete user because they are assigned as the author of one or more blog posts. Please reassign or delete their blog posts first.']
+                );
+            }
+        });
     }
 
     public function isSuperAdmin(): bool

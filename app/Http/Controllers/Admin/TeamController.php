@@ -82,11 +82,15 @@ class TeamController extends Controller
 
     public function resetPassword(TeamMember $team): View
     {
+        $this->authorize('update', $team);
+
         return view('admin.team.reset-password', compact('team'));
     }
 
     public function updatePassword(Request $request, TeamMember $team): RedirectResponse
     {
+        $this->authorize('update', $team);
+
         $validated = $request->validate([
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);

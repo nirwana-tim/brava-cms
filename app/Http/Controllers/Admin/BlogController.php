@@ -64,7 +64,6 @@ class BlogController extends Controller
     public function update(UpdateBlogRequest $request, Blog $blog): RedirectResponse
     {
         $validated = $this->applySeoFallbacks($request->validated());
-        $validated['author_id'] = auth()->id();
 
         $blog->update($validated);
 

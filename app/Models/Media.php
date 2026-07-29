@@ -29,4 +29,13 @@ class Media extends Model
     {
         return Storage::url($this->path);
     }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (Media $media) {
+            if ($media->path && Storage::disk($media->disk)->exists($media->path)) {
+                Storage::disk($media->disk)->delete($media->path);
+            }
+        });
+    }
 }

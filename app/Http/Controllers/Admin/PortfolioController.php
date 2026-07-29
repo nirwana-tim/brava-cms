@@ -98,6 +98,8 @@ class PortfolioController extends Controller
 
     public function attachMedia(Request $request, PortfolioItem $portfolio): JsonResponse
     {
+        $this->authorize('update', $portfolio);
+
         $request->validate([
             'media_id' => ['required', 'exists:media,id'],
         ]);
@@ -122,6 +124,8 @@ class PortfolioController extends Controller
 
     public function detachMedia(PortfolioItem $portfolio, Media $medium): JsonResponse
     {
+        $this->authorize('update', $portfolio);
+
         if ($medium->mediable_id !== $portfolio->id || $medium->mediable_type !== PortfolioItem::class) {
             return response()->json(['success' => false], 404);
         }
@@ -136,6 +140,8 @@ class PortfolioController extends Controller
 
     public function setCover(PortfolioItem $portfolio, Media $medium): JsonResponse
     {
+        $this->authorize('update', $portfolio);
+
         if ($medium->mediable_id !== $portfolio->id || $medium->mediable_type !== PortfolioItem::class) {
             return response()->json(['success' => false], 404);
         }

@@ -31,6 +31,15 @@ class TeamMember extends Model
         return $query->where('is_active', true);
     }
 
+    protected static function booted(): void
+    {
+        static::deleting(function (TeamMember $teamMember) {
+            if ($teamMember->user) {
+                $teamMember->user->delete();
+            }
+        });
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

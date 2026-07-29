@@ -163,7 +163,6 @@ class MediaController extends Controller
 
     public function destroy(Request $request, Media $medium)
     {
-        Storage::disk($medium->disk)->delete($medium->path);
         $medium->delete();
 
         if ($request->wantsJson() || $request->ajax()) {
