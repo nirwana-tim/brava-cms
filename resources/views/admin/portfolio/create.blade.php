@@ -261,8 +261,9 @@
             const data = await res.json();
 
             const alpineEl = document.getElementById('portfolio-form');
-            if (alpineEl && alpineEl.__x) {
-                alpineEl.__x.$data.addGallery(data.id, data.url);
+            const alpineData = alpineEl ? (window.Alpine ? Alpine.$data(alpineEl) : (alpineEl._x_dataStack ? alpineEl._x_dataStack[0] : (alpineEl.__x ? alpineEl.__x.$data : null))) : null;
+            if (alpineData) {
+                alpineData.addGallery(data.id, data.url);
             }
         } catch (err) {
             console.error('Gallery upload failed', err);

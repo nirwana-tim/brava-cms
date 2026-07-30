@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\UserRole;
+use App\Models\TeamMember;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -10,16 +11,36 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        User::factory()->create([
+        $superAdmin = User::factory()->create([
             'name' => 'Super Admin',
             'email' => 'superadmin@brava.id',
             'role' => UserRole::SuperAdmin,
+            'position' => 'Super Administrator',
         ]);
 
-        User::factory()->create([
+        TeamMember::create([
+            'user_id' => $superAdmin->id,
+            'name' => $superAdmin->name,
+            'position' => 'Super Administrator',
+            'email' => $superAdmin->email,
+            'sort_order' => 0,
+            'is_active' => true,
+        ]);
+
+        $admin = User::factory()->create([
             'name' => 'Admin User',
             'email' => 'admin@brava.id',
             'role' => UserRole::Admin,
+            'position' => 'Administrator',
+        ]);
+
+        TeamMember::create([
+            'user_id' => $admin->id,
+            'name' => $admin->name,
+            'position' => 'Administrator',
+            'email' => $admin->email,
+            'sort_order' => 1,
+            'is_active' => true,
         ]);
 
         $this->call([

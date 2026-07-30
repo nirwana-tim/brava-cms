@@ -1,204 +1,159 @@
 # Brava CMS — Google Analytics Dashboard
 
-> Plan & Reference — implement after core CMS modules are done.
+> Integrasi GA4 untuk website compro — data ditampilkan langsung di dashboard admin (tanpa menu sidebar terpisah).
 
 ---
 
 ## Overview
 
-Tampilkan data Google Analytics 4 di dashboard admin tanpa perlu login ke GA. Data di-cache dan direfresh periodik.
+Semua data Google Analytics 4 muncul langsung di halaman dashboard utama (`/admin`). Gak perlu navigasi ke halaman lain. Data di-cache 2 jam (stale 4 jam) — maksimal 12 request/hari ke GA API dari kuota gratis 50.000/hari.
+
+### Untuk Reseller Konveksi
+
+| Insight | Manfaat |
+|---------|---------|
+| Traffic per platform (IG, TikTok, WA, FB, dll) | Tahu channel marketing mana yang efektif |
+| Device breakdown (mobile vs desktop) | Optimasi pengalaman perangkat |
+| Kota asal pengunjung | Target reseller per daerah potensial |
+| Top pages | Produk/jasa mana yang lagi trend |
 
 ---
 
-## Prerequisites (Google Cloud)
+## Cara Aktivasi
 
-1. **GA4 Property** — udah punya? Catat `property_id` (angka)
-2. **Google Cloud Project** — buat di https://console.cloud.google.com
-3. **Enable API** — `Google Analytics Data API` (GA4)
-4. **Service Account** — create → download JSON key
-5. **GA4 Access** — invite Service Account email sebagai **Viewer** di GA4
+1. Buat GA4 property di https://analytics.google.com (gratis)
+2. Buat Google Cloud Project → enable **Google Analytics Data API**
+3. Buat Service Account → download JSON key
+4. Invite email service account sebagai **Viewer** di GA4
+5. Taruh JSON key di `storage/app/analytics/service-account-key.json`
+6. Isi `.env`:
+   ```env
+   GA4_PROPERTY_ID=123456789
+   GA4_SERVICE_ACCOUNT_KEY=storage/app/analytics/service-account-key.json
+   ```
+
+> **Kosongin `GA4_PROPERTY_ID`** → dashboard otomatis pake data dummy (angka random) biar UI keliatan.
 
 ---
 
-## Package
+## Yang Ada di Dashboard
 
+### Baris 1 — CMS Stats
+Services, Blog Posts, Categories, Users (dari database lokal).
+
+### Baris 2 — Analytics Stat Cards
+| Card | Metrik GA4 |
+|------|-----------|
+| Visitors Today | `activeUsers` (hari ini) |
+| Pageviews Today | `screenPageViews` |
+| Sessions Today | `sessions` |
+| Bounce Rate | `bounceRate` |
+| Avg Duration | `averageSessionDuration` |
+
+### Baris 3 — Grafik
+| Chart | Tipe | Dimensi GA4 | Metrik GA4 |
+|-------|------|-------------|------------|
+| Visitor Trend | Line chart | `date` | `activeUsers`, `screenPageViews` |
+| Traffic Sources | Donut chart | `sessionSource` | `sessions` |
+
+**Platform yang otomatis terdeteksi:**
+| Source | Warna | Keterangan |
+|--------|-------|------------|
+| Instagram | Pink | IG, l.instagram.com |
+| TikTok | Hitam | tiktok.com |
+| WhatsApp | Hijau | wa.me |
+| Facebook | Biru | facebook.com, m.facebook.com, l.facebook.com |
+| Google | Indigo | google (organic) |
+| Direct | Cyan | (direct) |
+| Twitter / X | Biru muda | twitter.com, t.co |
+| YouTube | Merah | youtube.com |
+| LinkedIn | Biru tua | linkedin.com |
+| Telegram | Biru langit | telegram |
+| Email | Kuning | email, mail |
+
+> **UTM Parameters (recommended):** Biar data lebih akurat, tambah UTM tag di setiap link yang disebar:
+> ```
+> https://brava.com/produk?utm_source=instagram&utm_medium=social&utm_campaign=promo-juli
+> ```
+
+### Baris 4 — Detail
+| Widget | Tipe | Dimensi GA4 | Metrik GA4 |
+|-------|------|-------------|------------|
+| Device Breakdown | Bar chart | `deviceCategory` | `sessions` |
+| Top Pages | Table | `pagePath`, `pageTitle` | `screenPageViews`, `averageEngagementTime` |
+
+### Baris 5 — Insight
+| Widget | Deskripsi |
+|--------|-----------|
+| Top Cities | Progress bar per kota → `city` + `sessions` |
+| Marketing Insights | 3 card: Top Channel, Dominan Device, Kota Teraktif |
+
+---
+
+## API Reference
+
+### Package
 ```bash
 composer require google/analytics-data
 ```
+Library: `Google\Analytics\Data\V1beta\BetaAnalyticsDataClient`
 
-Resmi dari Google, pake `BetaAnalyticsDataClient`, support REST (gak butuh gRPC).
-
----
-
-## Service Layer
-
-```
-app/Services/AnalyticsService.php
-```
-
-### Methods
-
-| Method | Return | Description |
-|--------|--------|-------------|
-| `getActiveUsers(int $days)` | array | [total, today, yesterday] |
-| `getTopPages(int $days, int $limit)` | collection | halaman paling banyak dilihat |
-| `getTrafficSources(int $days)` | collection | organic, direct, referral, social, email |
-| `getDeviceBreakdown(int $days)` | collection | desktop, mobile, tablet |
-| `getGeoStats(int $days)` | collection | sessions per country/city |
-| `getSessionsOverview(int $days)` | array | sessions, bounce rate, avg duration |
-| `getNewVsReturning(int $days)` | collection | new vs returning visitor ratio |
-| `getOverview(int $days = 30)` | array | ringkasan semua metric buat dashboard |
-
-### Caching
-
-Pake `Cache::flexible()` biar gak ngehit API Google tiap refresh:
-
-| Data | TTL (fresh) | TTL (stale) |
-|------|-------------|-------------|
-| overview | 30 min | 60 min |
-| top_pages | 30 min | 60 min |
-| traffic_sources | 1 hour | 2 hours |
-| device_breakdown | 1 hour | 2 hours |
-| geo_stats | 1 hour | 2 hours |
-
-### Error Handling
-
-- Kalo API key expired / invalid → log + return empty (dashboard tetap kebuka)
-- Kalo GA4 property gak dikonfigurasi → tampil pesan "Configure Analytics"
-- Jangan sampe dashboard error 500 gara-gara analytics mati
-
----
-
-## Controller & Route
-
-### Admin Route
-
+### Auth
 ```php
-// routes/admin.php
-Route::get('/admin/analytics', [App\Http\Controllers\Admin\AnalyticsController::class, 'index'])
-    ->middleware(['auth', 'verified']);
+use Google\Auth\Credentials\ServiceAccountCredentials;
+
+$credentials = new ServiceAccountCredentials(
+    ['https://www.googleapis.com/auth/analytics.readonly'],
+    json_decode(file_get_contents($keyPath), true)
+);
+
+$client = new BetaAnalyticsDataClient(['credentials' => $credentials]);
 ```
 
-### AdminController
+### Dimensi & Metrik yang Dipakai
 
-```php
-class AnalyticsController extends Controller
-{
-    public function __construct(
-        private readonly AnalyticsService $analytics
-    ) {}
+| Query | Dimensi | Metrik |
+|-------|---------|--------|
+| Overview stats | `date` | `activeUsers`, `screenPageViews`, `sessions`, `bounceRate`, `averageSessionDuration` |
+| Traffic sources | `sessionSource` | `sessions` |
+| Device breakdown | `deviceCategory` | `sessions` |
+| Top pages | `pagePath`, `pageTitle` | `screenPageViews`, `averageEngagementTime` |
+| Geo stats | `city` | `sessions` |
 
-    public function index(Request $request): View
-    {
-        $days = $request->get('days', 30);
-        $data = $this->analytics->getOverview((int) $days);
+---
 
-        return view('admin.analytics.index', compact('data', 'days'));
-    }
-}
+## Caching
+
+`Cache::flexible()` — stale-while-revalidate:
+
+| TTL Fresh (dari API) | TTL Stale (pake data lama) |
+|----------------------|---------------------------|
+| 120 menit | 240 menit |
+
+Konfigurasi `.env`:
+```
+GA4_CACHE_FRESH=120
+GA4_CACHE_STALE=240
 ```
 
 ---
 
-## Admin View
+## File Structure
 
 ```
-resources/views/admin/analytics/index.blade.php
-```
-
-### Widget Layout
-
-```
-┌─────────────────────────────────────────────────────┐
-│  TODAY              VS YESTERDAY    VS 30 DAYS       │
-│  ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐      │
-│  │Users │ │Sessns│ │PgView│ │BncRt │ │AvgDur│      │
-│  └──────┘ └──────┘ └──────┘ └──────┘ └──────┘      │
-├─────────────────────────────────────────────────────┤
-│  ┌────────────┐   ┌────────────┐                    │
-│  │ Traffic    │   │ Device     │                    │
-│  │ Sources    │   │ Breakdown  │                    │
-│  │ (pie/donut)│   │ (bar)      │                    │
-│  └────────────┘   └────────────┘                    │
-├─────────────────────────────────────────────────────┤
-│  ┌────────────────────────────────────────────────┐ │
-│  │ Top Pages (sorted by pageviews)                │ │
-│  │ Page URL                   | Views | Avg Time  │ │
-│  │ /                          | 1200  | 2:30      │ │
-│  │ /products                  | 800   | 1:45      │ │
-│  │ /blogs/seo-tips            | 450   | 3:10      │ │
-│  └────────────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────┘
-```
-
-### Chart Library
-
-Chart.js via CDN atau NPM. Simple, gak perlu Livewire buat dashboard ini — cukup Blade + Alpine.js + Chart.js.
-
-```bash
-bun add chart.js
-```
-
-Atau dari CDN di layout admin aja.
-
----
-
-## Data Flow
-
-```
-Next.js (Vercel)
-  ↓ Google Analytics tracking (client-side JS)
-  ↓ Data masuk ke GA4 property
-  ↓
-Laravel Admin Dashboard
-  ↓ AnalyticsService
-    ↓ BetaAnalyticsDataClient (google/analytics-data)
-    ↓ GA4 Data API → response
-  ↓ Cache::flexible() 30-60 min
-  ↓ Return ke Blade view + Chart.js render
+config/analytics.php
+app/Services/AnalyticsService.php        ← service layer (GA4 API + dummy fallback)
+app/Http/Controllers/Admin/DashboardController.php  ← updated: inject analytics data
+resources/views/admin/dashboard.blade.php           ← all charts inline
+resources/js/app.js                      ← Chart.js global registration
+storage/app/analytics/                   ← taruh service-account-key.json di sini
 ```
 
 ---
 
-## Config (.env)
+## Phase 2 — Enhancement
 
-```env
-GA4_PROPERTY_ID=123456789
-GA4_SERVICE_ACCOUNT_KEY=storage/app/analytics/service-account-key.json
-```
-
-Config file:
-
-```php
-// config/analytics.php
-return [
-    'property_id' => env('GA4_PROPERTY_ID'),
-    'service_account_key' => storage_path(env('GA4_SERVICE_ACCOUNT_KEY', 'app/analytics/service-account-key.json')),
-];
-```
-
----
-
-## Implementation Priority
-
-### Phase 1 — Core (after CMS modules)
-1. Install `google/analytics-data`
-2. Bikin `config/analytics.php`
-3. Bikin `AnalyticsService` → `getOverview()` aja dulu
-4. Bikin `AnalyticsController` + route admin
-5. Bikin Blade view + Chart.js (3-4 widget utama)
-
-### Phase 2 — Enhancement
-- Filter date range (7d, 30d, 90d)
 - Export to CSV
+- Date range picker custom
 - Period comparison (vs previous period)
-- Real-time widget (GA4 Realtime API)
-
----
-
-## Notes
-
-- **GA4 Data API ada quota**: 50,000 request per project per day — lebih dari cukup buat admin dashboard
-- **gRPC optional** — REST works fine for this use case
-- **Service Account JSON key jangan di-commit** — masuk `.gitignore`
-- Data gak perlu realtime, caching 30-60 menit acceptable
+- Email report mingguan otomatis

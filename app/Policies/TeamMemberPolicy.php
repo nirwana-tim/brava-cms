@@ -20,6 +20,10 @@ class TeamMemberPolicy
 
     public function view(User $user, TeamMember $teamMember): bool
     {
+        if ($teamMember->user?->isSuperAdmin()) {
+            return $user->isSuperAdmin();
+        }
+
         return $user->role === UserRole::Admin;
     }
 
@@ -30,11 +34,19 @@ class TeamMemberPolicy
 
     public function update(User $user, TeamMember $teamMember): bool
     {
+        if ($teamMember->user?->isSuperAdmin()) {
+            return $user->isSuperAdmin();
+        }
+
         return $user->role === UserRole::Admin;
     }
 
     public function delete(User $user, TeamMember $teamMember): bool
     {
+        if ($teamMember->user?->isSuperAdmin()) {
+            return $user->isSuperAdmin();
+        }
+
         return $user->role === UserRole::Admin;
     }
 

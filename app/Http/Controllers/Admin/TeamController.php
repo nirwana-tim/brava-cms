@@ -22,7 +22,13 @@ class TeamController extends Controller
 
     public function index(): View
     {
-        $members = TeamMember::latest()->paginate(15);
+        $query = TeamMember::with('user')->orderBy('sort_order')->latest();
+
+        if (! auth()->user()->isSuperAdmin()) {
+            $query->whereDoesntHave('user', fn ($q) => $q->where('role', UserRole::SuperAdmin));
+        }
+
+        $members = $query->paginate(15);
 
         return view('admin.team.index', compact('members'));
     }
@@ -107,6 +113,11 @@ class TeamController extends Controller
 
     public function destroy(TeamMember $team): RedirectResponse
     {
+        if ($team->user_id && $team->user_id === auth()->id()) {
+            return redirect()->route('admin.team.index')
+                ->with('error', 'You cannot delete your own account.');
+        }
+
         $team->delete();
 
         return redirect()->route('admin.team.index')
