@@ -34,6 +34,4 @@ class PortfolioService
             return $this->model->active()->where('slug', $slug)->with(['service', 'media'])->first();
         });
     }
-
-    public function flush(): void {}
 }

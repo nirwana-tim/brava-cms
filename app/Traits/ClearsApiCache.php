@@ -8,20 +8,15 @@ trait ClearsApiCache
 {
     public static function bootClearsApiCache(): void
     {
-        static::saved(function () {
+        $flush = function () {
             if (Cache::supportsTags()) {
                 Cache::tags(['api'])->flush();
             } else {
                 Cache::flush();
             }
-        });
+        };
 
-        static::deleted(function () {
-            if (Cache::supportsTags()) {
-                Cache::tags(['api'])->flush();
-            } else {
-                Cache::flush();
-            }
-        });
+        static::saved($flush);
+        static::deleted($flush);
     }
 }

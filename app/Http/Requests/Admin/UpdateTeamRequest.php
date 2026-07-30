@@ -22,7 +22,7 @@ class UpdateTeamRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'position' => ['nullable', 'string', 'max:255'],
             'avatar' => ['nullable', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:255', $userUnique, "unique:team_members,email,{$team->id}"],
+            'email' => ['nullable', 'email', 'max:255', $userUnique, "unique:team_members,email,{$team?->id}"],
             'phone' => ['nullable', 'string', 'max:50'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['boolean'],

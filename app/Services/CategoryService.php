@@ -16,6 +16,4 @@ class CategoryService
             return $this->model->latest()->get();
         });
     }
-
-    public function flush(): void {}
 }

@@ -37,7 +37,7 @@ class PortfolioController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
                     ->orWhere('slug', 'like', "%{$search}%")
-                    ->orWhere('client_name', 'like', "%{$search}%");
+                    ->orWhere('client', 'like', "%{$search}%");
             });
         }
 

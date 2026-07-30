@@ -17,7 +17,6 @@
                             <option value="">Semua Tipe</option>
                             <option value="blog" {{ request('type') === 'blog' ? 'selected' : '' }}>Blog</option>
                             <option value="portfolio" {{ request('type') === 'portfolio' ? 'selected' : '' }}>Portfolio</option>
-                            <option value="service" {{ request('type') === 'service' ? 'selected' : '' }}>Service</option>
                         </select>
                     </div>
                     <div class="flex items-center gap-2 ml-auto">

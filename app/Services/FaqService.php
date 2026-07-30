@@ -18,6 +18,4 @@ class FaqService
                 ->get();
         });
     }
-
-    public function flush(): void {}
 }

@@ -23,6 +23,4 @@ class SettingService
             return $this->model->inGroup($group)->get()->keyBy('key');
         });
     }
-
-    public function flush(): void {}
 }

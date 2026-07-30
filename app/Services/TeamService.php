@@ -21,6 +21,4 @@ class TeamService
                 ->get();
         });
     }
-
-    public function flush(): void {}
 }

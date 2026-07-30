@@ -40,6 +40,4 @@ class BlogService
             return $this->model->published()->where('slug', $slug)->with(['author', 'categories', 'media'])->first();
         });
     }
-
-    public function flush(): void {}
 }

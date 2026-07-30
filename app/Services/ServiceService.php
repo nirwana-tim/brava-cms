@@ -17,7 +17,6 @@ class ServiceService
         return Cache::flexible('services.list.'.md5(serialize($filters)), [900, 1800], function () use ($filters, $perPage) {
             return $this->model->with('portfolioItems')
                 ->active()
-                ->published()
                 ->when($filters['search'] ?? null, function ($query, $search) {
                     $query->where(function ($q) use ($search) {
                         $q->where('title', 'like', '%'.$search.'%')
@@ -28,6 +27,4 @@ class ServiceService
                 ->paginate($perPage);
         });
     }
-
-    public function flush(): void {}
 }

@@ -34,6 +34,7 @@ class UpdatePortfolioRequest extends FormRequest
             'og_image' => ['nullable', 'string', 'max:255'],
             'og_image_alt' => ['nullable', 'string', 'max:255'],
             'robots_index' => ['boolean'],
+            'gallery_media_ids' => ['nullable', 'string'],
         ];
     }
 }

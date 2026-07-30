@@ -32,7 +32,6 @@ class TestimonialController extends Controller
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('client_name', 'like', "%{$search}%")
-                    ->orWhere('client_company', 'like', "%{$search}%")
                     ->orWhere('content', 'like', "%{$search}%");
             });
         }

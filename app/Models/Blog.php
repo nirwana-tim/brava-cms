@@ -28,7 +28,6 @@ class Blog extends Model
     protected function casts(): array
     {
         return [
-            'is_active' => 'boolean',
             'is_featured' => 'boolean',
             'robots_index' => 'boolean',
             'robots_follow' => 'boolean',

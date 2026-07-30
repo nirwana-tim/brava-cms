@@ -51,6 +51,11 @@ class CategoryController extends Controller
             ->with('success', 'Category created successfully.');
     }
 
+    public function show(Category $category): RedirectResponse
+    {
+        return redirect()->route('admin.categories.edit', $category);
+    }
+
     public function edit(Category $category): View
     {
         return view('admin.categories.edit', compact('category'));

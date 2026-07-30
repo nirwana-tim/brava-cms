@@ -33,7 +33,7 @@ class TeamController extends Controller
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('job_title', 'like', "%{$search}%")
+                    ->orWhere('position', 'like', "%{$search}%")
                     ->orWhere('bio', 'like', "%{$search}%")
                     ->orWhereHas('user', fn ($uq) => $uq->where('email', 'like', "%{$search}%"));
             });

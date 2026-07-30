@@ -29,11 +29,7 @@ class BlogController extends Controller
         }
 
         if ($status = $request->input('status')) {
-            if ($status === 'published') {
-                $query->where('is_published', true);
-            } elseif ($status === 'draft') {
-                $query->where('is_published', false);
-            }
+            $query->where('status', $status);
         }
 
         if ($search = $request->input('search')) {

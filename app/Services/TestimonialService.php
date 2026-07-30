@@ -16,6 +16,4 @@ class TestimonialService
             return $this->model->active()->orderBy('sort_order')->get();
         });
     }
-
-    public function flush(): void {}
 }
