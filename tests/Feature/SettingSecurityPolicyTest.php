@@ -13,17 +13,18 @@ beforeEach(function () {
     Setting::create(['key' => 'google_analytics_id', 'value' => 'G-ORIGINAL123', 'group' => 'seo', 'type' => 'text']);
 });
 
-test('normal admin sees seo or general branding settings as disabled read-only and sees webmaster notice', function () {
+test('normal admin sees seo or general branding settings in technical settings card with developer notice', function () {
     $admin = User::factory()->create(['role' => UserRole::Admin]);
 
     $response = $this->actingAs($admin)->get('/admin/settings');
 
     $response->assertStatus(200);
-    $response->assertSee('site_name');
+    $response->assertSee('Technical Settings');
+    $response->assertSee('Site Name');
+    $response->assertSee('Brava CMS');
     $response->assertSee('hello@brava.id');
     $response->assertSee('G-ORIGINAL123');
-    $response->assertSee('Pengaturan ini hanya bisa diubah oleh webmaster/developer');
-    $response->assertSee('disabled');
+    $response->assertSee('Untuk perubahan pengaturan ini, silakan hubungi developer.');
 });
 
 test('superadmin can see all settings including seo and sees impact notes', function () {
