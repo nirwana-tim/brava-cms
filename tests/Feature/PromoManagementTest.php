@@ -60,6 +60,26 @@ test('api highlight endpoint returns active highlighted promo or falls back to l
         ->assertJsonPath('data.is_highlighted', true);
 });
 
+test('api highlight endpoint falls back to regular running promo if highlighted promo expires overnight', function () {
+    $expiredHighlight = Promo::factory()->highlighted()->create([
+        'title' => 'Expired Hero',
+        'valid_until' => now()->addHour(),
+    ]);
+
+    // Simulate overnight expiration without triggering model saving rule
+    Promo::withoutEvents(fn () => $expiredHighlight->update(['valid_until' => now()->subDay()]));
+
+    $activeRunning = Promo::factory()->create([
+        'title' => 'Active Regular Promo',
+        'is_highlighted' => false,
+    ]);
+
+    $response = $this->getJson('/api/promos/highlight');
+
+    $response->assertStatus(200)
+        ->assertJsonPath('data.title', 'Active Regular Promo');
+});
+
 test('api list endpoint excludes highlighted and inactive, but includes expired', function () {
     $highlight = Promo::factory()->highlighted()->create(['title' => 'Highlight Promo']);
     $regular1 = Promo::factory()->create(['title' => 'Regular Active 1', 'is_highlighted' => false]);

@@ -11,7 +11,7 @@ class PromoService
     public function getHighlighted(): ?Promo
     {
         return Cache::flexible('promos.highlight', [900, 1800], function () {
-            $highlight = Promo::active()->highlighted()->latest()->first();
+            $highlight = Promo::currentlyRunning()->highlighted()->latest()->first();
 
             if (! $highlight) {
                 $highlight = Promo::currentlyRunning()->latest()->first();
