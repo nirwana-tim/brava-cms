@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\PortfolioController;
+use App\Http\Controllers\Admin\PromoController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TeamController;
@@ -31,6 +32,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::post('portfolio/{portfolio}/media/{medium}/set-cover', [PortfolioController::class, 'setCover'])->name('portfolio.media.set-cover');
     Route::resource('testimonials', TestimonialController::class);
     Route::resource('faqs', FaqController::class);
+    Route::post('promos/{promo}/highlight', [PromoController::class, 'highlight'])->name('promos.highlight');
+    Route::resource('promos', PromoController::class);
     Route::get('team/{team}/reset-password', [TeamController::class, 'resetPassword'])->name('team.reset-password');
     Route::put('team/{team}/password', [TeamController::class, 'updatePassword'])->name('team.password');
     Route::resource('team', TeamController::class);

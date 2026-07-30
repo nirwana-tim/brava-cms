@@ -92,6 +92,12 @@
             <div class="pt-4 pb-2">
                 <p class="px-3 text-xs font-semibold uppercase tracking-wider" style="color: var(--sidebar-section-header)">Engagement</p>
             </div>
+            <x-admin.sidebar-link :href="route('admin.promos.index')" :active="request()->routeIs('admin.promos.*')">
+                <x-slot:icon>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                </x-slot>
+                Promo & Voucher
+            </x-admin.sidebar-link>
             <x-admin.sidebar-link :href="route('admin.testimonials.index')" :active="request()->routeIs('admin.testimonials.*')">
                 <x-slot:icon>
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>

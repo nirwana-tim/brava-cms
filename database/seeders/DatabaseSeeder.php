@@ -53,6 +53,7 @@ class DatabaseSeeder extends Seeder
             TestimonialSeeder::class,
             FaqSeeder::class,
             TeamSeeder::class,
+            PromoSeeder::class,
         ]);
     }
 }

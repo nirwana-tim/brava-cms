@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\FaqController;
 use App\Http\Controllers\Api\PortfolioController;
+use App\Http\Controllers\Api\PromoController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\TeamController;
@@ -22,6 +23,9 @@ Route::middleware('throttle:60,1')->group(function () {
     Route::get('/testimonials', [TestimonialController::class, 'index']);
     Route::get('/faqs', [FaqController::class, 'index']);
     Route::get('/team', [TeamController::class, 'index']);
+    Route::get('/promos/highlight', [PromoController::class, 'highlight']);
+    Route::get('/promos', [PromoController::class, 'index']);
+    Route::get('/promos/{slug}', [PromoController::class, 'show']);
 });
 
 Route::post('/contact', [ContactController::class, 'store'])

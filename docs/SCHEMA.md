@@ -164,3 +164,22 @@
 | is_active | boolean | default true |
 | timestamps | | |
 | softDeletes | | |
+
+## Table: `promos`
+| Column | Type | Notes |
+|--------|------|-------|
+| id | bigIncrements | |
+| title | string(255) | Promo title (e.g., 40% Diskon Seragam Perusahaan) |
+| slug | string(255) | Unique URL slug |
+| badge_text | string(100) | nullable (e.g., PROMO TERBATAS) |
+| discount_info | string(100) | nullable (e.g., 40%, Rp 500.000) |
+| description | text | nullable |
+| image | string(500) | nullable |
+| image_alt | string(255) | nullable |
+| valid_from | dateTime | nullable |
+| valid_until | dateTime | nullable |
+| wa_template | text | nullable (Custom WA message template) |
+| is_highlighted | boolean | default false (Only max 1 true) |
+| is_active | boolean | default true |
+| timestamps | | |
+| softDeletes | | |

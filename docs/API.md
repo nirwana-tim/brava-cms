@@ -522,6 +522,44 @@ GET /api/blogs?fields=id,title,slug,excerpt,published_at,author
 | `/api/faqs` | 1 hour | Cache::flexible |
 | `/api/team` | 1 hour | Cache::flexible |
 | `/api/portfolio` | 30 min | Cache::flexible |
+| `/api/promos/highlight` | 15 min | Cache::flexible([900, 1800], ...) |
+| `/api/promos` | 15 min | Cache::flexible([900, 1800], ...) |
+
+---
+
+### Promos & Special Offers
+
+#### `GET /api/promos/highlight`
+Returns the single active highlighted promo (hero banner & modal popup). Automatically falls back to the latest active promo if the highlighted promo has expired.
+
+Response:
+```json
+{
+    "success": true,
+    "data": {
+        "id": 1,
+        "title": "40% Diskon Untuk Pemesanan Seragam Perusahaan",
+        "slug": "40-diskon-untuk-pemesanan-seragam-perusahaan",
+        "badge_text": "PROMO TERBATAS",
+        "discount_info": "40%",
+        "description": "Dapatkan potongan harga untuk pemesanan seragam...",
+        "image": "http://localhost:8000/storage/promos/seragam-promo.jpg",
+        "image_alt": "Diskon Seragam Perusahaan 40%",
+        "valid_from": "2026-07-01 00:00:00",
+        "valid_until": "2026-09-30 23:59:59",
+        "wa_template": "Halo Brava, saya ingin klaim Diskon 40% Pemesanan Seragam...",
+        "is_highlighted": true
+    }
+}
+```
+
+#### `GET /api/promos`
+Returns paginated list of active non-highlighted promos (`where('is_highlighted', false)`).
+
+| Param | Type | Description |
+|-------|------|-------------|
+| `per_page` | int | Items per page (default: 12, max: 100) |
+| `page` | int | Page number |
 
 Cache is automatically flushed via the `App\Traits\ClearsApiCache` trait on model `saved` / `deleted` events across all CMS models.
 
