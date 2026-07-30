@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\StoreServiceRequest;
 use App\Http\Requests\Admin\UpdateServiceRequest;
 use App\Models\Service;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ServiceController extends Controller
@@ -16,9 +17,23 @@ class ServiceController extends Controller
         $this->authorizeResource(Service::class, 'service');
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
-        $services = Service::latest()->paginate(15);
+        $query = Service::query();
+
+        if ($request->filled('status')) {
+            $query->where('is_active', $request->input('status') === 'active');
+        }
+
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('slug', 'like', "%{$search}%")
+                    ->orWhere('short_description', 'like', "%{$search}%");
+            });
+        }
+
+        $services = $query->latest()->paginate(15)->withQueryString();
 
         return view('admin.services.index', compact('services'));
     }

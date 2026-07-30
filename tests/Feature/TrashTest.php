@@ -2,6 +2,7 @@
 
 use App\Enums\UserRole;
 use App\Models\Blog;
+use App\Models\Promo;
 use App\Models\User;
 
 test('regular admin cannot access recycle bin', function () {
@@ -67,4 +68,23 @@ test('super admin can permanently force delete a soft-deleted blog post', functi
 
     $response->assertRedirect('/admin/trash?type=blogs');
     expect(Blog::withTrashed()->count())->toBe(0);
+});
+
+test('super admin can restore soft-deleted promo', function () {
+    $superAdmin = User::factory()->create([
+        'role' => UserRole::SuperAdmin,
+    ]);
+
+    $promo = Promo::factory()->create();
+    $promo->delete();
+
+    expect(Promo::onlyTrashed()->count())->toBe(1);
+
+    $response = $this
+        ->actingAs($superAdmin)
+        ->post("/admin/trash/promos/{$promo->id}/restore");
+
+    $response->assertRedirect('/admin/trash?type=promos');
+    expect(Promo::onlyTrashed()->count())->toBe(0);
+    expect(Promo::count())->toBe(1);
 });

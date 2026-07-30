@@ -61,6 +61,20 @@ class PromoService
         $perPage = $filters['per_page'] ?? 15;
 
         return Promo::query()
+            ->when(! empty($filters['status']), function ($query) use ($filters) {
+                $status = $filters['status'];
+                if ($status === 'active') {
+                    $query->where('is_active', true)
+                        ->where(fn ($q) => $q->whereNull('valid_until')->orWhere('valid_until', '>=', now()))
+                        ->where(fn ($q) => $q->whereNull('valid_from')->orWhere('valid_from', '<=', now()));
+                } elseif ($status === 'inactive') {
+                    $query->where('is_active', false);
+                } elseif ($status === 'expired') {
+                    $query->where('valid_until', '<', now());
+                } elseif ($status === 'coming_soon') {
+                    $query->where('valid_from', '>', now());
+                }
+            })
             ->when(! empty($filters['search']), function ($query) use ($filters) {
                 $search = $filters['search'];
                 $query->where(function ($q) use ($search) {
@@ -71,7 +85,8 @@ class PromoService
             })
             ->orderByDesc('is_highlighted')
             ->latest()
-            ->paginate($perPage);
+            ->paginate($perPage)
+            ->withQueryString();
     }
 
     /**

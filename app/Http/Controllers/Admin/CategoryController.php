@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\StoreCategoryRequest;
 use App\Http\Requests\Admin\UpdateCategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class CategoryController extends Controller
@@ -16,9 +17,23 @@ class CategoryController extends Controller
         $this->authorizeResource(Category::class, 'category');
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
-        $categories = Category::latest()->paginate(15);
+        $query = Category::query();
+
+        if ($type = $request->input('type')) {
+            $query->where('type', $type);
+        }
+
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('slug', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        $categories = $query->latest()->paginate(15)->withQueryString();
 
         return view('admin.categories.index', compact('categories'));
     }

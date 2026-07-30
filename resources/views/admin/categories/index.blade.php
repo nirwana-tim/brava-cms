@@ -2,11 +2,33 @@
     <x-slot name="title">{{ __('Categories') }}</x-slot>
 
     <div class="card">
-        <div class="card-header">
+        <div class="card-header flex items-center justify-between gap-4">
             <h2 class="text-lg font-semibold" style="color: var(--heading-text)">Categories</h2>
             <a href="{{ route('admin.categories.create') }}">
                 <x-primary-button>{{ __('New Category') }}</x-primary-button>
             </a>
+        </div>
+
+        <div class="border-t" style="border-color: var(--card-border);">
+            <div class="px-6 py-3">
+                <form method="GET" action="{{ route('admin.categories.index') }}" class="flex items-center justify-between gap-3 w-full">
+                    <div class="flex items-center gap-2">
+                        <select name="type" onchange="this.form.submit()" class="form-select text-xs py-1.5 px-3 rounded-md border" style="border-color: var(--card-border); background-color: var(--input-bg); color: var(--input-text);">
+                            <option value="">Semua Tipe</option>
+                            <option value="blog" {{ request('type') === 'blog' ? 'selected' : '' }}>Blog</option>
+                            <option value="portfolio" {{ request('type') === 'portfolio' ? 'selected' : '' }}>Portfolio</option>
+                            <option value="service" {{ request('type') === 'service' ? 'selected' : '' }}>Service</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-2 ml-auto">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kategori..." class="form-input text-xs py-1.5 px-3 rounded-md border w-56" style="border-color: var(--card-border); background: var(--input-bg); color: var(--input-text);" />
+                        <button type="submit" class="btn-secondary text-xs py-1.5 px-3">Cari</button>
+                        @if (request('search') || request('type'))
+                            <a href="{{ route('admin.categories.index') }}" class="btn-secondary text-xs py-1.5 px-2.5" title="Reset Filter">Reset</a>
+                        @endif
+                    </div>
+                </form>
+            </div>
         </div>
 
         <div class="card-body">

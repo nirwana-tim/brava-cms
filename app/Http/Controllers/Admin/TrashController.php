@@ -7,6 +7,7 @@ use App\Models\Blog;
 use App\Models\Category;
 use App\Models\Faq;
 use App\Models\PortfolioItem;
+use App\Models\Promo;
 use App\Models\Service;
 use App\Models\TeamMember;
 use App\Models\Testimonial;
@@ -27,6 +28,7 @@ class TrashController extends Controller
         'faqs' => ['label' => 'FAQs', 'model' => Faq::class, 'title_field' => 'question'],
         'categories' => ['label' => 'Categories', 'model' => Category::class, 'title_field' => 'name'],
         'team' => ['label' => 'Team Members', 'model' => TeamMember::class, 'title_field' => 'name'],
+        'promos' => ['label' => 'Promo & Voucher', 'model' => Promo::class, 'title_field' => 'title'],
     ];
 
     public function index(Request $request): View

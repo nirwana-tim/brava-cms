@@ -7,21 +7,47 @@ use App\Http\Requests\Admin\StoreBlogRequest;
 use App\Http\Requests\Admin\UpdateBlogRequest;
 use App\Models\Blog;
 use App\Models\Category;
+use App\Services\BlogService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class BlogController extends Controller
 {
-    public function __construct()
-    {
+    public function __construct(
+        protected BlogService $blogService
+    ) {
         $this->authorizeResource(Blog::class, 'blog');
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
-        $blogs = Blog::with(['author', 'categories'])->latest()->paginate(15);
+        $query = Blog::with(['author', 'categories']);
 
-        return view('admin.blogs.index', compact('blogs'));
+        if ($categoryId = $request->input('category')) {
+            $query->whereHas('categories', fn ($q) => $q->where('categories.id', $categoryId));
+        }
+
+        if ($status = $request->input('status')) {
+            if ($status === 'published') {
+                $query->where('is_published', true);
+            } elseif ($status === 'draft') {
+                $query->where('is_published', false);
+            }
+        }
+
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('slug', 'like', "%{$search}%")
+                    ->orWhere('excerpt', 'like', "%{$search}%");
+            });
+        }
+
+        $blogs = $query->latest()->paginate(15)->withQueryString();
+        $categories = Category::byType('blog')->orderBy('name')->get();
+
+        return view('admin.blogs.index', compact('blogs', 'categories'));
     }
 
     public function create(): View

@@ -2,15 +2,38 @@
     <x-slot name="title">{{ __('Team') }}</x-slot>
 
     <div class="card">
-        <div class="card-header">
+        <div class="card-header flex items-center justify-between gap-4">
             <h2 class="text-lg font-semibold" style="color: var(--heading-text)">Team</h2>
             <a href="{{ route('admin.team.create') }}">
                 <x-primary-button>{{ __('New Team Member') }}</x-primary-button>
             </a>
         </div>
 
+        <div class="border-t" style="border-color: var(--card-border);">
+            <div class="px-6 py-3">
+                <form method="GET" action="{{ route('admin.team.index') }}" class="flex items-center justify-between gap-3 w-full">
+                    <div class="flex items-center gap-2">
+                        @if (auth()->user()->isSuperAdmin())
+                            <select name="role" onchange="this.form.submit()" class="form-select text-xs py-1.5 px-3 rounded-md border" style="border-color: var(--card-border); background-color: var(--input-bg); color: var(--input-text);">
+                                <option value="">Semua Role</option>
+                                <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Admin</option>
+                                <option value="super_admin" {{ request('role') === 'super_admin' ? 'selected' : '' }}>Super Admin</option>
+                            </select>
+                        @endif
+                    </div>
+                    <div class="flex items-center gap-2 ml-auto">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari tim..." class="form-input text-xs py-1.5 px-3 rounded-md border w-56" style="border-color: var(--card-border); background: var(--input-bg); color: var(--input-text);" />
+                        <button type="submit" class="btn-secondary text-xs py-1.5 px-3">Cari</button>
+                        @if (request('search') || request('role'))
+                            <a href="{{ route('admin.team.index') }}" class="btn-secondary text-xs py-1.5 px-2.5" title="Reset Filter">Reset</a>
+                        @endif
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <div class="card-body">
-            <div class="admin-table-wrap">
+        <div class="admin-table-wrap">
                 <table>
                     <thead>
                         <tr>

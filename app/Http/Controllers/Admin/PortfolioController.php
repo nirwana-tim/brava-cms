@@ -21,11 +21,31 @@ class PortfolioController extends Controller
         $this->authorizeResource(PortfolioItem::class, 'portfolio');
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
-        $items = PortfolioItem::with('service', 'categories')->latest()->paginate(15);
+        $query = PortfolioItem::with('service', 'categories');
 
-        return view('admin.portfolio.index', compact('items'));
+        if ($categoryId = $request->input('category')) {
+            $query->whereHas('categories', fn ($q) => $q->where('categories.id', $categoryId));
+        }
+
+        if ($serviceId = $request->input('service')) {
+            $query->where('service_id', $serviceId);
+        }
+
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('slug', 'like', "%{$search}%")
+                    ->orWhere('client_name', 'like', "%{$search}%");
+            });
+        }
+
+        $items = $query->latest()->paginate(15)->withQueryString();
+        $categories = Category::byType('portfolio')->orderBy('name')->get();
+        $services = Service::orderBy('title')->get();
+
+        return view('admin.portfolio.index', compact('items', 'categories', 'services'));
     }
 
     public function create(): View

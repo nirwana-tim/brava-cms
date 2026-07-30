@@ -20,15 +20,26 @@ class TeamController extends Controller
         $this->authorizeResource(TeamMember::class, 'team');
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
         $query = TeamMember::with('user')->orderBy('sort_order')->latest();
 
         if (! auth()->user()->isSuperAdmin()) {
             $query->whereDoesntHave('user', fn ($q) => $q->where('role', UserRole::SuperAdmin));
+        } elseif ($role = $request->input('role')) {
+            $query->whereHas('user', fn ($q) => $q->where('role', $role));
         }
 
-        $members = $query->paginate(15);
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('job_title', 'like', "%{$search}%")
+                    ->orWhere('bio', 'like', "%{$search}%")
+                    ->orWhereHas('user', fn ($uq) => $uq->where('email', 'like', "%{$search}%"));
+            });
+        }
+
+        $members = $query->paginate(15)->withQueryString();
 
         return view('admin.team.index', compact('members'));
     }

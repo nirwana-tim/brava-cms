@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\StoreFaqRequest;
 use App\Http\Requests\Admin\UpdateFaqRequest;
 use App\Models\Faq;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class FaqController extends Controller
@@ -16,9 +17,22 @@ class FaqController extends Controller
         $this->authorizeResource(Faq::class, 'faq');
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
-        $faqs = Faq::latest()->paginate(15);
+        $query = Faq::query();
+
+        if ($request->filled('status')) {
+            $query->where('is_active', $request->input('status') === 'active');
+        }
+
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('question', 'like', "%{$search}%")
+                    ->orWhere('answer', 'like', "%{$search}%");
+            });
+        }
+
+        $faqs = $query->latest()->paginate(15)->withQueryString();
 
         return view('admin.faqs.index', compact('faqs'));
     }

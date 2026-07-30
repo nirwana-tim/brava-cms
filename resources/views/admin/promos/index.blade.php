@@ -2,24 +2,41 @@
     <x-slot name="title">{{ __('Promo & Penawaran Spesial') }}</x-slot>
 
     <div class="card">
-        <div class="card-header flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="card-header flex items-center justify-between gap-4">
             <div>
                 <h2 class="text-lg font-semibold" style="color: var(--heading-text)">Promo & Voucher</h2>
                 <p class="text-xs" style="color: var(--muted-text)">Kelola banner promo utama (Highlight) dan daftar penawaran spesial.</p>
             </div>
-            <div class="flex items-center gap-3">
-                <form method="GET" action="{{ route('admin.promos.index') }}" class="flex items-center gap-2">
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari promo..." class="form-input text-xs py-1.5 px-3 rounded-md border" style="border-color: var(--card-border); background: var(--input-bg); color: var(--input-text);" />
-                    <button type="submit" class="btn-secondary text-xs py-1.5 px-3">Cari</button>
+            <a href="{{ route('admin.promos.create') }}">
+                <x-primary-button>{{ __('New Promo') }}</x-primary-button>
+            </a>
+        </div>
+
+        <div class="border-t" style="border-color: var(--card-border);">
+            <div class="px-6 py-3">
+                <form method="GET" action="{{ route('admin.promos.index') }}" class="flex items-center justify-between gap-3 w-full">
+                    <div class="flex items-center gap-2">
+                        <select name="status" onchange="this.form.submit()" class="form-select text-xs py-1.5 px-3 rounded-md border" style="border-color: var(--card-border); background-color: var(--input-bg); color: var(--input-text);">
+                            <option value="">Semua Status</option>
+                            <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
+                            <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
+                            <option value="expired" {{ request('status') === 'expired' ? 'selected' : '' }}>Expired</option>
+                            <option value="coming_soon" {{ request('status') === 'coming_soon' ? 'selected' : '' }}>Coming Soon</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-2 ml-auto">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari promo..." class="form-input text-xs py-1.5 px-3 rounded-md border w-56" style="border-color: var(--card-border); background: var(--input-bg); color: var(--input-text);" />
+                        <button type="submit" class="btn-secondary text-xs py-1.5 px-3">Cari</button>
+                        @if (request('search') || request('status'))
+                            <a href="{{ route('admin.promos.index') }}" class="btn-secondary text-xs py-1.5 px-2.5" title="Reset Filter">Reset</a>
+                        @endif
+                    </div>
                 </form>
-                <a href="{{ route('admin.promos.create') }}">
-                    <x-primary-button>{{ __('New Promo') }}</x-primary-button>
-                </a>
             </div>
         </div>
 
         <div class="card-body">
-            <div class="admin-table-wrap">
+        <div class="admin-table-wrap">
                 <table>
                     <thead>
                         <tr>

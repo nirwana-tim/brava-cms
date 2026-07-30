@@ -41,10 +41,9 @@
                                         @if ($setting->type === 'textarea')
                                             <textarea id="setting_{{ $setting->key }}" name="{{ $setting->key }}" class="form-textarea mt-1" rows="3">{{ old($setting->key, $setting->value) }}</textarea>
                                         @elseif ($setting->type === 'boolean' || $setting->type === 'bool')
-                                            <label class="flex items-center gap-2 mt-1">
-                                                <input type="checkbox" name="{{ $setting->key }}" value="1" class="form-checkbox" {{ old($setting->key, $setting->value) ? 'checked' : '' }} />
-                                                <span class="text-sm" style="color: var(--label-text)">Enabled</span>
-                                            </label>
+                                            <div class="mt-1">
+                                                <x-admin.toggle name="{{ $setting->key }}" :checked="old($setting->key, $setting->value)" label="Enabled" />
+                                            </div>
                                         @else
                                             <x-text-input id="setting_{{ $setting->key }}" name="{{ $setting->key }}" type="text" class="mt-1 block w-full" :value="old($setting->key, $setting->value)" />
                                         @endif

@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\StoreTestimonialRequest;
 use App\Http\Requests\Admin\UpdateTestimonialRequest;
 use App\Models\Testimonial;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class TestimonialController extends Controller
@@ -16,9 +17,27 @@ class TestimonialController extends Controller
         $this->authorizeResource(Testimonial::class, 'testimonial');
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
-        $testimonials = Testimonial::latest()->paginate(15);
+        $query = Testimonial::query();
+
+        if ($rating = $request->input('rating')) {
+            $query->where('rating', $rating);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('is_active', $request->input('status') === 'active');
+        }
+
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('client_name', 'like', "%{$search}%")
+                    ->orWhere('client_company', 'like', "%{$search}%")
+                    ->orWhere('content', 'like', "%{$search}%");
+            });
+        }
+
+        $testimonials = $query->latest()->paginate(15)->withQueryString();
 
         return view('admin.testimonials.index', compact('testimonials'));
     }

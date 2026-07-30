@@ -21,7 +21,7 @@ class PromoController extends Controller
 
     public function index(Request $request): View
     {
-        $promos = $this->promoService->listAllAdmin($request->only('search', 'per_page'));
+        $promos = $this->promoService->listAllAdmin($request->only('search', 'status', 'per_page'));
 
         return view('admin.promos.index', compact('promos'));
     }
