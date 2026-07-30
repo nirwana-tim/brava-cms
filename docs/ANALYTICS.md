@@ -1,12 +1,14 @@
 # Brava CMS — Google Analytics Dashboard
 
 > Integrasi GA4 untuk website compro — data ditampilkan langsung di dashboard admin (tanpa menu sidebar terpisah).
+>
+> **Panduan Setup Lengkap:** Untuk panduan manual langkah-demi-langkah dari awal membuat akun GA4 hingga download file JSON Service Account Google Cloud, silakan baca dokumentasi [`GA4_SETUP_GUIDE.md`](GA4_SETUP_GUIDE.md).
 
 ---
 
 ## Overview
 
-Semua data Google Analytics 4 muncul langsung di halaman dashboard utama (`/admin`). Gak perlu navigasi ke halaman lain. Data di-cache 2 jam (stale 4 jam) — maksimal 12 request/hari ke GA API dari kuota gratis 50.000/hari.
+Semua data Google Analytics 4 muncul langsung di halaman dashboard utama (`/admin`). Gak perlu navigasi ke halaman lain. Data di-cache 30 menit (stale 60 menit) — sangat segar dan responsif, dengan konsumsi hanya ~1,15% dari kuota gratis 25.000 request/hari GA API.
 
 ### Untuk Reseller Konveksi
 
@@ -29,10 +31,13 @@ Semua data Google Analytics 4 muncul langsung di halaman dashboard utama (`/admi
 6. Isi `.env`:
    ```env
    GA4_PROPERTY_ID=123456789
-   GA4_SERVICE_ACCOUNT_KEY=storage/app/analytics/service-account-key.json
+   GA4_SERVICE_ACCOUNT_KEY=app/analytics/service-account-key.json
+   GA4_CACHE_FRESH=30
+   GA4_CACHE_STALE=60
    ```
 
-> **Kosongin `GA4_PROPERTY_ID`** → dashboard otomatis pake data dummy (angka random) biar UI keliatan.
+> **Smart Path Resolution:** Kamu bisa menulis path JSON key secara relatif terhadap folder storage (`app/analytics/...`), menggunakan prefiks (`storage/app/...`), atau absolute path — sistem otomatis memprosesnya tanpa risiko path ganda.
+> **Kosongin `GA4_PROPERTY_ID`** → dashboard otomatis beralih ke mode **Data Dummy Dinamis** (mengikuti rute halaman compro asli seperti `/`, `/services`, `/portfolio`, `/blog`, `/about`, `/contact`, serta mengambil slug/judul asli dari database).
 
 ---
 
@@ -82,6 +87,8 @@ Services, Blog Posts, Categories, Users (dari database lokal).
 | Device Breakdown | Bar chart | `deviceCategory` | `sessions` |
 | Top Pages | Table | `pagePath`, `pageTitle` | `screenPageViews`, `averageEngagementTime` |
 
+> **Catatan Top Pages (Mode Dummy):** Pada mode dummy, daftar halaman secara otomatis menyesuaikan dengan rute Company Profile Brava CMS (`/`, `/services`, `/portfolio`, `/blog`, `/about`, `/contact`) dan menambahkan slug asli dari tabel `services`, `portfolio_items`, dan `blogs` jika tersedia di database.
+
 ### Baris 5 — Insight
 | Widget | Deskripsi |
 |--------|-----------|
@@ -120,6 +127,11 @@ $client = new BetaAnalyticsDataClient(['credentials' => $credentials]);
 | Top pages | `pagePath`, `pageTitle` | `screenPageViews`, `averageEngagementTime` |
 | Geo stats | `city` | `sessions` |
 
+> **Penting (GA4 Data API v1beta OrderBy):**
+> - Mengurutkan berdasarkan **Dimension** (contoh: `'date'`) wajib menggunakan `OrderByDimension` (`new OrderByDimension(['dimension_name' => 'date'])`).
+> - Mengurutkan berdasarkan **Metric** (contoh: `'sessions'`) wajib menggunakan `OrderByMetric` (`new OrderByMetric(['metric_name' => 'sessions'])`).
+> - Penggunaan yang terbalik akan memicu error HTTP `400 Invalid Argument` dari server Google Analytics.
+
 ---
 
 ## Caching
@@ -128,13 +140,15 @@ $client = new BetaAnalyticsDataClient(['credentials' => $credentials]);
 
 | TTL Fresh (dari API) | TTL Stale (pake data lama) |
 |----------------------|---------------------------|
-| 120 menit | 240 menit |
+| 30 menit | 60 menit |
 
 Konfigurasi `.env`:
+```env
+GA4_CACHE_FRESH=30
+GA4_CACHE_STALE=60
 ```
-GA4_CACHE_FRESH=120
-GA4_CACHE_STALE=240
-```
+
+> **Array-Only Cache Serialization:** Sistem menyimpan data cache ke database dalam bentuk **100% PHP Array murni** (`->values()->all()`) untuk mencegah kerusakan *unserialize* (`__PHP_Incomplete_Class`) pada MySQL. Data kemudian secara otomatis dikonversi menjadi `Collection` saat dihidrasi di *layer* service/controller agar langsung kompatibel dengan metode Blade (`->pluck()`, `->sortByDesc()`).
 
 ---
 

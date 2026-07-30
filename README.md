@@ -14,6 +14,7 @@
 - **Testimonials & FAQs:** Streamlined testimonials supporting company/organization names (`client_name` with `company` alias) and reorderable FAQs.
 - **Settings Module:** Grouped configuration management (`general`, `company`, `contact`, `social`, `seo`) with reliable checkbox and data type preservation.
 - **Team Module:** Internal CMS support for team profiles with email uniqueness checks and conditional authentication fields.
+- **Google Analytics 4 (GA4) Dashboard:** Integrated admin dashboard reporting (`/admin`) with hybrid "plug-and-play" architecture—automatic fallback to dynamic dummy analytics when GA4 credentials are not set, and smart caching (`Cache::flexible`) for 30 minutes fresh / 60 minutes stale.
 
 ---
 
@@ -25,6 +26,7 @@
 | [`docs/SCHEMA.md`](docs/SCHEMA.md) | Complete database table schemas, column types, and relationships. |
 | [`docs/AI_CONTEXT.md`](docs/AI_CONTEXT.md) | Architectural overview, design decisions, and conventions for AI coding assistants. |
 | [`docs/ANALYTICS.md`](docs/ANALYTICS.md) | Integration plan for Google Analytics 4 (GA4) inside the admin dashboard. |
+| [`docs/GA4_SETUP_GUIDE.md`](docs/GA4_SETUP_GUIDE.md) | Step-by-step manual guide for Google Analytics 4 (GA4) activation and Google Cloud Service Account setup. |
 | [`docs/AI_BEHAVIOUR.md`](docs/AI_BEHAVIOUR.md) | Behavioral guidelines for AI coding assistants working on Brava CMS. |
 
 ---
