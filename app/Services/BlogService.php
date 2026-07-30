@@ -12,7 +12,7 @@ class BlogService
 
     public function list(array $filters = []): LengthAwarePaginator
     {
-        $perPage = $filters['per_page'] ?? 12;
+        $perPage = max(1, min((int) ($filters['per_page'] ?? 12), 100));
 
         return Cache::flexible('blog.list.'.md5(serialize($filters)), [900, 1800], function () use ($filters, $perPage) {
             return $this->model->with(['author', 'categories'])

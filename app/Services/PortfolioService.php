@@ -12,7 +12,7 @@ class PortfolioService
 
     public function list(array $filters = []): LengthAwarePaginator
     {
-        $perPage = $filters['per_page'] ?? 12;
+        $perPage = max(1, min((int) ($filters['per_page'] ?? 12), 100));
 
         return Cache::flexible('portfolio.list.'.md5(serialize($filters)), [1800, 3600], function () use ($filters, $perPage) {
             return $this->model->with('service')

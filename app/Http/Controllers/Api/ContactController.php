@@ -19,7 +19,7 @@ class ContactController extends ApiController
             'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:50',
             'subject' => 'nullable|string|max:255',
-            'message' => 'required|string',
+            'message' => 'required|string|max:5000',
         ]);
 
         $this->service->send($validated);

@@ -10,9 +10,13 @@ use Illuminate\View\View;
 
 class SettingController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $settings = Setting::all()->groupBy('group');
+        $groupOrder = ['general', 'contact', 'social', 'seo', 'system'];
+
+        $settings = Setting::all()
+            ->groupBy('group')
+            ->sortBy(fn ($_, string $group) => array_search($group, $groupOrder) !== false ? array_search($group, $groupOrder) : 99);
 
         return view('admin.settings.index', compact('settings'));
     }
@@ -22,6 +26,10 @@ class SettingController extends Controller
         $settings = Setting::all();
 
         foreach ($settings as $setting) {
+            if ($request->user()->cannot('update', $setting)) {
+                continue;
+            }
+
             if ($setting->type === 'boolean' || $setting->type === 'bool') {
                 $setting->update(['value' => $request->has($setting->key) ? '1' : '0']);
             } elseif ($request->has($setting->key)) {
@@ -30,7 +38,7 @@ class SettingController extends Controller
         }
 
         foreach ($request->except('_token', '_method') as $key => $value) {
-            if (! $settings->contains('key', $key)) {
+            if (! $settings->contains('key', $key) && $request->user()->isSuperAdmin()) {
                 Setting::create([
                     'key' => $key,
                     'value' => $value,

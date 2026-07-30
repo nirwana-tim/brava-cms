@@ -50,7 +50,7 @@ class UploadController extends Controller
             default => $image->encodeUsingFormat(Format::JPEG, quality: 85),
         };
 
-        $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $filename = str(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))->slug()->toString();
         $extension = match ($file->getMimeType()) {
             'image/webp' => 'webp',
             'image/png' => 'png',

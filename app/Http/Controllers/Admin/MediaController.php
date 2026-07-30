@@ -42,7 +42,7 @@ class MediaController extends Controller
 
     public function pickerList(): JsonResponse
     {
-        $media = Media::latest()->get()->map(fn ($item) => [
+        $media = Media::latest()->limit(60)->get()->map(fn ($item) => [
             'id' => $item->id,
             'url' => $item->url,
             'name' => $item->name,
@@ -133,7 +133,7 @@ class MediaController extends Controller
             default => $image->encodeUsingFormat(Format::JPEG, quality: 85),
         };
 
-        $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $filename = str(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))->slug()->toString();
         $extension = match ($file->getMimeType()) {
             'image/webp' => 'webp',
             'image/png' => 'png',
