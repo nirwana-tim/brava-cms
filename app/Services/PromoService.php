@@ -10,7 +10,7 @@ class PromoService
 {
     public function getHighlighted(): ?Promo
     {
-        return Cache::flexible('promos.highlight', [900, 1800], function () {
+        return Cache::store('api')->flexible('promos.highlight', [900, 1800], function () {
             $highlight = Promo::currentlyRunning()->highlighted()->latest()->first();
 
             if (! $highlight) {
@@ -30,7 +30,7 @@ class PromoService
         $highlight = $this->getHighlighted();
         $excludeId = $highlight?->id;
 
-        return Cache::flexible('promos.list.'.md5(serialize($filters).'_'.$excludeId), [900, 1800], function () use ($filters, $perPage, $excludeId) {
+        return Cache::store('api')->flexible('promos.list.'.md5(serialize($filters).'_'.$excludeId).'.p'.request()->integer('page', 1), [900, 1800], function () use ($filters, $perPage, $excludeId) {
             return Promo::active()
                 ->when($excludeId, fn ($q) => $q->where('id', '!=', $excludeId))
                 ->when(! empty($filters['search']), function ($query) use ($filters) {
@@ -48,7 +48,7 @@ class PromoService
 
     public function getBySlug(string $slug): ?Promo
     {
-        return Cache::flexible("promos.slug.{$slug}", [1800, 3600], function () use ($slug) {
+        return Cache::store('api')->flexible("promos.slug.{$slug}", [1800, 3600], function () use ($slug) {
             return Promo::active()->where('slug', $slug)->first();
         });
     }

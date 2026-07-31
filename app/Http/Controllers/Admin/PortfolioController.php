@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Concerns\AppliesSeoFallbacks;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StorePortfolioRequest;
 use App\Http\Requests\Admin\UpdatePortfolioRequest;
@@ -16,6 +17,8 @@ use Illuminate\View\View;
 
 class PortfolioController extends Controller
 {
+    use AppliesSeoFallbacks;
+
     public function __construct()
     {
         $this->authorizeResource(PortfolioItem::class, 'portfolio');
@@ -58,7 +61,7 @@ class PortfolioController extends Controller
 
     public function store(StorePortfolioRequest $request): RedirectResponse
     {
-        $validated = $this->applySeoFallbacks($request->validated());
+        $validated = $this->applySeoFallbacks($request->validated(), 'description', 'photo', 'photo_alt');
         $portfolio = PortfolioItem::create($validated);
 
         if ($request->has('categories')) {
@@ -95,7 +98,7 @@ class PortfolioController extends Controller
 
     public function update(UpdatePortfolioRequest $request, PortfolioItem $portfolio): RedirectResponse
     {
-        $validated = $this->applySeoFallbacks($request->validated());
+        $validated = $this->applySeoFallbacks($request->validated(), 'description', 'photo', 'photo_alt');
         $portfolio->update($validated);
 
         if ($request->has('categories')) {
@@ -174,35 +177,5 @@ class PortfolioController extends Controller
         $medium->delete();
 
         return response()->json(['success' => true]);
-    }
-
-    /**
-     * @param  array<string, mixed>  $validated
-     * @return array<string, mixed>
-     */
-    private function applySeoFallbacks(array $validated): array
-    {
-        $title = $validated['title'] ?? null;
-        $description = ! empty($validated['description'])
-            ? $validated['description']
-            : str(strip_tags($validated['content'] ?? ''))->limit(160)->toString();
-
-        $validated['meta_title'] = ! empty($validated['meta_title'])
-            ? $validated['meta_title']
-            : $title;
-
-        $validated['meta_description'] = ! empty($validated['meta_description'])
-            ? $validated['meta_description']
-            : $description;
-
-        $validated['og_image'] = ! empty($validated['og_image'])
-            ? $validated['og_image']
-            : ($validated['photo'] ?? null);
-
-        $validated['og_image_alt'] = ! empty($validated['og_image_alt'])
-            ? $validated['og_image_alt']
-            : ($validated['photo_alt'] ?? null);
-
-        return $validated;
     }
 }

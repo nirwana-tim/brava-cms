@@ -1,6 +1,7 @@
 @props(['name', 'id' => null, 'checked' => false, 'label' => null])
 
 <label class="relative inline-flex items-center cursor-pointer">
+    <input type="hidden" name="{{ $name }}" value="0">
     <input type="checkbox" name="{{ $name }}" value="1"
         id="{{ $id ?? $name }}"
         class="sr-only peer"

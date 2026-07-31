@@ -14,7 +14,7 @@ class BlogService
     {
         $perPage = max(1, min((int) ($filters['per_page'] ?? 12), 100));
 
-        return Cache::flexible('blog.list.'.md5(serialize($filters)), [900, 1800], function () use ($filters, $perPage) {
+        return Cache::store('api')->flexible('blog.list.'.md5(serialize($filters)).'.p'.request()->integer('page', 1), [900, 1800], function () use ($filters, $perPage) {
             return $this->model->with(['author', 'categories'])
                 ->published()
                 ->when($filters['category'] ?? null, function ($query, $category) {
@@ -36,7 +36,7 @@ class BlogService
 
     public function getBySlug(string $slug): ?Blog
     {
-        return Cache::remember('blog.slug.'.$slug, 1800, function () use ($slug) {
+        return Cache::store('api')->remember('blog.slug.'.$slug, 1800, function () use ($slug) {
             return $this->model->published()->where('slug', $slug)->with(['author', 'categories', 'media'])->first();
         });
     }

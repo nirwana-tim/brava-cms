@@ -14,7 +14,7 @@ class ServiceService
     {
         $perPage = max(1, min((int) ($filters['per_page'] ?? 12), 100));
 
-        return Cache::flexible('services.list.'.md5(serialize($filters)), [900, 1800], function () use ($filters, $perPage) {
+        return Cache::store('api')->flexible('services.list.'.md5(serialize($filters)).'.p'.request()->integer('page', 1), [900, 1800], function () use ($filters, $perPage) {
             return $this->model->with('portfolioItems')
                 ->active()
                 ->when($filters['search'] ?? null, function ($query, $search) {

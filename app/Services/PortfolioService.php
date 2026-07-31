@@ -14,7 +14,7 @@ class PortfolioService
     {
         $perPage = max(1, min((int) ($filters['per_page'] ?? 12), 100));
 
-        return Cache::flexible('portfolio.list.'.md5(serialize($filters)), [1800, 3600], function () use ($filters, $perPage) {
+        return Cache::store('api')->flexible('portfolio.list.'.md5(serialize($filters)).'.p'.request()->integer('page', 1), [1800, 3600], function () use ($filters, $perPage) {
             return $this->model->with('service')
                 ->active()
                 ->when($filters['search'] ?? null, function ($query, $search) {
@@ -30,7 +30,7 @@ class PortfolioService
 
     public function getBySlug(string $slug): ?PortfolioItem
     {
-        return Cache::remember('portfolio.slug.'.$slug, 1800, function () use ($slug) {
+        return Cache::store('api')->remember('portfolio.slug.'.$slug, 1800, function () use ($slug) {
             return $this->model->active()->where('slug', $slug)->with(['service', 'media'])->first();
         });
     }

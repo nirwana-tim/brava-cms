@@ -1,5 +1,24 @@
 <?php
 
+use App\Enums\PostStatus;
+use App\Enums\UserRole;
+use App\Models\Blog;
+use App\Models\Category;
+use App\Models\Faq;
+use App\Models\Media;
+use App\Models\PortfolioItem;
+use App\Models\Promo;
+use App\Models\Service;
+use App\Models\Setting;
+use App\Models\TeamMember;
+use App\Models\Testimonial;
+use App\Models\User;
+use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Relations\MorphPivot;
+use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Pagination\AbstractPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 return [
@@ -45,6 +64,14 @@ return [
             'table' => env('DB_CACHE_TABLE', 'cache'),
             'lock_connection' => env('DB_CACHE_LOCK_CONNECTION'),
             'lock_table' => env('DB_CACHE_LOCK_TABLE'),
+        ],
+
+        'api' => [
+            'driver' => env('API_CACHE_DRIVER', 'database'),
+            'connection' => env('API_CACHE_CONNECTION'),
+            'table' => env('API_CACHE_TABLE', 'api_cache'),
+            'lock_connection' => env('API_CACHE_LOCK_CONNECTION'),
+            'lock_table' => env('API_CACHE_LOCK_TABLE'),
         ],
 
         'file' => [
@@ -131,6 +158,28 @@ return [
     |
     */
 
-    'serializable_classes' => false,
+    'serializable_classes' => [
+        LengthAwarePaginator::class,
+        AbstractPaginator::class,
+        Collection::class,
+        Illuminate\Database\Eloquent\Collection::class,
+        Pivot::class,
+        MorphPivot::class,
+        Blog::class,
+        User::class,
+        Category::class,
+        Media::class,
+        PortfolioItem::class,
+        Service::class,
+        Promo::class,
+        Testimonial::class,
+        Faq::class,
+        TeamMember::class,
+        Setting::class,
+        PostStatus::class,
+        UserRole::class,
+        CarbonImmutable::class,
+        Carbon\Carbon::class,
+    ],
 
 ];

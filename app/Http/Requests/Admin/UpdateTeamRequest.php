@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use App\Enums\UserRole;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateTeamRequest extends FormRequest
 {
@@ -23,9 +24,17 @@ class UpdateTeamRequest extends FormRequest
             'position' => ['nullable', 'string', 'max:255'],
             'avatar' => ['nullable', 'string', 'max:255'],
             'email' => ['nullable', 'email', 'max:255', $userUnique, "unique:team_members,email,{$team?->id}"],
+            'role' => ['nullable', 'string', Rule::in($this->assignableRoles())],
             'phone' => ['nullable', 'string', 'max:50'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['boolean'],
         ];
+    }
+
+    private function assignableRoles(): array
+    {
+        return $this->user()?->isSuperAdmin()
+            ? [UserRole::Admin->value, UserRole::Staff->value]
+            : [UserRole::Staff->value];
     }
 }

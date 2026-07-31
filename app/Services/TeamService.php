@@ -13,7 +13,7 @@ class TeamService
 
     public function all(): Collection
     {
-        return Cache::flexible('team.all', [3600, 7200], function () {
+        return Cache::store('api')->flexible('team.all', [3600, 7200], function () {
             return $this->model
                 ->active()
                 ->whereDoesntHave('user', fn ($q) => $q->where('role', UserRole::SuperAdmin))

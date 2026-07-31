@@ -17,6 +17,7 @@
                             <select name="role" onchange="this.form.submit()" class="form-select text-xs py-1.5 px-3 rounded-md border" style="border-color: var(--card-border); background-color: var(--input-bg); color: var(--input-text);">
                                 <option value="">Semua Role</option>
                                 <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Admin</option>
+                                <option value="staff" {{ request('role') === 'staff' ? 'selected' : '' }}>Staff</option>
                                 <option value="super_admin" {{ request('role') === 'super_admin' ? 'selected' : '' }}>Super Admin</option>
                             </select>
                         @endif

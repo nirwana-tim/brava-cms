@@ -12,7 +12,7 @@ class TestimonialService
 
     public function all(): Collection
     {
-        return Cache::flexible('testimonials.all', [3600, 7200], function () {
+        return Cache::store('api')->flexible('testimonials.all', [3600, 7200], function () {
             return $this->model->active()->orderBy('sort_order')->get();
         });
     }

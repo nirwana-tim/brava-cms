@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Admin;
 
-use App\Enums\UserRole;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -10,7 +9,7 @@ class UpdatePromoRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->role === UserRole::SuperAdmin || $this->user()?->role === UserRole::Admin;
+        return $this->user()?->isSuperAdmin() || $this->user()?->isStaffOrAdmin();
     }
 
     /**

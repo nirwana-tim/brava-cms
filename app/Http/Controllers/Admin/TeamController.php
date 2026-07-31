@@ -58,7 +58,7 @@ class TeamController extends Controller
                 'name' => $team->name,
                 'email' => $team->email,
                 'password' => Hash::make($request->password),
-                'role' => UserRole::Admin,
+                'role' => $request->enum('role', UserRole::class) ?? (auth()->user()->isSuperAdmin() ? UserRole::Admin : UserRole::Staff),
                 'position' => $team->position,
                 'avatar' => $team->avatar,
             ]);
@@ -85,11 +85,16 @@ class TeamController extends Controller
         $team->update($request->validated());
 
         if ($team->user) {
+            $role = $team->user_id === auth()->id()
+                ? $team->user->role
+                : ($request->enum('role', UserRole::class) ?? $team->user->role);
+
             $team->user->update([
                 'name' => $request->name,
                 'email' => $request->email ?? $team->user->email,
                 'position' => $request->position,
                 'avatar' => $request->avatar ?? $team->user->avatar,
+                'role' => $role,
             ]);
         }
 

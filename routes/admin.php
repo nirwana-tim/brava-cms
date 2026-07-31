@@ -33,7 +33,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('testimonials', TestimonialController::class);
     Route::resource('faqs', FaqController::class);
     Route::post('promos/{promo}/highlight', [PromoController::class, 'highlight'])->name('promos.highlight');
-    Route::resource('promos', PromoController::class);
+    Route::resource('promos', PromoController::class)->except(['show']);
     Route::get('team/{team}/reset-password', [TeamController::class, 'resetPassword'])->name('team.reset-password');
     Route::put('team/{team}/password', [TeamController::class, 'updatePassword'])->name('team.password');
     Route::resource('team', TeamController::class);

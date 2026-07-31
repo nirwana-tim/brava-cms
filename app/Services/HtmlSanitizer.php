@@ -1,0 +1,119 @@
+<?php
+
+namespace App\Services;
+
+use DOMDocument;
+use DOMElement;
+use DOMNode;
+
+class HtmlSanitizer
+{
+    private const ALLOWED_TAGS = [
+        'p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'sub', 'sup', 'small',
+        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'hr',
+        'a', 'img', 'figure', 'figcaption', 'span', 'div',
+        'table', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td', 'caption',
+    ];
+
+    private const ALLOWED_ATTRS = [
+        'a' => ['href', 'title', 'target', 'rel'],
+        'img' => ['src', 'alt', 'title', 'width', 'height'],
+        'th' => ['colspan', 'rowspan'],
+        'td' => ['colspan', 'rowspan'],
+        'code' => ['class'],
+        'span' => ['class'],
+        'div' => ['class'],
+        'p' => ['class'],
+        'table' => ['class'],
+    ];
+
+    public function clean(?string $html): ?string
+    {
+        if ($html === null || trim($html) === '') {
+            return $html;
+        }
+
+        $document = new DOMDocument('1.0', 'UTF-8');
+        $previous = libxml_use_internal_errors(true);
+
+        try {
+            $document->loadHTML(
+                '<?xml encoding="UTF-8"><div>'.$html.'</div>',
+                LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+            );
+
+            $root = $document->documentElement;
+            $this->cleanChildren($root);
+
+            $output = '';
+            foreach ($root->childNodes as $child) {
+                $output .= $document->saveHTML($child);
+            }
+
+            return $output;
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($previous);
+        }
+    }
+
+    private function cleanChildren(DOMNode $node): void
+    {
+        foreach (iterator_to_array($node->childNodes) as $child) {
+            if ($child->nodeType === XML_PI_NODE) {
+                $node->removeChild($child);
+
+                continue;
+            }
+
+            if ($child->nodeType !== XML_ELEMENT_NODE) {
+                continue;
+            }
+
+            $tag = strtolower($child->tagName);
+
+            if (! in_array($tag, self::ALLOWED_TAGS, true)) {
+                $node->removeChild($child);
+
+                continue;
+            }
+
+            $this->sanitizeAttributes($child);
+            $this->cleanChildren($child);
+        }
+    }
+
+    private function sanitizeAttributes(DOMElement $element): void
+    {
+        $tag = strtolower($element->tagName);
+        $allowed = self::ALLOWED_ATTRS[$tag] ?? [];
+
+        foreach (iterator_to_array($element->attributes) as $attribute) {
+            $name = strtolower($attribute->nodeName);
+            $value = $attribute->nodeValue;
+
+            if ($name === 'style') {
+                if ((bool) preg_match('/expression\s*\(|javascript\s*:|@import|url\s*\(\s*["\']?\s*javascript/i', $value)) {
+                    $element->removeAttribute($name);
+                }
+
+                continue;
+            }
+
+            if (! in_array($name, $allowed, true)) {
+                $element->removeAttribute($name);
+
+                continue;
+            }
+
+            if (in_array($name, ['href', 'src'], true)) {
+                $scheme = strtolower((string) parse_url((string) $value, PHP_URL_SCHEME));
+
+                if (in_array($scheme, ['javascript', 'vbscript', 'data'], true)) {
+                    $element->removeAttribute($name);
+                }
+            }
+        }
+    }
+}

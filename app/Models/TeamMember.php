@@ -15,7 +15,7 @@ class TeamMember extends Model
     use ClearsApiCache, HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'user_id', 'name', 'position', 'avatar', 'email', 'phone',
+        'user_id', 'name', 'position', 'avatar', 'email', 'phone', 'bio',
         'sort_order', 'is_active',
     ];
 

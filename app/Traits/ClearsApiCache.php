@@ -9,11 +9,7 @@ trait ClearsApiCache
     public static function bootClearsApiCache(): void
     {
         $flush = function () {
-            if (Cache::supportsTags()) {
-                Cache::tags(['api'])->flush();
-            } else {
-                Cache::flush();
-            }
+            Cache::store('api')->flush();
         };
 
         static::saved($flush);

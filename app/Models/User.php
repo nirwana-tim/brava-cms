@@ -47,6 +47,21 @@ class User extends Authenticatable
         return $this->role === UserRole::SuperAdmin;
     }
 
+    public function isAdmin(): bool
+    {
+        return $this->role === UserRole::Admin;
+    }
+
+    public function isStaff(): bool
+    {
+        return $this->role === UserRole::Staff;
+    }
+
+    public function isStaffOrAdmin(): bool
+    {
+        return $this->isAdmin() || $this->isStaff();
+    }
+
     public function blogs(): HasMany
     {
         return $this->hasMany(Blog::class, 'author_id');

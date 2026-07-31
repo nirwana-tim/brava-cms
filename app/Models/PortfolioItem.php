@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\HtmlSanitizer;
 use App\Traits\ClearsApiCache;
 use Database\Factories\PortfolioItemFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,6 +30,11 @@ class PortfolioItem extends Model
             'completed_at' => 'date',
             'robots_index' => 'boolean',
         ];
+    }
+
+    public function getContentAttribute(?string $value): ?string
+    {
+        return app(HtmlSanitizer::class)->clean($value);
     }
 
     public function service(): BelongsTo

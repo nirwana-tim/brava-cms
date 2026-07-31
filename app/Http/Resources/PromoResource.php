@@ -7,6 +7,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class PromoResource extends JsonResource
 {
+    public function __construct(mixed $resource, private readonly ?string $waNumber = null)
+    {
+        parent::__construct($resource);
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -24,10 +29,15 @@ class PromoResource extends JsonResource
             'valid_from' => $this->valid_from?->toIso8601String(),
             'valid_until' => $this->valid_until?->toIso8601String(),
             'wa_template' => $this->wa_template,
-            'wa_url' => $this->wa_url,
+            'wa_url' => $this->waNumber !== null ? $this->buildWaUrl() : $this->wa_url,
             'is_highlighted' => (bool) $this->is_highlighted,
             'is_coming_soon' => $this->is_coming_soon,
             'state' => $this->is_coming_soon ? 'coming_soon' : ($this->is_expired ? 'expired' : 'active'),
         ];
+    }
+
+    private function buildWaUrl(): string
+    {
+        return $this->resource->buildWaUrl($this->waNumber);
     }
 }

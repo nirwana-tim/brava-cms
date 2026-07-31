@@ -15,8 +15,6 @@ class TeamMemberResource extends JsonResource
             'position' => $this->position,
             'bio' => $this->bio,
             'avatar' => $this->avatar,
-            'email' => $this->email,
-            'phone' => $this->phone,
         ];
     }
 }

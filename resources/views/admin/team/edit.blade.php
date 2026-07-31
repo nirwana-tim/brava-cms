@@ -46,6 +46,17 @@
                             </div>
 
                             <div>
+                                <x-input-label for="role" :value="__('Role')" />
+                                <select id="role" name="role" class="form-select mt-1">
+                                    @if (auth()->user()->isSuperAdmin())
+                                        <option value="admin" {{ old('role', $team->user?->role?->value ?? 'admin') === 'admin' ? 'selected' : '' }}>Admin</option>
+                                    @endif
+                                    <option value="staff" {{ old('role', $team->user?->role?->value ?? 'staff') === 'staff' ? 'selected' : '' }}>Staff</option>
+                                </select>
+                                <x-input-error class="mt-2" :messages="$errors->get('role')" />
+                            </div>
+
+                            <div>
                                 <x-input-label for="phone" :value="__('Phone')" />
                                 <x-text-input id="phone" name="phone" type="text" class="mt-1 block w-full" :value="old('phone', $team->phone)" />
                                 <x-input-error class="mt-2" :messages="$errors->get('phone')" />

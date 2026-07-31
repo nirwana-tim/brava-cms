@@ -12,6 +12,8 @@ class SettingController extends Controller
 {
     public function index(Request $request): View
     {
+        $this->authorize('viewAny', Setting::class);
+
         $groupOrder = ['general', 'contact', 'social', 'seo', 'system'];
 
         $settings = Setting::all()
@@ -23,6 +25,8 @@ class SettingController extends Controller
 
     public function update(Request $request): RedirectResponse
     {
+        $this->authorize('viewAny', Setting::class);
+
         $settings = Setting::all();
 
         foreach ($settings as $setting) {
@@ -31,7 +35,7 @@ class SettingController extends Controller
             }
 
             if ($setting->type === 'boolean' || $setting->type === 'bool') {
-                $setting->update(['value' => $request->has($setting->key) ? '1' : '0']);
+                $setting->update(['value' => $request->boolean($setting->key) ? '1' : '0']);
             } elseif ($request->has($setting->key)) {
                 $setting->update(['value' => $request->input($setting->key)]);
             }

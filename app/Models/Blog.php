@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\PostStatus;
+use App\Services\HtmlSanitizer;
 use App\Traits\ClearsApiCache;
 use Database\Factories\BlogFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -47,6 +48,11 @@ class Blog extends Model
                 $blog->published_at = null;
             }
         });
+    }
+
+    public function getContentAttribute(?string $value): ?string
+    {
+        return app(HtmlSanitizer::class)->clean($value);
     }
 
     public function author(): BelongsTo

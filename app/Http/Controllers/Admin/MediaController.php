@@ -6,17 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreMediaRequest;
 use App\Http\Requests\Admin\UpdateMediaRequest;
 use App\Models\Media;
+use App\Services\MediaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
-use Intervention\Image\Format;
-use Intervention\Image\ImageManager;
 
 class MediaController extends Controller
 {
-    public function __construct()
+    public function __construct(private readonly MediaService $mediaService)
     {
         $this->authorizeResource(Media::class, 'medium');
     }
@@ -42,6 +40,8 @@ class MediaController extends Controller
 
     public function pickerList(): JsonResponse
     {
+        $this->authorize('viewAny', Media::class);
+
         $media = Media::latest()->limit(60)->get()->map(fn ($item) => [
             'id' => $item->id,
             'url' => $item->url,
@@ -63,7 +63,7 @@ class MediaController extends Controller
     public function store(StoreMediaRequest $request): RedirectResponse
     {
         $file = $request->file('file');
-        $path = $this->storeWithCompression($file, 'media', 'public');
+        $path = $this->mediaService->storeWithCompression($file, 'media', 'public');
 
         Media::create([
             'name' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
@@ -82,6 +82,8 @@ class MediaController extends Controller
 
     public function uploadAjax(Request $request): JsonResponse
     {
+        $this->authorize('create', Media::class);
+
         $request->validate([
             'file' => ['required', 'file', 'mimes:jpg,jpeg,png,gif,webp', 'max:10240'],
             'collection' => ['nullable', 'string', 'max:255'],
@@ -89,7 +91,7 @@ class MediaController extends Controller
 
         try {
             $file = $request->file('file');
-            $path = $this->storeWithCompression($file, 'media', 'public');
+            $path = $this->mediaService->storeWithCompression($file, 'media', 'public');
 
             $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
 
@@ -113,39 +115,6 @@ class MediaController extends Controller
         } catch (\Throwable $e) {
             return response()->json(['error' => 'Upload failed.'], 422);
         }
-    }
-
-    private function storeWithCompression($file, string $directory, string $disk): string
-    {
-        if (! str_starts_with($file->getMimeType(), 'image/')) {
-            return $file->store($directory, $disk);
-        }
-
-        $manager = app(ImageManager::class);
-        $image = $manager->decodeSplFileInfo($file);
-
-        $image->scaleDown(width: 1920);
-
-        $encoded = match ($file->getMimeType()) {
-            'image/webp' => $image->encodeUsingFormat(Format::WEBP, quality: 85),
-            'image/png' => $image->encodeUsingFormat(Format::PNG),
-            'image/gif' => $image->encodeUsingFormat(Format::GIF),
-            default => $image->encodeUsingFormat(Format::JPEG, quality: 85),
-        };
-
-        $filename = str(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))->slug()->toString();
-        $extension = match ($file->getMimeType()) {
-            'image/webp' => 'webp',
-            'image/png' => 'png',
-            'image/gif' => 'gif',
-            default => 'jpg',
-        };
-        $storedName = $filename.'-'.uniqid().'.'.$extension;
-
-        $path = $directory.'/'.$storedName;
-        Storage::disk($disk)->put($path, (string) $encoded);
-
-        return $path;
     }
 
     public function edit(Media $medium): View

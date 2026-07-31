@@ -12,8 +12,15 @@ class CategoryService
 
     public function all(): Collection
     {
-        return Cache::flexible('categories.all', [3600, 7200], function () {
+        return Cache::store('api')->flexible('categories.all', [3600, 7200], function () {
             return $this->model->latest()->get();
+        });
+    }
+
+    public function getByType(string $type): Collection
+    {
+        return Cache::store('api')->flexible('categories.type.'.$type, [3600, 7200], function () use ($type) {
+            return $this->model->byType($type)->latest()->get();
         });
     }
 }

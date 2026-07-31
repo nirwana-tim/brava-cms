@@ -94,7 +94,12 @@ class Promo extends Model
 
     public function getWaUrlAttribute(): string
     {
-        $rawNumber = Setting::where('key', 'whatsapp_number')->value('value') ?? '6281234567890';
+        return $this->buildWaUrl();
+    }
+
+    public function buildWaUrl(?string $rawNumber = null): string
+    {
+        $rawNumber ??= Setting::where('key', 'whatsapp_number')->value('value') ?? '6281234567890';
         $number = preg_replace('/[^0-9]/', '', (string) $rawNumber);
         if (str_starts_with($number, '0')) {
             $number = '62'.substr($number, 1);
