@@ -209,7 +209,6 @@ Response:
                 "slug": "techcorp-corporate-website",
                 "description": "A modern corporate website with integrated CMS.",
                 "client": "TechCorp Indonesia",
-                "project_url": "https://techcorp.example.com",
                 "completed_at": "2026-05-15"
             }
         ]
@@ -319,7 +318,6 @@ Response:
             "slug": "techcorp-corporate-website",
             "description": "Short description",
             "client": "TechCorp Indonesia",
-            "project_url": "https://techcorp.example.com",
             "photo": "/storage/portfolio/cover.jpg",
             "photo_alt": "TechCorp Cover Photo",
             "featured_image": "/storage/portfolio/cover.jpg",
@@ -349,7 +347,6 @@ Response:
         "description": "Full description",
         "content": "<p>HTML content</p>",
         "client": "TechCorp Indonesia",
-        "project_url": "https://techcorp.example.com",
         "photo": "/storage/portfolio/cover.jpg",
         "photo_alt": "TechCorp Cover Photo",
         "featured_image": "/storage/portfolio/cover.jpg",
@@ -415,31 +412,6 @@ Response:
             "question": "What services do you offer?",
             "answer": "<p>We offer...</p>",
             "category": "General"
-        }
-    ]
-}
-```
-
----
-
-### Team
-
-#### `GET /api/team`
-
-Response:
-
-```json
-{
-    "success": true,
-    "data": [
-        {
-            "id": 1,
-            "name": "Jane Doe",
-            "position": "CEO & Founder",
-            "bio": "Jane has 10+ years of experience...",
-            "avatar": "/storage/team/jane.jpg",
-            "email": "jane@example.com",
-            "phone": "+62 812 3456 7890"
         }
     ]
 }
@@ -625,7 +597,6 @@ GET /api/blogs?fields=id,title,slug,excerpt,published_at,author
 | `/api/blogs/{slug}`     | 30 min | Cache::flexible                    |
 | `/api/testimonials`     | 1 hour | Cache::flexible                    |
 | `/api/faqs`             | 1 hour | Cache::flexible                    |
-| `/api/team`             | 1 hour | Cache::flexible                    |
 | `/api/portfolio`        | 30 min | Cache::flexible                    |
 | `/api/promos/highlight` | 15 min | Cache::flexible([900, 1800], ...)  |
 | `/api/promos`           | 15 min | Cache::flexible([900, 1800], ...)  |

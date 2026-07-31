@@ -15,7 +15,6 @@ class PortfolioListResource extends JsonResource
             'slug' => $this->slug,
             'description' => $this->description,
             'client' => $this->client,
-            'project_url' => $this->project_url,
             'photo' => $this->photo ? url($this->photo) : null,
             'photo_alt' => $this->photo_alt,
             'featured_image' => $this->photo ? url($this->photo) : null,

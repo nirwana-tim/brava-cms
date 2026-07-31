@@ -109,22 +109,6 @@ test('blog content is sanitized to prevent stored xss', function () {
         ->and($content)->toContain('Hello');
 });
 
-test('team api does not expose personal contact details', function () {
-    TeamMember::factory()->create([
-        'name' => 'Dika',
-        'email' => 'dika@brava.id',
-        'phone' => '08123456789',
-    ]);
-
-    $response = $this->getJson('/api/team');
-
-    $response->assertOk();
-    $item = $response->json('data.0');
-
-    expect($item)->not->toHaveKeys(['email', 'phone'])
-        ->and($item['name'])->toBe('Dika');
-});
-
 test('admin cannot assign another admin role when creating team member', function () {
     $admin = User::factory()->create(['role' => UserRole::Admin]);
 

@@ -16,7 +16,7 @@ class TestimonialResource extends JsonResource
             'content' => $this->content,
             'rating' => $this->rating,
             'avatar' => $this->avatar ? url($this->avatar) : null,
-            'avatar_alt' => $this->avatar_alt,
+            'avatar_alt' => $this->avatar_alt ?: $this->client_name,
         ];
     }
 }

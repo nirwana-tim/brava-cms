@@ -9,7 +9,6 @@ use App\Http\Controllers\Api\PromoController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\SitemapController;
-use App\Http\Controllers\Api\TeamController;
 use App\Http\Controllers\Api\TestimonialController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,7 +22,6 @@ Route::middleware('throttle:60,1')->group(function () {
     Route::get('/portfolio/{slug}', [PortfolioController::class, 'show']);
     Route::get('/testimonials', [TestimonialController::class, 'index']);
     Route::get('/faqs', [FaqController::class, 'index']);
-    Route::get('/team', [TeamController::class, 'index']);
     Route::get('/promos/highlight', [PromoController::class, 'highlight']);
     Route::get('/promos', [PromoController::class, 'index']);
     Route::get('/promos/{slug}', [PromoController::class, 'show']);

@@ -106,7 +106,6 @@
 | description | text | nullable |
 | content | longText | nullable |
 | client | string(255) | nullable |
-| project_url | string(255) | nullable |
 | photo | string(255) | Cover photo, required |
 | photo_alt | string(255) | nullable |
 | completed_at | date | nullable |
