@@ -22,7 +22,7 @@
             x-transition:leave="transition ease-in duration-150"
             x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0"
-            class="fixed inset-0 z-50 flex items-center justify-center"
+            class="fixed inset-0 z-[9999] flex items-center justify-center"
             style="background-color: rgba(0,0,0,0.6)"
             @click.self="closePicker">
 

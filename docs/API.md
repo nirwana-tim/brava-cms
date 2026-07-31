@@ -13,6 +13,7 @@ Base URL: `https://brava.id` for production, `http://localhost:3000` for local N
 ## Response Format
 
 ### Success (single)
+
 ```json
 {
     "success": true,
@@ -22,6 +23,7 @@ Base URL: `https://brava.id` for production, `http://localhost:3000` for local N
 ```
 
 ### Success (collection)
+
 ```json
 {
     "success": true,
@@ -47,6 +49,7 @@ Base URL: `https://brava.id` for production, `http://localhost:3000` for local N
 > **Note:** Image fields (`featured_image`, `photo`, `og_image`, `avatar`, `url`, etc.) are returned as **absolute URLs** based on `APP_URL`. Canonical URLs are built from the `FRONTEND_URL` env variable.
 
 ### Validation Error
+
 ```json
 {
     "success": false,
@@ -58,6 +61,7 @@ Base URL: `https://brava.id` for production, `http://localhost:3000` for local N
 ```
 
 ### Not Found
+
 ```json
 {
     "success": false,
@@ -67,23 +71,25 @@ Base URL: `https://brava.id` for production, `http://localhost:3000` for local N
 
 ## Global Query Parameters
 
-| Param | Type | Description |
-|-------|------|-------------|
-| `page` | int | Page number (default: 1) |
-| `per_page` | int | Items per page (default: 12, max: 50) |
-| `fields` | string | Comma-separated field names for sparse response |
-| `sort` | string | Field to sort by, prefix `-` for DESC (e.g. `-created_at`) |
+| Param        | Type   | Description                                                   |
+| ------------ | ------ | ------------------------------------------------------------- |
+| `page`     | int    | Page number (default: 1)                                      |
+| `per_page` | int    | Items per page (default: 12, max: 50)                         |
+| `fields`   | string | Comma-separated field names for sparse response               |
+| `sort`     | string | Field to sort by, prefix`-` for DESC (e.g. `-created_at`) |
 
 ---
 
 ## Endpoints
 
 ### Settings
+
 > Public, no auth. Returns all active site settings keyed by group.
 
 #### `GET /api/settings`
 
 Response:
+
 ```json
 {
     "success": true,
@@ -121,11 +127,21 @@ Response:
 ---
 
 ### Categories
+
 > Public, no auth.
 
 #### `GET /api/categories`
 
+> The `type` query parameter is **required**. Categories are filtered by content type (e.g. `blog`, `portfolio`). A request without `type` returns `422` with `Type parameter is required`.
+
+| Param    | Type   | Description                                                                   |
+| -------- | ------ | ----------------------------------------------------------------------------- |
+| `type` | string | **Required.** Category content type. Supported: `blog`, `portfolio` |
+
+Example: `GET /api/categories?type=blog`
+
 Response:
+
 ```json
 {
     "success": true,
@@ -147,12 +163,13 @@ Response:
 
 #### `GET /api/services`
 
-| Param | Type | Description |
-|-------|------|-------------|
-| `search` | string | Search in title/description |
-| `per_page` | int | Items per page (default: 12) |
+| Param        | Type   | Description                  |
+| ------------ | ------ | ---------------------------- |
+| `search`   | string | Search in title/description  |
+| `per_page` | int    | Items per page (default: 12) |
 
 Response:
+
 ```json
 {
     "success": true,
@@ -173,6 +190,7 @@ Response:
 #### `GET /api/services/{slug}`
 
 Response:
+
 ```json
 {
     "success": true,
@@ -205,15 +223,16 @@ Response:
 
 #### `GET /api/blogs`
 
-| Param | Type | Description |
-|-------|------|-------------|
-| `category` | string | Filter by category slug |
-| `featured` | bool | Only featured posts |
-| `search` | string | Search in title/excerpt |
-| `page` | int | Page number |
-| `per_page` | int | Items per page (default: 10) |
+| Param        | Type   | Description                  |
+| ------------ | ------ | ---------------------------- |
+| `category` | string | Filter by category slug      |
+| `featured` | bool   | Only featured posts          |
+| `search`   | string | Search in title/excerpt      |
+| `page`     | int    | Page number                  |
+| `per_page` | int    | Items per page (default: 10) |
 
 Response:
+
 ```json
 {
     "success": true,
@@ -242,6 +261,7 @@ Response:
 #### `GET /api/blogs/{slug}`
 
 Response:
+
 ```json
 {
     "success": true,
@@ -282,12 +302,13 @@ Response:
 
 #### `GET /api/portfolio`
 
-| Param | Type | Description |
-|-------|------|-------------|
-| `search` | string | Search in title/description |
-| `per_page` | int | Items per page (default: 12) |
+| Param        | Type   | Description                  |
+| ------------ | ------ | ---------------------------- |
+| `search`   | string | Search in title/description  |
+| `per_page` | int    | Items per page (default: 12) |
 
 Response:
+
 ```json
 {
     "success": true,
@@ -317,6 +338,7 @@ Response:
 #### `GET /api/portfolio/{slug}`
 
 Response:
+
 ```json
 {
     "success": true,
@@ -355,6 +377,7 @@ Response:
 #### `GET /api/testimonials`
 
 Response (no pagination — returns all active, sorted by `sort_order`):
+
 ```json
 {
     "success": true,
@@ -377,11 +400,12 @@ Response (no pagination — returns all active, sorted by `sort_order`):
 
 #### `GET /api/faqs`
 
-| Param | Type | Description |
-|-------|------|-------------|
+| Param        | Type   | Description            |
+| ------------ | ------ | ---------------------- |
 | `category` | string | Filter by FAQ category |
 
 Response:
+
 ```json
 {
     "success": true,
@@ -403,6 +427,7 @@ Response:
 #### `GET /api/team`
 
 Response:
+
 ```json
 {
     "success": true,
@@ -427,6 +452,7 @@ Response:
 #### `POST /api/contact`
 
 Request:
+
 ```json
 {
     "name": "John Doe",
@@ -438,6 +464,7 @@ Request:
 ```
 
 Response:
+
 ```json
 {
     "success": true,
@@ -454,6 +481,7 @@ Response:
 Returns all publicly indexable content as a single list — used by Next.js to generate `sitemap.xml`. Cached and auto-invalidated on content changes.
 
 Response:
+
 ```json
 {
     "success": true,
@@ -499,7 +527,9 @@ Response:
 ## SEO Strategy for Next.js
 
 ### Per-Page SEO
+
 Every detail endpoint returns a `seo` object where applicable. Next.js should map it to:
+
 ```tsx
 // Example: pages/blogs/[slug].tsx
 <Head>
@@ -517,6 +547,7 @@ Every detail endpoint returns a `seo` object where applicable. Next.js should ma
 `schemaJSON` for blogs should use `data.seo.schema_type` (e.g. `Article`, `BlogPosting`) with `data.published_at` → `datePublished` and `data.updated_at` → `dateModified`. Generate `sitemap.xml` from `GET /api/sitemap`.
 
 ### Global Fallback
+
 If `meta_title` is empty on an entity, fallback to `default_meta_title` from `/api/settings`.
 
 ---
@@ -525,13 +556,14 @@ If `meta_title` is empty on an entity, fallback to `default_meta_title` from `/a
 
 All public API routes are protected by rate limiting in `RouteServiceProvider` or via route middleware:
 
-| Endpoint | Limit | Window | Notes |
-|----------|-------|--------|-------|
-| `GET /api/*` | 60 requests | 1 minute | Read-only endpoints |
-| `POST /api/contact` | 5 requests | 1 minute | Prevent spam |
-| `POST /api/contact` | 20 requests | 1 hour | Hard ceiling per IP |
+| Endpoint              | Limit       | Window   | Notes               |
+| --------------------- | ----------- | -------- | ------------------- |
+| `GET /api/*`        | 60 requests | 1 minute | Read-only endpoints |
+| `POST /api/contact` | 5 requests  | 1 minute | Prevent spam        |
+| `POST /api/contact` | 20 requests | 1 hour   | Hard ceiling per IP |
 
 ### Implementation
+
 ```php
 // routes/api.php
 Route::middleware('throttle:60,1')->group(function () {
@@ -543,11 +575,13 @@ Route::post('/contact', [ContactController::class, 'store'])
 ```
 
 ### Contact Form Protection
+
 - Rate limit: 5/minute per IP
 - Optional: Honeypot hidden field (implement in Form Request)
 - No CAPTCHA for MVP — add later if spam becomes an issue
 
 ### CORS
+
 CORS is wide-open for GET requests (Next.js needs it). For production, restrict `allowed_origins` to the actual frontend domain.
 
 ```php
@@ -561,44 +595,51 @@ CORS is wide-open for GET requests (Next.js needs it). For production, restrict 
 ## Performance Optimizations
 
 ### HTTP Cache Headers
+
 Every successful `GET /api/*` response includes:
+
 ```
 Cache-Control: public, max-age=900, s-maxage=900
 ```
+
 - `max-age=900` (15 min): browser/Next.js cache
 - `s-maxage=900`: CDN/shared cache — matches the internal Laravel cache TTL, so no stale-data gap when content changes
 - `POST` requests and non-API routes are never publicly cached.
 
 ### Sparse Fieldsets
+
 ```
 GET /api/services?fields=id,title,slug,description
 GET /api/blogs?fields=id,title,slug,excerpt,published_at,author
 ```
 
 ### Caching Strategy (Laravel)
-| Endpoint | TTL | Strategy |
-|----------|-----|----------|
-| `/api/settings` | 1 hour | Cache::flexible([3600, 7200], ...) |
-| `/api/categories` | 1 hour | Cache::flexible |
-| `/api/services` | 15 min | Cache::flexible([900, 1800], ...) |
-| `/api/services/{slug}` | 30 min | Cache::flexible |
-| `/api/blogs` | 15 min | Cache::flexible |
-| `/api/blogs/{slug}` | 30 min | Cache::flexible |
-| `/api/testimonials` | 1 hour | Cache::flexible |
-| `/api/faqs` | 1 hour | Cache::flexible |
-| `/api/team` | 1 hour | Cache::flexible |
-| `/api/portfolio` | 30 min | Cache::flexible |
-| `/api/promos/highlight` | 15 min | Cache::flexible([900, 1800], ...) |
-| `/api/promos` | 15 min | Cache::flexible([900, 1800], ...) |
+
+| Endpoint                  | TTL    | Strategy                           |
+| ------------------------- | ------ | ---------------------------------- |
+| `/api/settings`         | 1 hour | Cache::flexible([3600, 7200], ...) |
+| `/api/categories`       | 1 hour | Cache::flexible                    |
+| `/api/services`         | 15 min | Cache::flexible([900, 1800], ...)  |
+| `/api/services/{slug}`  | 30 min | Cache::flexible                    |
+| `/api/blogs`            | 15 min | Cache::flexible                    |
+| `/api/blogs/{slug}`     | 30 min | Cache::flexible                    |
+| `/api/testimonials`     | 1 hour | Cache::flexible                    |
+| `/api/faqs`             | 1 hour | Cache::flexible                    |
+| `/api/team`             | 1 hour | Cache::flexible                    |
+| `/api/portfolio`        | 30 min | Cache::flexible                    |
+| `/api/promos/highlight` | 15 min | Cache::flexible([900, 1800], ...)  |
+| `/api/promos`           | 15 min | Cache::flexible([900, 1800], ...)  |
 
 ---
 
 ### Promos & Special Offers
 
 #### `GET /api/promos/highlight`
+
 Returns the single active highlighted promo (hero banner & modal popup). Automatically falls back to the latest active promo if the highlighted promo has expired.
 
 Response:
+
 ```json
 {
     "success": true,
@@ -632,19 +673,22 @@ Response:
 ```
 
 #### `GET /api/promos`
+
 Returns paginated list of active non-highlighted promos (`where('is_highlighted', false)`).
 
-| Param | Type | Description |
-|-------|------|-------------|
-| `per_page` | int | Items per page (default: 12, max: 100) |
-| `page` | int | Page number |
+| Param        | Type | Description                            |
+| ------------ | ---- | -------------------------------------- |
+| `per_page` | int  | Items per page (default: 12, max: 100) |
+| `page`     | int  | Page number                            |
 
 Cache is automatically flushed via the `App\Traits\ClearsApiCache` trait on model `saved` / `deleted` events across all CMS models.
 
 ### N+1 Prevention
+
 - Always use `with()` for relationships in controllers
 - Enable `Model::preventLazyLoading()` in dev
 - API Resources use `whenLoaded()` for optional relations
 
 ### Database Indexes
+
 Every `slug`, `is_active`, `status`, `published_at`, `sort_order` column is indexed. See `docs/SCHEMA.md`.
