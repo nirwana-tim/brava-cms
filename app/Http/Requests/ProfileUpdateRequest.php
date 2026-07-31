@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Concerns\ValidatesImageUrl;
 use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -9,6 +10,8 @@ use Illuminate\Validation\Rule;
 
 class ProfileUpdateRequest extends FormRequest
 {
+    use ValidatesImageUrl;
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -26,7 +29,7 @@ class ProfileUpdateRequest extends FormRequest
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()?->id),
             ],
-            'avatar' => ['nullable', 'string', 'max:255'],
+            'avatar' => $this->imageUrlRule(),
         ];
     }
 }

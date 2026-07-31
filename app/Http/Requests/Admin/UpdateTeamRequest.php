@@ -3,11 +3,14 @@
 namespace App\Http\Requests\Admin;
 
 use App\Enums\UserRole;
+use App\Http\Requests\Concerns\ValidatesImageUrl;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class UpdateTeamRequest extends FormRequest
 {
+    use ValidatesImageUrl;
+
     public function authorize(): bool
     {
         return $this->user()?->role === UserRole::SuperAdmin || $this->user()?->role === UserRole::Admin;
@@ -22,7 +25,7 @@ class UpdateTeamRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'position' => ['nullable', 'string', 'max:255'],
-            'avatar' => ['nullable', 'string', 'max:255'],
+            'avatar' => $this->imageUrlRule(),
             'email' => ['nullable', 'email', 'max:255', $userUnique, "unique:team_members,email,{$team?->id}"],
             'role' => ['nullable', 'string', Rule::in($this->assignableRoles())],
             'phone' => ['nullable', 'string', 'max:50'],

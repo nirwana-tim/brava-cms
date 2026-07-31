@@ -2,10 +2,13 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Http\Requests\Concerns\ValidatesImageUrl;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StorePromoRequest extends FormRequest
 {
+    use ValidatesImageUrl;
+
     public function authorize(): bool
     {
         return $this->user()?->isSuperAdmin() || $this->user()?->isStaffOrAdmin();
@@ -22,7 +25,7 @@ class StorePromoRequest extends FormRequest
             'badge_text' => ['nullable', 'string', 'max:100'],
             'discount_info' => ['nullable', 'string', 'max:100'],
             'description' => ['nullable', 'string'],
-            'image' => ['nullable', 'string', 'max:500'],
+            'image' => $this->imageUrlRule(max: 500),
             'image_alt' => ['nullable', 'string', 'max:255'],
             'valid_from' => ['nullable', 'date'],
             'valid_until' => ['nullable', 'date', 'after_or_equal:valid_from'],

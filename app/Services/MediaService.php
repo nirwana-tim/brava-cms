@@ -24,8 +24,14 @@ class MediaService
         return $this->storeImage($file, $directory, $disk);
     }
 
+    private const MAX_PIXEL_COUNT = 20_000_000;
+
+    private const MAX_EDGE_SIZE = 6000;
+
     private function storeImage(UploadedFile $file, string $directory, string $disk): string
     {
+        $this->assertSafeImageDimensions($file);
+
         $image = app(ImageManager::class)->decodeSplFileInfo($file);
         $image->scaleDown(width: 1920);
 
@@ -56,6 +62,25 @@ class MediaService
         Storage::disk($disk)->put($path, $file->getContent());
 
         return $path;
+    }
+
+    private function assertSafeImageDimensions(UploadedFile $file): void
+    {
+        $info = @getimagesize($file->getRealPath());
+
+        if ($info === false) {
+            throw new \InvalidArgumentException('File gambar tidak valid atau rusak.');
+        }
+
+        [$width, $height] = $info;
+
+        if ($width > self::MAX_EDGE_SIZE || $height > self::MAX_EDGE_SIZE) {
+            throw new \InvalidArgumentException('Dimensi gambar terlalu besar. Maksimal '.self::MAX_EDGE_SIZE.'px per sisi.');
+        }
+
+        if ($width * $height > self::MAX_PIXEL_COUNT) {
+            throw new \InvalidArgumentException('Resolusi gambar terlalu besar. Maksimal 20 megapiksel.');
+        }
     }
 
     private function storedName(UploadedFile $file, string $extension): string

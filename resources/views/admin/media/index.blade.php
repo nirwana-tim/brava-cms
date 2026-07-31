@@ -70,7 +70,7 @@
                                         id="url-{{ $item->id }}">
 
                                     <button type="button"
-                                        onclick="navigator.clipboard.writeText('{{ $item->url }}').then(() => { this.textContent = 'Copied!'; setTimeout(() => this.textContent = '', 2000); })"
+                                        onclick="navigator.clipboard.writeText({{ Js::from($item->url) }}).then(() => { this.textContent = 'Copied!'; setTimeout(() => this.textContent = '', 2000); })"
                                         class="inline-flex items-center px-2 py-1 rounded text-xs font-medium btn-edit shrink-0"
                                         title="Copy URL">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -58,7 +58,7 @@ class PromoService
      */
     public function listAllAdmin(array $filters = []): LengthAwarePaginator
     {
-        $perPage = $filters['per_page'] ?? 15;
+        $perPage = max(1, min((int) ($filters['per_page'] ?? 15), 100));
 
         return Promo::query()
             ->when(! empty($filters['status']), function ($query) use ($filters) {

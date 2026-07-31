@@ -5,12 +5,14 @@
         <div class="card-header">
             <h2 class="text-lg font-semibold" style="color: var(--heading-text)">{{ $team->name }}</h2>
             <div class="flex items-center gap-2">
-                <a href="{{ route('admin.team.edit', $team) }}">
-                    <x-secondary-button type="button">{{ __('Edit') }}</x-secondary-button>
-                </a>
-                <a href="{{ route('admin.team.reset-password', $team) }}">
-                    <x-secondary-button type="button">{{ __('Reset Password') }}</x-secondary-button>
-                </a>
+                @can('update', $team)
+                    <a href="{{ route('admin.team.edit', $team) }}">
+                        <x-secondary-button type="button">{{ __('Edit') }}</x-secondary-button>
+                    </a>
+                    <a href="{{ route('admin.team.reset-password', $team) }}">
+                        <x-secondary-button type="button">{{ __('Reset Password') }}</x-secondary-button>
+                    </a>
+                @endcan
                 <a href="{{ route('admin.team.index') }}">
                     <x-secondary-button type="button">{{ __('Back') }}</x-secondary-button>
                 </a>

@@ -63,7 +63,12 @@ class MediaController extends Controller
     public function store(StoreMediaRequest $request): RedirectResponse
     {
         $file = $request->file('file');
-        $path = $this->mediaService->storeWithCompression($file, 'media', 'public');
+
+        try {
+            $path = $this->mediaService->storeWithCompression($file, 'media', 'public');
+        } catch (\InvalidArgumentException $e) {
+            return back()->withErrors(['file' => $e->getMessage()])->withInput();
+        }
 
         Media::create([
             'name' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),

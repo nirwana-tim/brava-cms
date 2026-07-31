@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Validation\ValidationException;
 
 class TeamMember extends Model
 {
@@ -34,8 +35,12 @@ class TeamMember extends Model
     protected static function booted(): void
     {
         static::deleting(function (TeamMember $teamMember) {
-            if ($teamMember->user) {
-                $teamMember->user->delete();
+            if ($teamMember->isForceDeleting() && $teamMember->user) {
+                try {
+                    $teamMember->user->delete();
+                } catch (ValidationException) {
+                    // Keep the linked user when it still owns blog posts.
+                }
             }
         });
     }

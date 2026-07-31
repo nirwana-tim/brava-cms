@@ -13,6 +13,7 @@ use App\Models\Service;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class PortfolioController extends Controller
@@ -69,11 +70,21 @@ class PortfolioController extends Controller
         }
 
         if ($galleryIds = $request->input('gallery_media_ids')) {
-            $ids = array_filter(explode(',', $galleryIds));
-            Media::whereIn('id', $ids)->update([
-                'mediable_type' => PortfolioItem::class,
-                'mediable_id' => $portfolio->id,
-            ]);
+            $ids = collect(explode(',', $galleryIds))
+                ->map(fn ($id) => (int) trim($id))
+                ->filter(fn ($id) => $id > 0)
+                ->unique()
+                ->take(4);
+
+            DB::transaction(function () use ($portfolio, $ids) {
+                Media::query()
+                    ->whereIn('id', $ids)
+                    ->where(fn ($q) => $q->whereNull('mediable_id')->orWhere('mediable_type', PortfolioItem::class))
+                    ->update([
+                        'mediable_type' => PortfolioItem::class,
+                        'mediable_id' => $portfolio->id,
+                    ]);
+            });
         }
 
         return redirect()->route('admin.portfolio.index')
@@ -137,6 +148,11 @@ class PortfolioController extends Controller
         }
 
         $media = Media::findOrFail($request->media_id);
+
+        if ($media->mediable_id !== null && $media->mediable_id !== $portfolio->id) {
+            return response()->json(['success' => false, 'message' => 'Media ini sudah terpasang pada item lain.'], 422);
+        }
+
         $media->update([
             'mediable_type' => PortfolioItem::class,
             'mediable_id' => $portfolio->id,
@@ -174,7 +190,10 @@ class PortfolioController extends Controller
             'photo_alt' => $medium->alt_text,
         ]);
 
-        $medium->delete();
+        $medium->update([
+            'mediable_type' => null,
+            'mediable_id' => null,
+        ]);
 
         return response()->json(['success' => true]);
     }

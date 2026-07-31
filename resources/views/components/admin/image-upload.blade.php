@@ -1,6 +1,6 @@
 @props(['target' => 'avatar', 'accept' => 'image/*', 'previewClass' => 'w-16 h-16 rounded-full'])
 
-<div x-data="imageUpload('{{ $target }}')" class="flex items-center gap-3">
+<div x-data="imageUpload(@js($target))" class="flex items-center gap-3">
     <input type="file" :accept="accept" x-ref="fileInput" @change="upload($event)" class="hidden">
 
     <template x-if="preview">

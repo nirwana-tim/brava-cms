@@ -37,7 +37,7 @@
                         <x-input-error class="mt-2" :messages="$errors->get('description')" />
                     </div>
 
-                    <div x-data="{ photoUrl: '{{ old('photo') }}', photoAlt: '{{ old('photo_alt') }}' }">
+                    <div x-data="{ photoUrl: @js(old('photo')), photoAlt: @js(old('photo_alt')) }">
                         <x-input-label for="photo" :value="__('Photo')" />
                         <input type="hidden" name="photo" id="photo"
                             value="{{ old('photo') }}" />

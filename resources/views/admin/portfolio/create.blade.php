@@ -51,8 +51,8 @@
                     <x-admin.rich-text name="content" :value="old('content')" />
 
                     <div id="portfolio-form" x-data="{
-                        photoUrl: '{{ old('photo') }}',
-                        photoAlt: '{{ old('photo_alt') }}',
+                        photoUrl: @js(old('photo')),
+                        photoAlt: @js(old('photo_alt')),
                         galleryItems: [],
                         get galleryIds() { return this.galleryItems.map(i => i.id).join(',') },
                         addGallery(id, url) { if (this.galleryItems.length < 4) this.galleryItems.push({ id, url }) },
@@ -167,7 +167,7 @@
                                 <textarea id="meta_description" name="meta_description" class="form-textarea mt-1" rows="3">{{ old('meta_description') }}</textarea>
                                 <p class="form-hint">Optimal 150–160 karakter (termasuk spasi). Otomatis menjadi deskripsi share WhatsApp/Sosmed (OG Description) dan mengikuti deskripsi/konten jika dikosongkan.</p>
                             </div>
-                            <div x-data="{ ogImage: '{{ old('og_image') }}', ogImageAlt: '{{ old('og_image_alt') }}' }">
+                            <div x-data="{ ogImage: @js(old('og_image')), ogImageAlt: @js(old('og_image_alt')) }">
                                 <x-input-label for="og_image" :value="__('OG Image')" />
                                 <input type="hidden" name="og_image" id="og_image"
                                     value="{{ old('og_image') }}" />

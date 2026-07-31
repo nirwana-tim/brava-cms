@@ -2,10 +2,13 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Http\Requests\Concerns\ValidatesImageUrl;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateBlogRequest extends FormRequest
 {
+    use ValidatesImageUrl;
+
     public function authorize(): bool
     {
         return $this->user()?->isSuperAdmin() || $this->user()?->isStaffOrAdmin();
@@ -20,7 +23,7 @@ class UpdateBlogRequest extends FormRequest
             'slug' => ['required', 'string', 'max:255', 'unique:blogs,slug,'.$blog->id],
             'excerpt' => ['nullable', 'string', 'max:500'],
             'content' => ['nullable', 'string'],
-            'featured_image' => ['nullable', 'string', 'max:255'],
+            'featured_image' => $this->imageUrlRule(),
             'featured_image_alt' => ['nullable', 'string', 'max:255'],
             'published_at' => ['nullable', 'date'],
             'is_featured' => ['boolean'],
@@ -29,7 +32,7 @@ class UpdateBlogRequest extends FormRequest
             'category_ids.*' => ['exists:categories,id'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:160'],
-            'og_image' => ['nullable', 'string', 'max:255'],
+            'og_image' => $this->imageUrlRule(),
             'og_image_alt' => ['nullable', 'string', 'max:255'],
         ];
     }

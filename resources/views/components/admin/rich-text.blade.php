@@ -14,7 +14,7 @@
     >{{ old($name, $value) }}</textarea>
     <x-input-error class="mt-2" :messages="$errors->get($name)" />
 
-    <div x-data="tinymceMediaHandler('{{ $editorId }}')" x-cloak>
+    <div x-data="tinymceMediaHandler(@js($editorId))" x-cloak>
         <div x-show="showPicker"
             x-transition:enter="transition ease-out duration-200"
             x-transition:enter-start="opacity-0"

@@ -34,7 +34,7 @@
                                     class="flex-1 px-3 py-1.5 text-xs rounded border"
                                     style="border-color: var(--input-border); background-color: var(--input-bg); color: var(--input-text)">
                                 <button type="button"
-                                    onclick="navigator.clipboard.writeText('{{ $medium->url }}').then(() => { this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy', 2000); })"
+                                    onclick="navigator.clipboard.writeText({{ Js::from($medium->url) }}).then(() => { this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy', 2000); })"
                                     class="inline-flex items-center px-3 py-1.5 rounded text-xs font-medium btn-edit">
                                     Copy
                                 </button>

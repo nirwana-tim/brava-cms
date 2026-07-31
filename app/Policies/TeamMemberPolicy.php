@@ -34,20 +34,24 @@ class TeamMemberPolicy
 
     public function update(User $user, TeamMember $teamMember): bool
     {
-        if ($teamMember->user?->isSuperAdmin()) {
-            return $user->isSuperAdmin();
+        if ($user->role !== UserRole::Admin) {
+            return false;
         }
 
-        return $user->role === UserRole::Admin;
+        return $teamMember->user === null
+            || $teamMember->user_id === $user->id
+            || $teamMember->user->role === UserRole::Staff;
     }
 
     public function delete(User $user, TeamMember $teamMember): bool
     {
-        if ($teamMember->user?->isSuperAdmin()) {
-            return $user->isSuperAdmin();
+        if ($user->role !== UserRole::Admin) {
+            return false;
         }
 
-        return $user->role === UserRole::Admin;
+        return $teamMember->user === null
+            || $teamMember->user_id === $user->id
+            || $teamMember->user->role === UserRole::Staff;
     }
 
     public function restore(User $user, TeamMember $teamMember): bool

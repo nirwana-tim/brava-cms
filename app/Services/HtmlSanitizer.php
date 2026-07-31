@@ -94,7 +94,12 @@ class HtmlSanitizer
             $value = $attribute->nodeValue;
 
             if ($name === 'style') {
-                if ((bool) preg_match('/expression\s*\(|javascript\s*:|@import|url\s*\(\s*["\']?\s*javascript/i', $value)) {
+                $hasUnsafeStyle = (bool) preg_match(
+                    '/expression\s*\(|javascript\s*:|vbscript\s*:|@import|position\s*:\s*fixed|z-index|url\s*\(\s*["\']?\s*(?:https?:)?\/\//i',
+                    $value
+                );
+
+                if ($hasUnsafeStyle) {
                     $element->removeAttribute($name);
                 }
 

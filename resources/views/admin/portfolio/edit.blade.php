@@ -2,7 +2,7 @@
     <x-slot name="title">{{ __('Edit Portfolio Item') }}</x-slot>
 
     <div class="card">
-        <div class="card-body" x-data="{ photoUrl: '{{ old('photo', $portfolio->photo) }}', photoAlt: '{{ old('photo_alt', $portfolio->photo_alt) }}' }">
+        <div class="card-body" x-data="{ photoUrl: @js(old('photo', $portfolio->photo)), photoAlt: @js(old('photo_alt', $portfolio->photo_alt)) }">
             <form action="{{ route('admin.portfolio.update', $portfolio) }}" method="POST">
                 @csrf
                 @method('PUT')
@@ -117,7 +117,7 @@
                                 <textarea id="meta_description" name="meta_description" class="form-textarea mt-1" rows="3">{{ old('meta_description', $portfolio->meta_description) }}</textarea>
                                 <p class="form-hint">Optimal 150–160 karakter (termasuk spasi). Otomatis menjadi deskripsi share WhatsApp/Sosmed (OG Description) dan mengikuti deskripsi/konten jika dikosongkan.</p>
                             </div>
-                            <div x-data="{ ogImage: '{{ old('og_image', $portfolio->og_image) }}', ogImageAlt: '{{ old('og_image_alt', $portfolio->og_image_alt) }}' }">
+                            <div x-data="{ ogImage: @js(old('og_image', $portfolio->og_image)), ogImageAlt: @js(old('og_image_alt', $portfolio->og_image_alt)) }">
                                 <x-input-label for="og_image" :value="__('OG Image')" />
                                 <input type="hidden" name="og_image" id="og_image"
                                     value="{{ old('og_image', $portfolio->og_image) }}" />

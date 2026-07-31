@@ -3,6 +3,8 @@
 use App\Enums\UserRole;
 use App\Models\Blog;
 use App\Models\Category;
+use App\Models\Media;
+use App\Models\PortfolioItem;
 use App\Models\Promo;
 use App\Models\Setting;
 use App\Models\TeamMember;
@@ -186,4 +188,240 @@ test('clearing api cache does not flush the whole cache', function () {
 
     expect(Cache::get('unrelated.key'))->toBe('keep-me')
         ->and(Cache::store('api')->has('blog.list.'.md5(serialize([])).'.p1'))->toBeFalse();
+});
+
+test('admin cannot update team member of another admin', function () {
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+    $otherAdmin = User::factory()->create(['role' => UserRole::Admin]);
+
+    $team = TeamMember::create([
+        'user_id' => $otherAdmin->id,
+        'name' => $otherAdmin->name,
+        'position' => 'Administrator',
+        'email' => $otherAdmin->email,
+        'is_active' => true,
+    ]);
+
+    $this->actingAs($admin)->put(route('admin.team.update', $team), [
+        'name' => 'Hacked',
+        'email' => 'hacked@brava.id',
+    ])->assertForbidden();
+});
+
+test('admin cannot reset password of team member of another admin', function () {
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+    $otherAdmin = User::factory()->create(['role' => UserRole::Admin]);
+
+    $team = TeamMember::create([
+        'user_id' => $otherAdmin->id,
+        'name' => $otherAdmin->name,
+        'position' => 'Administrator',
+        'email' => $otherAdmin->email,
+        'is_active' => true,
+    ]);
+
+    $this->actingAs($admin)->put(route('admin.team.password', $team), [
+        'password' => 'newpass123',
+        'password_confirmation' => 'newpass123',
+    ])->assertForbidden();
+});
+
+test('admin can update team member of staff', function () {
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+    $staff = User::factory()->staff()->create();
+
+    $team = TeamMember::create([
+        'user_id' => $staff->id,
+        'name' => $staff->name,
+        'position' => 'Content Editor',
+        'email' => $staff->email,
+        'is_active' => true,
+    ]);
+
+    $this->actingAs($admin)->put(route('admin.team.update', $team), [
+        'name' => 'Updated Staff',
+    ])->assertRedirect(route('admin.team.index'));
+
+    expect($team->fresh()->name)->toBe('Updated Staff');
+});
+
+test('soft deleting a team member keeps the linked user account', function () {
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+    $staff = User::factory()->staff()->create();
+
+    $team = TeamMember::create([
+        'user_id' => $staff->id,
+        'name' => $staff->name,
+        'position' => 'Content Editor',
+        'email' => $staff->email,
+        'is_active' => true,
+    ]);
+
+    $this->actingAs($admin)->delete(route('admin.team.destroy', $team));
+
+    expect(TeamMember::withTrashed()->find($team->id))->not->toBeNull()
+        ->and(User::find($staff->id))->not->toBeNull();
+});
+
+test('soft deleting a team member whose user owns blogs does not error', function () {
+    $superadmin = User::factory()->superAdmin()->create();
+    $staff = User::factory()->staff()->create();
+
+    Blog::factory()->create(['author_id' => $staff->id]);
+
+    $team = TeamMember::create([
+        'user_id' => $staff->id,
+        'name' => $staff->name,
+        'position' => 'Content Editor',
+        'email' => $staff->email,
+        'is_active' => true,
+    ]);
+
+    $this->actingAs($superadmin)->delete(route('admin.team.destroy', $team))
+        ->assertRedirect(route('admin.team.index'));
+
+    expect(User::find($staff->id))->not->toBeNull();
+});
+
+test('force deleting a team member whose user owns blogs keeps the user', function () {
+    $superadmin = User::factory()->superAdmin()->create();
+    $staff = User::factory()->staff()->create();
+
+    Blog::factory()->create(['author_id' => $staff->id]);
+
+    $team = TeamMember::create([
+        'user_id' => $staff->id,
+        'name' => $staff->name,
+        'position' => 'Content Editor',
+        'email' => $staff->email,
+        'is_active' => true,
+    ]);
+
+    $team->delete();
+
+    $this->actingAs($superadmin)->delete("/admin/trash/team/{$team->id}/force-delete")
+        ->assertRedirect(route('admin.trash.index', ['type' => 'team']));
+
+    expect(User::find($staff->id))->not->toBeNull()
+        ->and(TeamMember::withTrashed()->find($team->id))->toBeNull();
+});
+
+test('setting a portfolio cover does not delete the media file', function () {
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+    $portfolio = PortfolioItem::factory()->create();
+    $media = Media::factory()->create([
+        'mediable_type' => PortfolioItem::class,
+        'mediable_id' => $portfolio->id,
+    ]);
+
+    $this->actingAs($admin)->post(route('admin.portfolio.media.set-cover', [$portfolio, $media]))
+        ->assertJson(['success' => true]);
+
+    expect(Media::find($media->id))->not->toBeNull()
+        ->and($portfolio->fresh()->photo)->toBe($media->url);
+});
+
+test('staff cannot reset password of another staff team member', function () {
+    $staff = User::factory()->staff()->create();
+    $target = User::factory()->staff()->create();
+
+    $team = TeamMember::create([
+        'user_id' => $target->id,
+        'name' => $target->name,
+        'position' => 'Content Editor',
+        'email' => $target->email,
+        'is_active' => true,
+    ]);
+
+    $this->actingAs($staff)->put(route('admin.team.password', $team), [
+        'password' => 'newpass123',
+        'password_confirmation' => 'newpass123',
+    ])->assertForbidden();
+});
+
+test('staff cannot delete another staff team member', function () {
+    $staff = User::factory()->staff()->create();
+    $target = User::factory()->staff()->create();
+
+    $team = TeamMember::create([
+        'user_id' => $target->id,
+        'name' => $target->name,
+        'position' => 'Content Editor',
+        'email' => $target->email,
+        'is_active' => true,
+    ]);
+
+    $this->actingAs($staff)->delete(route('admin.team.destroy', $team))->assertForbidden();
+    expect(TeamMember::find($team->id))->not->toBeNull();
+});
+
+test('admin promo per_page is clamped to a maximum', function () {
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+    Promo::factory()->count(5)->create();
+
+    $response = $this->actingAs($admin)->get('/admin/promos?per_page=999999');
+    $response->assertOk();
+
+    $promos = $response->viewData('promos');
+    expect($promos->perPage())->toBeLessThanOrEqual(100);
+});
+
+test('portfolio cannot attach media owned by another item', function () {
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+    $portfolioA = PortfolioItem::factory()->create();
+    $portfolioB = PortfolioItem::factory()->create();
+
+    $media = Media::factory()->create([
+        'mediable_type' => PortfolioItem::class,
+        'mediable_id' => $portfolioA->id,
+    ]);
+
+    $this->actingAs($admin)->post(route('admin.portfolio.media.attach', $portfolioB), [
+        'media_id' => $media->id,
+    ])->assertJsonPath('success', false);
+
+    expect($media->fresh()->mediable_id)->toBe($portfolioA->id);
+});
+
+test('deleting own profile when user owns blogs does not error', function () {
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+    Blog::factory()->create(['author_id' => $admin->id]);
+
+    $this->actingAs($admin)->delete(route('profile.destroy'), [
+        'password' => 'password',
+    ])->assertRedirect();
+
+    expect(User::find($admin->id))->not->toBeNull();
+});
+
+test('blog image url rejects javascript scheme but allows relative path', function () {
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+
+    $this->actingAs($admin)->post('/admin/blogs', [
+        'title' => 'Bad Image',
+        'slug' => 'bad-image',
+        'status' => 'draft',
+        'featured_image' => 'javascript:alert(1)',
+    ])->assertSessionHasErrors('featured_image');
+
+    $this->actingAs($admin)->post('/admin/blogs', [
+        'title' => 'Good Image',
+        'slug' => 'good-image',
+        'status' => 'draft',
+        'featured_image' => '/storage/uploads/img.jpg',
+    ])->assertRedirect();
+
+    expect(Blog::where('slug', 'good-image')->value('featured_image'))->toBe('/storage/uploads/img.jpg');
+});
+
+test('sanitizer strips external background-image and fixed positioning', function () {
+    $blog = Blog::factory()->create([
+        'content' => '<div style="background-image:url(http://evil.com/x.png); position:fixed; top:0">Safe</div>',
+    ]);
+
+    $content = $blog->fresh()->content;
+
+    expect($content)->not->toContain('position:fixed')
+        ->and($content)->not->toContain('background-image')
+        ->and($content)->toContain('Safe');
 });

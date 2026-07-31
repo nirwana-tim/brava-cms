@@ -43,6 +43,10 @@ class SettingController extends Controller
 
         foreach ($request->except('_token', '_method') as $key => $value) {
             if (! $settings->contains('key', $key) && $request->user()->isSuperAdmin()) {
+                if (mb_strlen($key) > 255 || mb_strlen((string) $value) > 5000) {
+                    continue;
+                }
+
                 Setting::create([
                     'key' => $key,
                     'value' => $value,

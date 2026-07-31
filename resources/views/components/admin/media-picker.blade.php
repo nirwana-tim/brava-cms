@@ -1,6 +1,6 @@
 @props(['target' => 'featured_image', 'collection' => 'general'])
 
-<div x-data="mediaHandler('{{ $target }}', '{{ $collection }}')" class="flex items-center gap-1.5 shrink-0">
+<div x-data="mediaHandler(@js($target), @js($collection))" class="flex items-center gap-1.5 shrink-0">
     <button type="button" @click="openPicker"
         class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium btn-edit">
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
