@@ -189,6 +189,18 @@
                                 <input type="checkbox" id="robots_index" name="robots_index" value="1" class="form-checkbox" {{ old('robots_index', true) ? 'checked' : '' }} />
                                 <x-input-label for="robots_index" :value="__('Allow indexing')" />
                             </div>
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" id="robots_follow" name="robots_follow" value="1" class="form-checkbox" {{ old('robots_follow', true) ? 'checked' : '' }} />
+                                <x-input-label for="robots_follow" :value="__('Allow following links')" />
+                            </div>
+                            <div>
+                                <x-input-label for="schema_type" :value="__('Schema Type')" />
+                                <select id="schema_type" name="schema_type" class="form-select mt-1 block w-full">
+                                    <option value="CreativeWork" {{ old('schema_type', 'CreativeWork') === 'CreativeWork' ? 'selected' : '' }}>CreativeWork</option>
+                                    <option value="WebPage" {{ old('schema_type', 'CreativeWork') === 'WebPage' ? 'selected' : '' }}>WebPage</option>
+                                    <option value="Article" {{ old('schema_type', 'CreativeWork') === 'Article' ? 'selected' : '' }}>Article</option>
+                                </select>
+                            </div>
                         </div>
                     </details>
                 </div>

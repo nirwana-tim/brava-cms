@@ -216,6 +216,8 @@ GET /api/blogs
 
 GET /api/blogs/{slug}
 
+GET /api/sitemap
+
 Responses must always use API Resources.
 
 Never return Eloquent models directly.
@@ -412,6 +414,8 @@ robots_index
 robots_follow
 
 schema_type
+
+Note: `canonical_url`, `og_title`, and `og_description` are computed at runtime in API Resources (from `FRONTEND_URL` + fallbacks), NOT stored as columns. Image fields in API responses are returned as absolute URLs via `url()`.
 
 Global SEO lives inside Settings.
 
@@ -654,6 +658,8 @@ Use eager loading.
 API endpoints use caching via cache services (`Cache::flexible` / `Cache::remember`).
 
 Cache is automatically flushed via the `App\Traits\ClearsApiCache` trait when CMS models are saved or deleted.
+
+Successful `GET /api/*` responses include `Cache-Control: public, max-age=900, s-maxage=900` via the `App\Http\Middleware\CacheApiHeaders` middleware (registered on the `api` middleware group). POST requests and non-API routes are never publicly cached.
 
 Avoid premature optimization.
 

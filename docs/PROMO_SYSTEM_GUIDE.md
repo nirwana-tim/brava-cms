@@ -80,10 +80,25 @@ Mengambil 1 promo utama untuk ditampilkan di Modal Popup Voucher & Hero Banner h
     "valid_from": "2026-07-01 00:00:00",
     "valid_until": "2026-09-30 23:59:59",
     "is_highlighted": true,
-    "wa_url": "https://wa.me/6281234567890?text=Halo%20Brava..."
+    "wa_url": "https://wa.me/6281234567890?text=Halo%20Brava...",
+    "seo": {
+      "meta_title": "40% Diskon Untuk Pemesanan Seragam Perusahaan",
+      "meta_description": "Dapatkan potongan harga hingga 40% untuk pemesanan kolektif...",
+      "og_title": "40% Diskon Untuk Pemesanan Seragam Perusahaan",
+      "og_description": "Dapatkan potongan harga hingga 40% untuk pemesanan kolektif...",
+      "og_image": "http://localhost:8000/storage/promos/seragam-promo.jpg",
+      "og_image_alt": "Diskon Seragam Perusahaan 40%",
+      "robots_index": true,
+      "robots_follow": true,
+      "schema_type": "SpecialAnnouncement",
+      "canonical_url": "http://localhost:3000/promos/40-diskon-untuk-pemesanan-seragam-perusahaan"
+    },
+    "updated_at": "2026-07-30T10:00:00+00:00"
   }
 }
 ```
+
+> **SEO note:** Promo menyertakan blok `seo` (komputed di `PromoResource`) untuk meta title/description, OpenGraph, robots, dan canonical URL (berbasis `FRONTEND_URL`).
 
 ### B. `GET /api/promos`
 Mengambil daftar promo aktif lainnya (selain promo highlight) dalam bentuk paginasi (maksimal 100 item/halaman, default 12).

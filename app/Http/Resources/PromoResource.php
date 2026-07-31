@@ -2,11 +2,14 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Concerns\BuildsCanonicalUrl;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PromoResource extends JsonResource
 {
+    use BuildsCanonicalUrl;
+
     public function __construct(mixed $resource, private readonly ?string $waNumber = null)
     {
         parent::__construct($resource);
@@ -33,6 +36,20 @@ class PromoResource extends JsonResource
             'is_highlighted' => (bool) $this->is_highlighted,
             'is_coming_soon' => $this->is_coming_soon,
             'state' => $this->is_coming_soon ? 'coming_soon' : ($this->is_expired ? 'expired' : 'active'),
+            'seo' => [
+                'meta_title' => $this->title,
+                'meta_description' => str(strip_tags($this->description ?: ''))->limit(160)->toString(),
+                'og_title' => $this->title,
+                'og_description' => str(strip_tags($this->description ?: ''))->limit(160)->toString(),
+                'og_image' => $this->image ? url($this->image) : null,
+                'og_image_alt' => $this->image_alt ?: $this->title,
+                'robots_index' => (bool) $this->is_active,
+                'robots_follow' => true,
+                'schema_type' => 'SpecialAnnouncement',
+                'canonical_url' => $this->canonicalUrl('promos/'.$this->slug),
+            ],
+            'created_at' => $this->created_at?->toIso8601String(),
+            'updated_at' => $this->updated_at?->toIso8601String(),
         ];
     }
 

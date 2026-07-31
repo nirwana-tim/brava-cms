@@ -2,11 +2,14 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Concerns\BuildsCanonicalUrl;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class BlogResource extends JsonResource
 {
+    use BuildsCanonicalUrl;
+
     public function toArray(Request $request): array
     {
         return [
@@ -15,12 +18,12 @@ class BlogResource extends JsonResource
             'slug' => $this->slug,
             'excerpt' => $this->excerpt,
             'content' => $this->content,
-            'featured_image' => $this->featured_image,
+            'featured_image' => $this->featured_image ? url($this->featured_image) : null,
             'featured_image_alt' => $this->featured_image_alt,
             'author' => $this->whenLoaded('author', fn () => [
                 'id' => $this->author->id,
                 'name' => $this->author->name,
-                'avatar' => $this->author->avatar,
+                'avatar' => $this->author->avatar ? url($this->author->avatar) : null,
             ]),
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
             'media' => MediaResource::collection($this->whenLoaded('media')),
@@ -31,13 +34,15 @@ class BlogResource extends JsonResource
                 'meta_keywords' => $this->meta_keywords,
                 'og_title' => $this->meta_title ?: $this->title,
                 'og_description' => $this->meta_description ?: ($this->excerpt ?: str(strip_tags($this->content ?: ''))->limit(160)->toString()),
-                'og_image' => $this->og_image ?: $this->featured_image,
+                'og_image' => ($this->og_image ?: $this->featured_image) ? url($this->og_image ?: $this->featured_image) : null,
                 'og_image_alt' => $this->og_image_alt ?: $this->featured_image_alt,
                 'robots_index' => $this->robots_index,
                 'robots_follow' => $this->robots_follow,
                 'schema_type' => $this->schema_type,
+                'canonical_url' => $this->canonicalUrl('blogs/'.$this->slug),
             ],
             'created_at' => $this->created_at->toIso8601String(),
+            'updated_at' => $this->updated_at?->toIso8601String(),
         ];
     }
 }

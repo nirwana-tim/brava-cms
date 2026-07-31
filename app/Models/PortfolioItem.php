@@ -21,6 +21,7 @@ class PortfolioItem extends Model
         'service_id', 'title', 'slug', 'description', 'content',
         'client', 'photo', 'photo_alt', 'completed_at', 'is_active',
         'meta_title', 'meta_description', 'og_image', 'og_image_alt', 'robots_index',
+        'robots_follow', 'schema_type',
     ];
 
     protected function casts(): array
@@ -29,6 +30,7 @@ class PortfolioItem extends Model
             'is_active' => 'boolean',
             'completed_at' => 'date',
             'robots_index' => 'boolean',
+            'robots_follow' => 'boolean',
         ];
     }
 

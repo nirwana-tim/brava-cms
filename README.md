@@ -7,7 +7,8 @@
 ## Key Features & Architecture
 
 - **Headless & Reusable:** Serves as a standalone backend CMS and REST API. Does not couple frontend templates; easily reusable across multiple client projects.
-- **Dynamic API Caching & Auto-Invalidation:** All public API endpoints are cached for high performance (`Cache::flexible`). The custom `App\Traits\ClearsApiCache` trait is attached to all CMS models to automatically flush and invalidate caches whenever an administrator creates, updates, or deletes content.
+- **Dynamic API Caching & Auto-Invalidation:** All public API endpoints are cached for high performance (`Cache::flexible`). The custom `App\Traits\ClearsApiCache` trait is attached to all CMS models to automatically flush and invalidate caches whenever an administrator creates, updates, or deletes content. Successful `GET /api/*` responses additionally include `Cache-Control` headers for browser/CDN caching.
+- **SEO-Ready API:** Detail endpoints expose a consistent `seo` block (meta title/description, OpenGraph, `robots` directives, schema type, and `canonical_url`), image fields are returned as absolute URLs, and a `GET /api/sitemap` endpoint lists all publicly indexable content for frontend sitemap generation.
 - **Media Library & Compression:** Centralized file management with automatic image resizing and compression (`Intervention/Image`) down to 1920px max width.
 - **Portfolio Management:** Mandatory Cover Photo (`photo`) and strict gallery limits (maximum 4 detail images) enforced at both Form Request and UI levels.
 - **Blog & SEO Management:** Automated `published_at` timestamp management upon status transitions, complete with embedded per-entity SEO tags (OpenGraph, Schema.org, meta titles/descriptions).
@@ -54,6 +55,7 @@
    cp .env.example .env
    php artisan key:generate
    ```
+   Set `APP_URL` (backend domain) and `FRONTEND_URL` (public website domain) — used for absolute image URLs and SEO canonical URLs.
 
 3. **Run Migrations & Seeders:**
    ```bash

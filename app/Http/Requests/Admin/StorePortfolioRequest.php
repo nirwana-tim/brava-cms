@@ -34,6 +34,8 @@ class StorePortfolioRequest extends FormRequest
             'og_image' => $this->imageUrlRule(),
             'og_image_alt' => ['nullable', 'string', 'max:255'],
             'robots_index' => ['boolean'],
+            'robots_follow' => ['boolean'],
+            'schema_type' => ['nullable', 'string', 'max:50'],
             'gallery_media_ids' => ['nullable', 'string', 'regex:/^[0-9,]+$/'],
         ];
     }

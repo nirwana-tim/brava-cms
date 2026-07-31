@@ -23,6 +23,8 @@ class PortfolioItemFactory extends Factory
             'meta_title' => fake()->words(5, true),
             'meta_description' => fake()->sentence(),
             'robots_index' => true,
+            'robots_follow' => true,
+            'schema_type' => 'CreativeWork',
         ];
     }
 }

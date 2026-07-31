@@ -14,7 +14,7 @@ class TeamMemberResource extends JsonResource
             'name' => $this->name,
             'position' => $this->position,
             'bio' => $this->bio,
-            'avatar' => $this->avatar,
+            'avatar' => $this->avatar ? url($this->avatar) : null,
         ];
     }
 }

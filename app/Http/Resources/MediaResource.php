@@ -11,7 +11,7 @@ class MediaResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'url' => $this->url,
+            'url' => $this->url ? url($this->url) : null,
             'alt_text' => $this->alt_text,
             'mime_type' => $this->mime_type,
             'size' => $this->size,

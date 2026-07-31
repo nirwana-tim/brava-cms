@@ -79,21 +79,22 @@
 | excerpt | text | nullable |
 | content | longText | nullable |
 | featured_image | string(255) | nullable |
+| featured_image_alt | string(255) | nullable |
 | published_at | timestamp | nullable |
 | is_featured | boolean | default false |
 | status | string(255) | enum: draft, published, archived; default draft |
 | meta_title | string(70) | nullable |
 | meta_description | string(160) | nullable |
 | meta_keywords | string(255) | nullable |
-| og_title | string(70) | nullable |
-| og_description | string(160) | nullable |
 | og_image | string(255) | nullable |
-| canonical_url | string(255) | nullable |
+| og_image_alt | string(255) | nullable |
 | robots_index | boolean | default true |
 | robots_follow | boolean | default true |
 | schema_type | string(50) | default Article |
 | timestamps | | |
 | softDeletes | | |
+
+> **Note:** `canonical_url`, `og_title`, and `og_description` are **computed at runtime** in `App\Http\Resources\*` (from `FRONTEND_URL` and fallbacks), not stored as columns.
 
 ## Table: `portfolio_items`
 | Column | Type | Notes |
@@ -116,6 +117,8 @@
 | og_image | string(255) | nullable |
 | og_image_alt | string(255) | nullable |
 | robots_index | boolean | default true |
+| robots_follow | boolean | default true |
+| schema_type | string(50) | default CreativeWork |
 | timestamps | | |
 | softDeletes | | |
 

@@ -56,6 +56,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Frontend URL
+    |--------------------------------------------------------------------------
+    |
+    | This URL points to the public-facing frontend (e.g. Next.js) that
+    | consumes the API. It is used to build absolute canonical URLs for
+    | SEO purposes.
+    |
+    */
+
+    'frontend_url' => env('FRONTEND_URL', 'http://localhost:3000'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

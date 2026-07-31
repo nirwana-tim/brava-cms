@@ -14,7 +14,7 @@ class ServiceListResource extends JsonResource
             'title' => $this->title,
             'slug' => $this->slug,
             'description' => $this->description,
-            'photo' => $this->photo,
+            'photo' => $this->photo ? url($this->photo) : null,
             'photo_alt' => $this->photo_alt,
             'media' => MediaResource::collection($this->whenLoaded('media')),
             'created_at' => $this->created_at->toIso8601String(),

@@ -84,6 +84,20 @@
                                 {{ $portfolio->robots_index ? 'Allowed' : 'Noindex' }}
                             </span>
                         </div>
+                        @if ($portfolio->robots_follow !== null)
+                            <div>
+                                <span class="font-medium">Follow Links:</span>
+                                <span class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full {{ $portfolio->robots_follow ? 'badge-active' : 'badge-inactive' }}">
+                                    {{ $portfolio->robots_follow ? 'Follow' : 'Nofollow' }}
+                                </span>
+                            </div>
+                        @endif
+                        @if ($portfolio->schema_type)
+                            <div>
+                                <span class="font-medium">Schema Type:</span>
+                                <span class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full" style="background: var(--card-header-bg); color: var(--table-text)">{{ $portfolio->schema_type }}</span>
+                            </div>
+                        @endif
                     </div>
                 </div>
             @endif

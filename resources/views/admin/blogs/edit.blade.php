@@ -129,6 +129,22 @@
                                         <x-admin.media-picker target="og_image" collection="blogs" />
                                         <p class="form-hint">Optimal rasio 1.91:1 (1200x630 px) untuk banner sosmed. Otomatis mengikuti Featured Image jika dikosongkan.</p>
                                     </div>
+                                    <div class="flex items-center gap-2">
+                                        <input type="checkbox" id="robots_index" name="robots_index" value="1" class="form-checkbox" {{ old('robots_index', $blog->robots_index ?? true) ? 'checked' : '' }} />
+                                        <x-input-label for="robots_index" :value="__('Allow indexing')" />
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <input type="checkbox" id="robots_follow" name="robots_follow" value="1" class="form-checkbox" {{ old('robots_follow', $blog->robots_follow ?? true) ? 'checked' : '' }} />
+                                        <x-input-label for="robots_follow" :value="__('Allow following links')" />
+                                    </div>
+                                    <div>
+                                        <x-input-label for="schema_type" :value="__('Schema Type')" />
+                                        <select id="schema_type" name="schema_type" class="form-select mt-1 block w-full">
+                                            <option value="Article" {{ old('schema_type', $blog->schema_type ?? 'Article') === 'Article' ? 'selected' : '' }}>Article</option>
+                                            <option value="BlogPosting" {{ old('schema_type', $blog->schema_type ?? 'Article') === 'BlogPosting' ? 'selected' : '' }}>BlogPosting</option>
+                                            <option value="NewsArticle" {{ old('schema_type', $blog->schema_type ?? 'Article') === 'NewsArticle' ? 'selected' : '' }}>NewsArticle</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </details>
                         </div>

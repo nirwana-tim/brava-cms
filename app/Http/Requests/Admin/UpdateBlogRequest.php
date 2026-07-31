@@ -34,6 +34,9 @@ class UpdateBlogRequest extends FormRequest
             'meta_description' => ['nullable', 'string', 'max:160'],
             'og_image' => $this->imageUrlRule(),
             'og_image_alt' => ['nullable', 'string', 'max:255'],
+            'robots_index' => ['boolean'],
+            'robots_follow' => ['boolean'],
+            'schema_type' => ['nullable', 'string', 'max:50'],
         ];
     }
 }

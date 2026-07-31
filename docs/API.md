@@ -7,7 +7,7 @@
 ## Base URL
 
 ```
-http://localhost:8000/api
+Base URL: `https://brava.id` for production, `http://localhost:3000` for local Next.js.
 ```
 
 ## Response Format
@@ -43,6 +43,8 @@ http://localhost:8000/api
     }
 }
 ```
+
+> **Note:** Image fields (`featured_image`, `photo`, `og_image`, `avatar`, `url`, etc.) are returned as **absolute URLs** based on `APP_URL`. Canonical URLs are built from the `FRONTEND_URL` env variable.
 
 ### Validation Error
 ```json
@@ -263,9 +265,13 @@ Response:
             "meta_description": "SEO description",
             "og_title": "Blog Post Title",
             "og_description": "SEO description",
-            "og_image": "/storage/blogs/og.jpg",
-            "schema_type": "Article"
-        }
+            "og_image": "https://brava.id/storage/blogs/og.jpg",
+            "robots_index": true,
+            "robots_follow": true,
+            "schema_type": "Article",
+            "canonical_url": "https://brava.id/blogs/blog-post-title"
+        },
+        "updated_at": "2026-07-27T10:00:00Z"
     }
 }
 ```
@@ -441,6 +447,55 @@ Response:
 
 ---
 
+### Sitemap
+
+#### `GET /api/sitemap`
+
+Returns all publicly indexable content as a single list — used by Next.js to generate `sitemap.xml`. Cached and auto-invalidated on content changes.
+
+Response:
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "type": "blog",
+            "slug": "blog-post-title",
+            "loc": "https://brava.id/blogs/blog-post-title",
+            "lastmod": "2026-07-27T10:00:00Z"
+        },
+        {
+            "type": "portfolio",
+            "slug": "techcorp-corporate-website",
+            "loc": "https://brava.id/portfolio/techcorp-corporate-website",
+            "lastmod": "2026-07-27T10:00:00Z"
+        },
+        {
+            "type": "promo",
+            "slug": "40-diskon-untuk-pemesanan-seragam-perusahaan",
+            "loc": "https://brava.id/promos/40-diskon-untuk-pemesanan-seragam-perusahaan",
+            "lastmod": "2026-07-30T10:00:00Z"
+        },
+        {
+            "type": "service",
+            "slug": "corporate-website-package",
+            "loc": "https://brava.id/services/corporate-website-package",
+            "lastmod": "2026-07-27T10:00:00Z"
+        },
+        {
+            "type": "category",
+            "slug": "technology",
+            "loc": "https://brava.id/blog?category=technology",
+            "lastmod": "2026-07-27T10:00:00Z"
+        }
+    ]
+}
+```
+
+> Only published blogs and active promos/portfolio/services are included. Drafts, archived, and inactive content are excluded. URLs are built from the `FRONTEND_URL` env variable.
+
+---
+
 ## SEO Strategy for Next.js
 
 ### Per-Page SEO
@@ -458,6 +513,8 @@ Every detail endpoint returns a `seo` object where applicable. Next.js should ma
   <script type="application/ld+json">{JSON.stringify(schemaJSON)}</script>
 </Head>
 ```
+
+`schemaJSON` for blogs should use `data.seo.schema_type` (e.g. `Article`, `BlogPosting`) with `data.published_at` → `datePublished` and `data.updated_at` → `dateModified`. Generate `sitemap.xml` from `GET /api/sitemap`.
 
 ### Global Fallback
 If `meta_title` is empty on an entity, fallback to `default_meta_title` from `/api/settings`.
@@ -502,6 +559,15 @@ CORS is wide-open for GET requests (Next.js needs it). For production, restrict 
 ---
 
 ## Performance Optimizations
+
+### HTTP Cache Headers
+Every successful `GET /api/*` response includes:
+```
+Cache-Control: public, max-age=900, s-maxage=900
+```
+- `max-age=900` (15 min): browser/Next.js cache
+- `s-maxage=900`: CDN/shared cache — matches the internal Laravel cache TTL, so no stale-data gap when content changes
+- `POST` requests and non-API routes are never publicly cached.
 
 ### Sparse Fieldsets
 ```
@@ -548,7 +614,19 @@ Response:
         "valid_from": "2026-07-01 00:00:00",
         "valid_until": "2026-09-30 23:59:59",
         "wa_template": "Halo Brava, saya ingin klaim Diskon 40% Pemesanan Seragam...",
-        "is_highlighted": true
+        "is_highlighted": true,
+        "seo": {
+            "meta_title": "40% Diskon Untuk Pemesanan Seragam Perusahaan",
+            "meta_description": "Dapatkan potongan harga untuk pemesanan seragam...",
+            "og_title": "40% Diskon Untuk Pemesanan Seragam Perusahaan",
+            "og_description": "Dapatkan potongan harga untuk pemesanan seragam...",
+            "og_image": "http://localhost:8000/storage/promos/seragam-promo.jpg",
+            "og_image_alt": "Diskon Seragam Perusahaan 40%",
+            "robots_index": true,
+            "robots_follow": true,
+            "schema_type": "SpecialAnnouncement",
+            "canonical_url": "http://localhost:3000/promos/40-diskon-untuk-pemesanan-seragam-perusahaan"
+        }
     }
 }
 ```
