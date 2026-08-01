@@ -117,6 +117,11 @@
                                 <textarea id="meta_description" name="meta_description" class="form-textarea mt-1" rows="3">{{ old('meta_description', $portfolio->meta_description) }}</textarea>
                                 <p class="form-hint">Optimal 150–160 karakter (termasuk spasi). Otomatis menjadi deskripsi share WhatsApp/Sosmed (OG Description) dan mengikuti deskripsi/konten jika dikosongkan.</p>
                             </div>
+                            <div>
+                                <x-input-label for="meta_keywords" :value="__('Meta Keywords')" />
+                                <x-text-input id="meta_keywords" name="meta_keywords" type="text" class="mt-1 block w-full" :value="old('meta_keywords', $portfolio->meta_keywords)" placeholder="e.g. seragam lapangan, tambang, custom uniform" />
+                                <p class="form-hint">Daftar 3–5 kata/frasa kunci relevan dipisahkan koma untuk pelabelan topik internal & referensi AI.</p>
+                            </div>
                             <div x-data="{ ogImage: @js(old('og_image', $portfolio->og_image)), ogImageAlt: @js(old('og_image_alt', $portfolio->og_image_alt)) }">
                                 <x-input-label for="og_image" :value="__('OG Image')" />
                                 <input type="hidden" name="og_image" id="og_image"

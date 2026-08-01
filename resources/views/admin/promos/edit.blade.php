@@ -101,6 +101,27 @@
                         </div>
                     </div>
 
+                    <details class="mt-4 pt-4 border-t" style="border-color: var(--card-border)">
+                        <summary class="text-sm font-medium cursor-pointer" style="color: var(--label-text)">{{ __('SEO Settings') }}</summary>
+                        <div class="mt-4 space-y-4">
+                            <div>
+                                <x-input-label for="meta_title" :value="__('Meta Title')" />
+                                <x-text-input id="meta_title" name="meta_title" type="text" class="mt-1 block w-full" :value="old('meta_title', $promo->meta_title)" placeholder="e.g. Promo Diskon 40% Seragam Kantor | Brava" />
+                                <p class="form-hint">Optimal 50–60 karakter untuk Google Search. Otomatis mengikuti Judul Promo jika dikosongkan.</p>
+                            </div>
+                            <div>
+                                <x-input-label for="meta_description" :value="__('Meta Description')" />
+                                <textarea id="meta_description" name="meta_description" class="form-textarea mt-1 w-full" rows="3">{{ old('meta_description', $promo->meta_description) }}</textarea>
+                                <p class="form-hint">Optimal 150–160 karakter (termasuk spasi). Otomatis mengikuti deskripsi promo jika dikosongkan.</p>
+                            </div>
+                            <div>
+                                <x-input-label for="meta_keywords" :value="__('Meta Keywords')" />
+                                <x-text-input id="meta_keywords" name="meta_keywords" type="text" class="mt-1 block w-full" :value="old('meta_keywords', $promo->meta_keywords)" placeholder="e.g. promo seragam, diskon konveksi, baju kantor murah" />
+                                <p class="form-hint">Daftar 3–5 kata/frasa kunci relevan dipisahkan koma untuk pelabelan topik internal & referensi AI.</p>
+                            </div>
+                        </div>
+                    </details>
+
                     <div class="flex items-center gap-4 pt-4">
                         <x-primary-button>{{ __('Update Promo') }}</x-primary-button>
                         <a href="{{ route('admin.promos.index') }}">

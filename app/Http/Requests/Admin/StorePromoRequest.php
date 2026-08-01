@@ -32,6 +32,9 @@ class StorePromoRequest extends FormRequest
             'wa_template' => ['nullable', 'string', 'max:1000'],
             'is_highlighted' => ['boolean'],
             'is_active' => ['boolean'],
+            'meta_title' => ['nullable', 'string', 'max:70'],
+            'meta_description' => ['nullable', 'string', 'max:160'],
+            'meta_keywords' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

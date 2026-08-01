@@ -33,6 +33,7 @@ class UpdatePortfolioRequest extends FormRequest
             'categories.*' => ['exists:categories,id'],
             'meta_title' => ['nullable', 'string', 'max:70'],
             'meta_description' => ['nullable', 'string', 'max:160'],
+            'meta_keywords' => ['nullable', 'string', 'max:255'],
             'og_image' => $this->imageUrlRule(),
             'og_image_alt' => ['nullable', 'string', 'max:255'],
             'robots_index' => ['boolean'],

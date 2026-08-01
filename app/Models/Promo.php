@@ -27,6 +27,9 @@ class Promo extends Model
         'wa_template',
         'is_highlighted',
         'is_active',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
     ];
 
     protected $casts = [

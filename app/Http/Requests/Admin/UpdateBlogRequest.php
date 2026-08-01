@@ -32,6 +32,7 @@ class UpdateBlogRequest extends FormRequest
             'category_ids.*' => ['exists:categories,id'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:160'],
+            'meta_keywords' => ['nullable', 'string', 'max:255'],
             'og_image' => $this->imageUrlRule(),
             'og_image_alt' => ['nullable', 'string', 'max:255'],
             'robots_index' => ['boolean'],
