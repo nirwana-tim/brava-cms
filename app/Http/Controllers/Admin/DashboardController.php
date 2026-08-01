@@ -22,9 +22,14 @@ class DashboardController extends Controller
             'users' => User::where('role', '!=', UserRole::SuperAdmin)->count(),
         ];
 
-        $data = $analytics->getOverview(30);
+        $days = (int) request()->query('days', 30);
+        if (! in_array($days, [7, 30, 90, 365], true)) {
+            $days = 30;
+        }
+
+        $data = $analytics->getOverview($days);
         $isDummy = ! $analytics->isReady();
 
-        return view('admin.dashboard', compact('stats', 'data', 'isDummy'));
+        return view('admin.dashboard', compact('stats', 'data', 'isDummy', 'days'));
     }
 }

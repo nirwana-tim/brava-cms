@@ -31,7 +31,19 @@
 
     {{-- Analytics Section --}}
     <div class="mb-6">
-        <h2 class="text-lg font-semibold mb-1" style="color: var(--heading-text)">Analytics Ringkasan</h2>
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-1">
+            <h2 class="text-lg font-semibold" style="color: var(--heading-text)">Analytics Ringkasan</h2>
+            <div class="flex flex-wrap items-center gap-1.5">
+                @foreach ([7 => '7H', 30 => '30H', 90 => '90H', 365 => '1Y'] as $value => $label)
+                    <a href="{{ route('admin.dashboard', ['days' => $value]) }}"
+                        class="inline-flex items-center px-3 py-1.5 rounded-md text-xs font-medium transition
+                        {{ $days === $value ? 'bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}"
+                        style="color: {{ $days === $value ? '' : 'var(--table-text)' }}">
+                        {{ $label }}
+                    </a>
+                @endforeach
+            </div>
+        </div>
         @if ($isDummy)
             <p class="text-sm mb-4" style="color: var(--muted-text)">
                 <span class="text-amber-600 dark:text-amber-400">Data dummy</span> —
@@ -65,28 +77,28 @@
             <div class="card-body">
                 <p class="text-xs font-semibold uppercase tracking-wider" style="color: var(--muted-text)">Pageviews Today</p>
                 <p class="text-2xl font-bold mt-1" style="color: var(--heading-text)">{{ number_format($data['today']['pageviews']) }}</p>
-                <p class="text-xs mt-1" style="color: var(--muted-text)">30H: {{ number_format($data['total']['pageviews']) }}</p>
+                <p class="text-xs mt-1" style="color: var(--muted-text)">{{ $data['period'] }}H: {{ number_format($data['total']['pageviews']) }}</p>
             </div>
         </div>
         <div class="card">
             <div class="card-body">
                 <p class="text-xs font-semibold uppercase tracking-wider" style="color: var(--muted-text)">Sessions Today</p>
                 <p class="text-2xl font-bold mt-1" style="color: var(--heading-text)">{{ number_format($data['today']['sessions']) }}</p>
-                <p class="text-xs mt-1" style="color: var(--muted-text)">30H: {{ number_format($data['total']['sessions']) }}</p>
+                <p class="text-xs mt-1" style="color: var(--muted-text)">{{ $data['period'] }}H: {{ number_format($data['total']['sessions']) }}</p>
             </div>
         </div>
         <div class="card">
             <div class="card-body">
                 <p class="text-xs font-semibold uppercase tracking-wider" style="color: var(--muted-text)">Bounce Rate</p>
                 <p class="text-2xl font-bold mt-1" style="color: var(--heading-text)">{{ $data['today']['bounceRate'] }}%</p>
-                <p class="text-xs mt-1" style="color: var(--muted-text)">Avg 30H: {{ $data['total']['avgBounceRate'] }}%</p>
+                <p class="text-xs mt-1" style="color: var(--muted-text)">Avg {{ $data['period'] }}H: {{ $data['total']['avgBounceRate'] }}%</p>
             </div>
         </div>
         <div class="card">
             <div class="card-body">
                 <p class="text-xs font-semibold uppercase tracking-wider" style="color: var(--muted-text)">Avg Duration</p>
                 <p class="text-2xl font-bold mt-1" style="color: var(--heading-text)">{{ gmdate('i:s', $data['today']['avgDuration']) }}</p>
-                <p class="text-xs mt-1" style="color: var(--muted-text)">Avg 30H: {{ gmdate('i:s', $data['total']['avgDuration']) }}</p>
+                <p class="text-xs mt-1" style="color: var(--muted-text)">Avg {{ $data['period'] }}H: {{ gmdate('i:s', $data['total']['avgDuration']) }}</p>
             </div>
         </div>
     </div>
@@ -96,7 +108,7 @@
         {{-- Visitor Trend --}}
         <div class="card">
             <div class="card-header">
-                <h3 class="text-sm font-semibold" style="color: var(--heading-text)">Visitor Trend (30H)</h3>
+                <h3 class="text-sm font-semibold" style="color: var(--heading-text)">Visitor Trend ({{ $data['period'] }}H)</h3>
             </div>
             <div class="card-body">
                 <canvas id="visitorTrendChart" height="200"></canvas>
