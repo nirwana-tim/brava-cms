@@ -14,7 +14,7 @@ class SettingController extends Controller
     {
         $this->authorize('viewAny', Setting::class);
 
-        $groupOrder = ['general', 'contact', 'social', 'seo', 'system'];
+        $groupOrder = ['general', 'contact', 'social', 'seo', 'adsense', 'system'];
 
         $settings = Setting::all()
             ->groupBy('group')

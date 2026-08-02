@@ -32,12 +32,15 @@ class Promo extends Model
         'meta_keywords',
     ];
 
-    protected $casts = [
-        'valid_from' => 'datetime',
-        'valid_until' => 'datetime',
-        'is_highlighted' => 'boolean',
-        'is_active' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'valid_from' => 'datetime',
+            'valid_until' => 'datetime',
+            'is_highlighted' => 'boolean',
+            'is_active' => 'boolean',
+        ];
+    }
 
     protected static function booted(): void
     {

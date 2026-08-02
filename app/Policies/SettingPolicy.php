@@ -14,7 +14,7 @@ class SettingPolicy
 
     public function view(User $user, Setting $setting): bool
     {
-        if (in_array($setting->group, ['general', 'seo', 'system']) || in_array($setting->key, ['site_name', 'site_description', 'google_analytics_id', 'default_meta_title', 'default_meta_description'])) {
+        if (in_array($setting->group, ['general', 'seo', 'system', 'adsense']) || in_array($setting->key, ['site_name', 'site_description', 'google_analytics_id', 'default_meta_title', 'default_meta_description'])) {
             return $user->isSuperAdmin();
         }
 
@@ -23,7 +23,7 @@ class SettingPolicy
 
     public function update(User $user, Setting $setting): bool
     {
-        if (in_array($setting->group, ['general', 'seo', 'system']) || in_array($setting->key, ['site_name', 'site_description', 'google_analytics_id', 'default_meta_title', 'default_meta_description'])) {
+        if (in_array($setting->group, ['general', 'seo', 'system', 'adsense']) || in_array($setting->key, ['site_name', 'site_description', 'google_analytics_id', 'default_meta_title', 'default_meta_description'])) {
             return $user->isSuperAdmin();
         }
 

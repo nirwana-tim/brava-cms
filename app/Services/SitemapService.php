@@ -61,6 +61,7 @@ class SitemapService
                         'lastmod' => $service->updated_at?->toIso8601String(),
                     ]))
                 ->merge(Category::query()
+                    ->whereNotNull('type')
                     ->select(['slug', 'type', 'updated_at'])
                     ->get()
                     ->map(fn (Category $category) => [

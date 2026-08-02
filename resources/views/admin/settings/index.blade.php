@@ -20,7 +20,7 @@
                 @endif
 
                 @php
-                    $groupLabels = ['general' => 'General', 'contact' => 'Contact', 'social' => 'Social Media', 'seo' => 'SEO', 'system' => 'System'];
+                    $groupLabels = ['general' => 'General', 'contact' => 'Contact', 'social' => 'Social Media', 'seo' => 'SEO', 'adsense' => 'AdSense', 'system' => 'System'];
                     $restrictedSettings = [];
                 @endphp
 

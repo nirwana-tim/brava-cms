@@ -20,6 +20,10 @@ class SettingSeeder extends Seeder
             ['key' => 'default_meta_title', 'value' => 'Brava CMS - Headless CMS Solution', 'group' => 'seo', 'type' => 'text'],
             ['key' => 'default_meta_description', 'value' => 'Brava CMS is a modern headless CMS built with Laravel, designed for speed and SEO.', 'group' => 'seo', 'type' => 'textarea'],
             ['key' => 'google_analytics_id', 'value' => '', 'group' => 'seo', 'type' => 'text'],
+            ['key' => 'adsense_enabled', 'value' => '0', 'group' => 'adsense', 'type' => 'boolean'],
+            ['key' => 'adsense_client_id', 'value' => '', 'group' => 'adsense', 'type' => 'text'],
+            ['key' => 'adsense_slot_1', 'value' => '', 'group' => 'adsense', 'type' => 'text'],
+            ['key' => 'adsense_slot_2', 'value' => '', 'group' => 'adsense', 'type' => 'text'],
         ];
 
         foreach ($settings as $setting) {

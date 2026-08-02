@@ -63,5 +63,45 @@ Walaupun aplikasi sudah sangat solid, berikut adalah 4 rekomendasi penyempurnaan
 - **Rekomendasi**: Untuk keamanan tingkat lanjut, terutama pada tim staf yang banyak, pertimbangkan pencatatan riwayat aktivitas (*activity log / audit trail*) untuk memantau siapa yang mengubah status promo, memodifikasi artikel, atau menghapus item portofolio.
 
 ### 4. Konfigurasi CORS & Otorisasi API Khusus (Sanctum)
-- **Kondisi Saat Ini**: Endpoint API bersifat publik dengan kontrol *rate limiting*.
-- **Rekomendasi**: Jika di masa depan API akan dikonsumsi oleh aplikasi seluler (Mobile App) atau portal klien khusus, pastikan *allowed origins* pada `config/cors.php` dikonfigurasi ketat, atau implementasikan *Bearer Token / Sanctum Auth* pada endpoint non-publik.
+- **Kondisi Saat**: Endpoint API bersifat publik dengan kontrol *rate limiting*.
+- **Rekomendasi**: Jika di masa depan API akan dikonsumsi oleh aplikasi seluler (Mobile App) atau portal klien khusus, pastikan *allowed origins* pada `config/cors.php` dikonfigurasi ketat, atau konfigurasikan *Bearer Token / Sanctum Auth* pada endpoint non-publik.
+
+---
+
+## A. Apendiks Audit Konsistensi Kode (2 Agustus 2026)
+
+> **Ringkasan Re-audit**: Pemeriksaan menyeluruh terhadap kesesuaian **Model ↔ Migration(DB) ↔ API Resource**, logika controller/service, dan perilaku runtime. Skema database aktual telah diverifikasi langsung terhadap seluruh tabel (`blogs`, `services`, `categories`, `portfolio_items`, `promos`, `testimonials`, `faqs`, `team_members`, `media`, `settings`) — **konsisten dengan model & fillable**. Baseline: **101 tests / 330 assertions — 100% PASSED**.
+
+### Status Kesesuaian Model vs Database
+- Semua kolom pada migration sesuai dengan `$fillable` dan `casts()` model. Kolom yang sempat didrop (`project_url`, `sort_order` portofolio, `is_active` & `sort_order` kategori, `category` faq) **sudah tidak direferensikan** pada model, kecuali satu temuan di bawah.
+- Kesenjangan gaya `Promo::$casts` (properti) vs model lain yang memakai `casts()` — fungsional identik, hanya inkonsistensi gaya.
+
+### Temuan (berdasarkan severity)
+
+| # | Severity | Lokasi | Temuan | Kategori | Status |
+|---|----------|--------|--------|----------|--------|
+| 1 | **Medium** | `app/Http/Resources/CategoryResource.php` | Mereturn `sort_order`, tetapi kolom `sort_order` pada tabel `categories` telah dihapus (migrasi drop). Hasilnya `sort_order: null` selalu muncul di API `/api/categories` — kontrak data salah/kebohongan. | Konsistensi Resource-DB | **DIPERBAIKI** |
+| 2 | Low | `app/Services/BlogService.php:23` | Filter `featured` tidak pernah diteruskan controller (hanya `category/tag/search/per_page`). Kode mati (dead code), dan baris `$featured ? $query->featured() : null;` mubazir. | Logika/dead code | **DIPERBAIKI** (di-forward controller + parse boolean via `filter_var`) |
+| 3 | Low | `app/Models/Promo.php:35` | Memakai properti `$casts` bukan method `casts()` (inkonsistensi). | Konsistensi | **DIPERBAIKI** (dikonversi ke `casts()`) |
+| 4 | Low | `app/Services/SitemapService.php:69` | URL kategori memakai `$category->type` yang nullable; jika kosong menghasilkan `{frontend}/?category=<slug>` tanpa path kategorik. | Logika | **DIPERBAIKI** (`whereNotNull('type')`) |
+| 5 | Low | `app/Http/Controllers/Admin/PortfolioController.php:77` | Daftar `gallery_media_ids` dipotong **diam-diam** via `->take(4)`. Pengguna bisa pilih 5+ gambar tapi hanya 4 tersimpan tanpa peringatan (berbeda dengan `attachMedia` yang memunculkan error 422). | UX / silent truncation | **DIPERBAIKI** (validasi ≤4 di FormRequest, error eksplisit) |
+| 6 | Info | `app/Models/Promo.php` (event `saved`) | Promo yang kedaluwarsa masih menyisakan `is_highlighted=true` di DB sementara `getHighlighted()` melakukan fallback ke promo lain. Tidak fatal (fallback sudah benar), hanya flag lama tidak dibersihkan. | Kebersihan state | **DIPERBAIKI** (`promos:clear-stale-highlights`, jadwal harian, + test) |
+
+### Catatan *non-issue* yang terverifikasi
+- `url()` terhadap URL absolut eksternal (mis. `https://cdn...`) **dikembalikan apa adanya** oleh Laravel, sehingga pembungkus `url($image)` pada API Resource aman untuk link eksternal — **bukan bug**.
+- Caching Eloquent models + paginator pada store `api` aman: `serializable_classes` sudah mencantumkan semua model & paginator; koneksi `database` store didukung.
+- `ClearsApiCache` mem-flush seluruh store `api` setiap operasi tulis konten, sehingga data konsisten.
+- Endpoint publik (tanpa Sanctum) terenkripsi oleh rate limiting; admin berbasis session + policy & FormRequest (`Rule::in(assignableRoles)`) sudah menahan eskalasi role flaf Admin.
+
+### Rencana / Saran Tindak Lanjut (diurutkan prioritas, semua non-urgent)
+1. **Selesaikan item #1** *(dilakukan)* — hapus `sort_order` dari `CategoryResource`.
+2. Pertimbangkan menghapus filter `featured` yang mati (`BlogService`) atau go forward/ sampai `featured` ke controller bila ingin mendukung `?featured=1`. *(dilakukan: forward `featured` + parse boolean, + test)*.
+3. Samakan gaya cast `Promo` ke `casts()`. *(dilakukan)*
+4. Beri perlakuan eksplisit (validasi/error) untuk ambang 4 gallery pada `store` portofolio, bukan `silent take(4)`. *(dilakukan: validasi ≤4 di FormRequest, + test)*
+5. Beri fallback/pen-skip kategori bertype kosong di `SitemapService`. *(dilakukan: `whereNotNull('type')`)*
+6. (Opsional) Bersihkan flag `is_highlighted` promo kedaluwarsa pada scheduled job. *(dilakukan: command `promos:clear-stale-highlights` + `Schedule::command(...)->daily()` di `routes/console.php`, test di `AuditConsistencyTest`)*
+- Sehubung `Featured` itu **tidak memengaruhi** API Detail/Sitemap/‑counts, sebaiknya tidak diubah sekarang untuk menjaga kontrak frontend Next.js yang sudah ada.
+
+> **Deployment scheduler**: tambahkan satu baris cron di server — `* * * * * cd /path/project && php artisan schedule:run >> /dev/null 2>&1` (atau `schedule:work` saat lokal). Verifikasi daftar jadwal dengan `php artisan schedule:list`.
+
+<sup>Re-audit difokuskan pada kesesuaian model–DB–resource dan logika; tidak ada cacat kritis ditemukan. Status tes saat ini: **105 tests / 341 assertions — 100% PASSED** (4 test baru di `tests/Feature/AuditConsistencyTest.php`).</sup>

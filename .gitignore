@@ -13,12 +13,7 @@
 /.vscode
 /.zed
 /auth.json
-/graphify-out/.graphify_*
-/graphify-out/cache/
-/graphify-out/cost.json
-/graphify-out/graph.html
-/graphify-out/manifest.json
-/graphify-out/*/
+/graphify-out/
 /node_modules
 /public/build
 /public/fonts-manifest.dev.json

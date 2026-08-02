@@ -20,6 +20,10 @@ class Setting extends Model
         'google_analytics_id' => 'Google Analytics ID',
         'default_meta_title' => 'Default Meta Title',
         'default_meta_description' => 'Default Meta Description',
+        'adsense_enabled' => 'AdSense Enabled',
+        'adsense_client_id' => 'AdSense Publisher ID',
+        'adsense_slot_1' => 'AdSlot 1 ID',
+        'adsense_slot_2' => 'AdSlot 2 ID',
         'whatsapp_number' => 'WhatsApp Number',
         'phone' => 'Phone',
     ];
@@ -30,6 +34,10 @@ class Setting extends Model
         'default_meta_description' => 'ℹ️ SEO Impact (SuperAdmin): Digunakan sebagai deskripsi standar (root description) pada hasil pencarian Google. Usahakan 150–160 karakter agar tidak terpotong.',
         'site_name' => '⚠️ System Branding: Nama utama sistem yang tampil di title bar browser dan header API frontend Next.js.',
         'site_description' => 'ℹ️ Brand Bio & SEO (SuperAdmin): Deskripsi utama brand yang digunakan pada struktur Schema.org JSON-LD dan metadata deskripsi default global.',
+        'adsense_enabled' => '⚠️ Revenue (SuperAdmin): Aktifkan untuk menampilkan iklan AdSense di frontend. Iklan hanya tampil jika Publisher ID (ca-pub-...) juga terisi.',
+        'adsense_client_id' => '⚠️ Revenue (SuperAdmin): Publisher ID dari dashboard AdSense, format diawali huruf ca-pub- (contoh: ca-pub-XXXXXXXXXXXXXXXX). Dipakai loader script di frontend Next.js.',
+        'adsense_slot_1' => 'ℹ️ AdSlot pertama (posisi bebas, contoh: atas blog). Isi Slot ID dari halaman ad unit AdSense. Tiap ad unit wajib punya slot ID berbeda agar tidak dianggap duplikat.',
+        'adsense_slot_2' => 'ℹ️ AdSlot kedua (posisi bebas, contoh: sidebar blog). Isi Slot ID dari ad unit kedua AdSense, harus berbeda dari AdSlot 1.',
         'phone' => 'Nomor telepon yang ditampilkan di website. Format: +62 812 3456 7890.',
         'whatsapp_number' => 'Nomor WhatsApp untuk tombol chat. Format: 6281234567890 (tanpa + dan spasi).',
     ];

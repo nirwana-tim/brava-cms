@@ -20,9 +20,7 @@ class BlogService
                 ->when($filters['category'] ?? null, function ($query, $category) {
                     $query->whereHas('categories', fn ($q) => $q->where('slug', $category));
                 })
-                ->when($filters['featured'] ?? null, function ($query, $featured) {
-                    $featured ? $query->featured() : null;
-                })
+                ->when(filter_var($filters['featured'] ?? null, FILTER_VALIDATE_BOOLEAN), fn ($q) => $q->featured())
                 ->when($filters['search'] ?? null, function ($query, $search) {
                     $query->where(function ($q) use ($search) {
                         $q->where('title', 'like', '%'.$search.'%')

@@ -40,4 +40,18 @@ class StorePortfolioRequest extends FormRequest
             'gallery_media_ids' => ['nullable', 'string', 'regex:/^[0-9,]+$/'],
         ];
     }
+
+    protected function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            $ids = collect(explode(',', (string) $this->input('gallery_media_ids')))
+                ->map(fn ($id) => (int) trim($id))
+                ->filter(fn ($id) => $id > 0)
+                ->unique();
+
+            if ($ids->count() > 4) {
+                $validator->errors()->add('gallery_media_ids', 'Galeri portofolio maksimal 4 foto detail.');
+            }
+        });
+    }
 }

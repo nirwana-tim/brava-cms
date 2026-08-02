@@ -14,7 +14,6 @@ class CategoryResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'description' => $this->description,
-            'sort_order' => $this->sort_order,
         ];
     }
 }
