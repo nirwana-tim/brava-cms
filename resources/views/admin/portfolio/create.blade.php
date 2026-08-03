@@ -48,7 +48,10 @@
                         <x-input-error class="mt-2" :messages="$errors->get('description')" />
                     </div>
 
-                    <x-admin.rich-text name="content" :value="old('content')" />
+                    <x-admin.portfolio-fields
+                        :specifications="old('specifications', [])"
+                        :features="old('features', [])"
+                    />
 
                     <div id="portfolio-form" x-data="{
                         photoUrl: @js(old('photo')),

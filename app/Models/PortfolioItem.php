@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Services\HtmlSanitizer;
 use App\Traits\ClearsApiCache;
 use Database\Factories\PortfolioItemFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,7 +17,8 @@ class PortfolioItem extends Model
     use ClearsApiCache, HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'service_id', 'title', 'slug', 'description', 'content',
+        'service_id', 'title', 'slug', 'description',
+        'specifications', 'features',
         'client', 'photo', 'photo_alt', 'completed_at', 'is_active',
         'meta_title', 'meta_description', 'meta_keywords', 'og_image', 'og_image_alt', 'robots_index',
         'robots_follow', 'schema_type',
@@ -27,16 +27,13 @@ class PortfolioItem extends Model
     protected function casts(): array
     {
         return [
+            'specifications' => 'array',
+            'features' => 'array',
             'is_active' => 'boolean',
             'completed_at' => 'date',
             'robots_index' => 'boolean',
             'robots_follow' => 'boolean',
         ];
-    }
-
-    public function getContentAttribute(?string $value): ?string
-    {
-        return app(HtmlSanitizer::class)->clean($value);
     }
 
     public function service(): BelongsTo

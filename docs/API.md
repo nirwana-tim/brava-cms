@@ -345,7 +345,11 @@ Response:
         "title": "TechCorp Corporate Website",
         "slug": "techcorp-corporate-website",
         "description": "Full description",
-        "content": "<p>HTML content</p>",
+        "specifications": [
+            { "key": "Material", "value": "Lacoste CVC" },
+            { "key": "Teknik Logo", "value": "Bordir" }
+        ],
+        "features": ["Nyaman digunakan", "Warna tahan lama"],
         "client": "TechCorp Indonesia",
         "photo": "/storage/portfolio/cover.jpg",
         "photo_alt": "TechCorp Cover Photo",

@@ -49,7 +49,10 @@
                         <x-input-error class="mt-2" :messages="$errors->get('description')" />
                     </div>
 
-                    <x-admin.rich-text name="content" :value="old('content', $portfolio->content)" />
+                    <x-admin.portfolio-fields
+                        :specifications="old('specifications', $portfolio->specifications ?? [])"
+                        :features="old('features', $portfolio->features ?? [])"
+                    />
 
                     <div>
                         <x-input-label for="photo" :value="__('Cover Photo')" :required="true" />

@@ -104,7 +104,8 @@
 | title | string(255) | |
 | slug | string(255) | unique |
 | description | text | nullable |
-| content | longText | nullable |
+| specifications | json | nullable — [{key, value}] |
+| features | json | nullable — [string] |
 | client | string(255) | nullable |
 | photo | string(255) | Cover photo, required |
 | photo_alt | string(255) | nullable |
