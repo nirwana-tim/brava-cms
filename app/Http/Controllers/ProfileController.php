@@ -35,6 +35,10 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
+        if ($request->user()->teamMember) {
+            $request->user()->teamMember->update(['avatar' => $request->user()->avatar]);
+        }
+
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 

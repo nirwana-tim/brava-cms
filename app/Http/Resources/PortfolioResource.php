@@ -3,12 +3,13 @@
 namespace App\Http\Resources;
 
 use App\Http\Resources\Concerns\BuildsCanonicalUrl;
+use App\Http\Resources\Concerns\ResolvesMediaAlt;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PortfolioResource extends JsonResource
 {
-    use BuildsCanonicalUrl;
+    use BuildsCanonicalUrl, ResolvesMediaAlt;
 
     public function toArray(Request $request): array
     {
@@ -21,7 +22,7 @@ class PortfolioResource extends JsonResource
             'features' => $this->features ?: [],
             'client' => $this->client,
             'photo' => $this->photo ? url($this->photo) : null,
-            'photo_alt' => $this->photo_alt,
+            'photo_alt' => $this->photo_alt ?: $this->mediaAlt($this->photo),
             'featured_image' => $this->photo ? url($this->photo) : null,
             'completed_at' => $this->completed_at?->toIso8601String(),
             'service' => new ServiceListResource($this->whenLoaded('service')),
@@ -30,7 +31,7 @@ class PortfolioResource extends JsonResource
             'meta_description' => $this->meta_description,
             'meta_keywords' => $this->meta_keywords,
             'og_image' => $this->og_image ? url($this->og_image) : null,
-            'og_image_alt' => $this->og_image_alt,
+            'og_image_alt' => $this->og_image_alt ?: ($this->photo_alt ?: $this->mediaAlt($this->photo)),
             'robots_index' => $this->robots_index,
             'seo' => [
                 'meta_title' => $this->meta_title ?: $this->title,
@@ -39,7 +40,7 @@ class PortfolioResource extends JsonResource
                 'og_title' => $this->meta_title ?: $this->title,
                 'og_description' => $this->meta_description ?: $this->description,
                 'og_image' => ($this->og_image ?: $this->photo) ? url($this->og_image ?: $this->photo) : null,
-                'og_image_alt' => $this->og_image_alt ?: $this->photo_alt,
+                'og_image_alt' => $this->og_image_alt ?: ($this->photo_alt ?: $this->mediaAlt($this->photo)),
                 'robots_index' => $this->robots_index,
                 'robots_follow' => $this->robots_follow,
                 'schema_type' => $this->schema_type,

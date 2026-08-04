@@ -58,18 +58,15 @@
                         <x-input-label for="photo" :value="__('Cover Photo')" :required="true" />
                         <input type="hidden" name="photo" id="photo"
                             value="{{ old('photo', $portfolio->photo) }}" />
-                        <input type="hidden" name="photo_alt" id="photo_alt"
-                            value="{{ old('photo_alt', $portfolio->photo_alt) }}" />
                         <template x-if="photoUrl">
                             <div class="mb-2">
                                 <img :src="photoUrl" :alt="photoAlt"
                                     class="rounded-lg"
                                     style="max-width:240px;max-height:160px;object-fit:cover">
-                                <p x-show="photoAlt" class="text-xs mt-1" x-text="'Alt: ' + photoAlt"
-                                    style="color:var(--muted-text)"></p>
                             </div>
                         </template>
                         <x-admin.media-picker target="photo" collection="portfolio" />
+                        <x-admin.alt-input field="photo_alt" :value="old('photo_alt', $portfolio->photo_alt)" />
                         <x-input-error class="mt-2" :messages="$errors->get('photo')" />
                     </div>
 
@@ -129,18 +126,15 @@
                                 <x-input-label for="og_image" :value="__('OG Image')" />
                                 <input type="hidden" name="og_image" id="og_image"
                                     value="{{ old('og_image', $portfolio->og_image) }}" />
-                                <input type="hidden" name="og_image_alt" id="og_image_alt"
-                                    value="{{ old('og_image_alt', $portfolio->og_image_alt) }}" />
                                 <template x-if="ogImage">
                                     <div class="mb-2">
                                         <img :src="ogImage" :alt="ogImageAlt"
                                             class="rounded-lg"
                                             style="max-width:240px;max-height:120px;object-fit:cover">
-                                        <p x-show="ogImageAlt" class="text-xs mt-1" x-text="'Alt: ' + ogImageAlt"
-                                            style="color:var(--muted-text)"></p>
                                     </div>
                                 </template>
                                 <x-admin.media-picker target="og_image" collection="portfolio" />
+                                <x-admin.alt-input field="og_image_alt" :value="old('og_image_alt', $portfolio->og_image_alt)" />
                                 <p class="form-hint">Optimal rasio 1.91:1 (1200x630 px) untuk banner sosmed. Otomatis mengikuti Cover Photo jika dikosongkan.</p>
                             </div>
                             <div class="flex items-center gap-2">

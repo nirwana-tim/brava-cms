@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\StoreMediaRequest;
 use App\Http\Requests\Admin\UpdateMediaRequest;
 use App\Models\Media;
 use App\Services\MediaService;
+use App\Services\MediaUsageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,8 +15,10 @@ use Illuminate\View\View;
 
 class MediaController extends Controller
 {
-    public function __construct(private readonly MediaService $mediaService)
-    {
+    public function __construct(
+        private readonly MediaService $mediaService,
+        private readonly MediaUsageService $mediaUsageService,
+    ) {
         $this->authorizeResource(Media::class, 'medium');
     }
 
@@ -28,6 +31,8 @@ class MediaController extends Controller
         }
 
         $media = $query->paginate(30);
+
+        $this->mediaUsageService->markInUseBatch($media->getCollection());
 
         $collections = Media::whereNotNull('collection')
             ->selectRaw('collection, count(*) as total')
@@ -124,7 +129,10 @@ class MediaController extends Controller
 
     public function edit(Media $medium): View
     {
-        return view('admin.media.edit', compact('medium'));
+        return view('admin.media.edit', [
+            'medium' => $medium,
+            'usage' => $this->mediaUsageService->usageSummary($medium),
+        ]);
     }
 
     public function update(UpdateMediaRequest $request, Media $medium): RedirectResponse
@@ -137,6 +145,18 @@ class MediaController extends Controller
 
     public function destroy(Request $request, Media $medium)
     {
+        $usage = $this->mediaUsageService->usageSummary($medium);
+
+        if ($usage !== []) {
+            $message = 'Media sedang dipakai di: '.implode(', ', $usage).'. Lepas referensinya dari konten tersebut sebelum menghapus.';
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['error' => $message], 422);
+            }
+
+            return back()->withErrors(['media' => $message]);
+        }
+
         $medium->delete();
 
         if ($request->wantsJson() || $request->ajax()) {

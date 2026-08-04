@@ -3,12 +3,13 @@
 namespace App\Http\Resources;
 
 use App\Http\Resources\Concerns\BuildsCanonicalUrl;
+use App\Http\Resources\Concerns\ResolvesMediaAlt;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PromoResource extends JsonResource
 {
-    use BuildsCanonicalUrl;
+    use BuildsCanonicalUrl, ResolvesMediaAlt;
 
     public function __construct(mixed $resource, private readonly ?string $waNumber = null)
     {
@@ -28,7 +29,7 @@ class PromoResource extends JsonResource
             'discount_info' => $this->discount_info,
             'description' => $this->description,
             'image' => $this->image ? url($this->image) : null,
-            'image_alt' => $this->image_alt ?: $this->title,
+            'image_alt' => $this->image_alt ?: $this->mediaAlt($this->image) ?: $this->title,
             'valid_from' => $this->valid_from?->toIso8601String(),
             'valid_until' => $this->valid_until?->toIso8601String(),
             'wa_template' => $this->wa_template,
@@ -43,7 +44,7 @@ class PromoResource extends JsonResource
                 'og_title' => $this->meta_title ?: $this->title,
                 'og_description' => $this->meta_description ?: str(strip_tags($this->description ?: ''))->limit(160)->toString(),
                 'og_image' => $this->image ? url($this->image) : null,
-                'og_image_alt' => $this->image_alt ?: $this->title,
+                'og_image_alt' => $this->image_alt ?: $this->mediaAlt($this->image) ?: $this->title,
                 'robots_index' => (bool) $this->is_active,
                 'robots_follow' => true,
                 'schema_type' => 'SpecialAnnouncement',

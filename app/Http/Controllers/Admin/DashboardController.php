@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\Category;
 use App\Models\Service;
+use App\Models\TeamMember;
 use App\Models\User;
 use App\Services\AnalyticsService;
 use Illuminate\View\View;
@@ -19,7 +20,10 @@ class DashboardController extends Controller
             'services' => Service::count(),
             'blogs' => Blog::count(),
             'categories' => Category::count(),
-            'users' => User::where('role', '!=', UserRole::SuperAdmin)->count(),
+            'users' => User::query()
+                ->where('role', '!=', UserRole::SuperAdmin)
+                ->whereIn('id', TeamMember::query()->whereNotNull('user_id')->pluck('user_id'))
+                ->count(),
         ];
 
         $days = (int) request()->query('days', 30);

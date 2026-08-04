@@ -43,18 +43,15 @@
                                 <x-input-label for="featured_image" :value="__('Featured Image')" />
                                 <input type="hidden" name="featured_image" id="featured_image"
                                     value="{{ old('featured_image') }}" />
-                                <input type="hidden" name="featured_image_alt" id="featured_image_alt"
-                                    value="{{ old('featured_image_alt') }}" />
                                 <template x-if="featuredImage">
                                     <div class="mb-2">
                                         <img :src="featuredImage" :alt="featuredImageAlt"
                                             class="rounded-lg"
                                             style="max-width:240px;max-height:160px;object-fit:cover">
-                                        <p x-show="featuredImageAlt" class="text-xs mt-1" x-text="'Alt: ' + featuredImageAlt"
-                                            style="color:var(--muted-text)"></p>
                                     </div>
                                 </template>
                                 <x-admin.media-picker target="featured_image" collection="blogs" />
+                                <x-admin.alt-input field="featured_image_alt" :value="old('featured_image_alt')" />
                                 <x-input-error class="mt-2" :messages="$errors->get('featured_image')" />
                             </div>
 
@@ -119,18 +116,15 @@
                                         <x-input-label for="og_image" :value="__('OG Image')" />
                                         <input type="hidden" name="og_image" id="og_image"
                                             value="{{ old('og_image') }}" />
-                                        <input type="hidden" name="og_image_alt" id="og_image_alt"
-                                            value="{{ old('og_image_alt') }}" />
                                         <template x-if="ogImage">
                                             <div class="mb-2">
                                                 <img :src="ogImage" :alt="ogImageAlt"
                                                     class="rounded-lg"
                                                     style="max-width:240px;max-height:120px;object-fit:cover">
-                                                <p x-show="ogImageAlt" class="text-xs mt-1" x-text="'Alt: ' + ogImageAlt"
-                                                    style="color:var(--muted-text)"></p>
                                             </div>
                                         </template>
                                         <x-admin.media-picker target="og_image" collection="blogs" />
+                                        <x-admin.alt-input field="og_image_alt" :value="old('og_image_alt')" />
                                         <p class="form-hint">Optimal rasio 1.91:1 (1200x630 px) untuk banner sosmed. Otomatis mengikuti Featured Image jika dikosongkan.</p>
                                     </div>
                                     <div class="flex items-center gap-2">

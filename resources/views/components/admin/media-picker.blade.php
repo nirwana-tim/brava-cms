@@ -169,10 +169,17 @@
                     input.value = url;
                     input.dispatchEvent(new Event('input', { bubbles: true }));
                 }
+
                 const altInput = document.getElementById(targetId + '_alt');
-                if (altInput && alt) {
-                    altInput.value = alt;
+                if (altInput) {
+                    altInput.value = '';
                     altInput.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+
+                const hint = document.getElementById(targetId + '_alt_hint');
+                if (hint) {
+                    hint.textContent = alt ? 'Alt default dari media: "' + alt + '". Kosongkan untuk memakainya, atau isi untuk override.' : '';
+                    hint.style.display = alt ? '' : 'none';
                 }
 
                 const parentEl = this.$el?.parentElement?.closest('[x-data]');
@@ -191,13 +198,13 @@
 
                     const camelAltVar = (targetId + '_alt').replace(/_([a-z])/g, (_, c) => c.toUpperCase());
                     if (camelAltVar in parentScope) {
-                        parentScope[camelAltVar] = alt || '';
+                        parentScope[camelAltVar] = '';
                     } else if ((camelVar + 'Alt') in parentScope) {
-                        parentScope[camelVar + 'Alt'] = alt || '';
+                        parentScope[camelVar + 'Alt'] = '';
                     } else if ((targetId + 'Alt') in parentScope) {
-                        parentScope[targetId + 'Alt'] = alt || '';
+                        parentScope[targetId + 'Alt'] = '';
                     } else if ((targetId + '_alt') in parentScope) {
-                        parentScope[targetId + '_alt'] = alt || '';
+                        parentScope[targetId + '_alt'] = '';
                     }
                 }
             },

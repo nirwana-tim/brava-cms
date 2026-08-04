@@ -54,14 +54,13 @@
                     <div x-data="{ image: @js(old('image')), imageAlt: @js(old('image_alt')) }">
                         <x-input-label for="image" :value="__('Banner Image')" />
                         <input type="hidden" name="image" id="image" value="{{ old('image') }}" />
-                        <input type="hidden" name="image_alt" id="image_alt" value="{{ old('image_alt') }}" />
                         <template x-if="image">
                             <div class="mb-2">
                                 <img :src="image" :alt="imageAlt" class="rounded-lg" style="max-width:240px;max-height:160px;object-fit:cover">
-                                <p x-show="imageAlt" class="text-xs mt-1" x-text="'Alt: ' + imageAlt" style="color:var(--muted-text)"></p>
                             </div>
                         </template>
                         <x-admin.media-picker target="image" collection="promos" />
+                        <x-admin.alt-input field="image_alt" :value="old('image_alt')" />
                         <x-input-error class="mt-2" :messages="$errors->get('image')" />
                     </div>
 

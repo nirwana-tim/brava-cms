@@ -1,3 +1,4 @@
+@php($avatar = app(App\Services\AvatarService::class))
 <x-admin.layouts.app>
     <x-slot name="title">{{ __('Testimonials') }}</x-slot>
 
@@ -54,8 +55,12 @@
                             <tr>
                                 <td>
                                     <div class="flex items-center gap-3">
-                                        @if ($testimonial->avatar)
-                                            <img src="{{ $testimonial->avatar }}" alt="" class="rounded-full" style="width: 32px; height: 32px; object-fit: cover;">
+                                        @if ($avatar->hasAvatar($testimonial->avatar))
+                                            <img src="{{ $testimonial->avatar }}" alt="{{ $testimonial->client_name }}" class="rounded-full" style="width: 32px; height: 32px; object-fit: cover;">
+                                        @else
+                                            <div class="rounded-full flex items-center justify-center text-xs font-bold" style="width: 32px; height: 32px; background: {{ $avatar->color($testimonial->client_name) }}; color: #fff;">
+                                                {{ $avatar->initials($testimonial->client_name) }}
+                                            </div>
                                         @endif
                                         <span class="font-medium" style="color: var(--table-text)">{{ $testimonial->client_name }}</span>
                                     </div>

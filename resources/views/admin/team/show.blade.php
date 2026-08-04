@@ -1,3 +1,4 @@
+@php($avatar = app(App\Services\AvatarService::class))
 <x-admin.layouts.app>
     <x-slot name="title">{{ $team->name }}</x-slot>
 
@@ -46,11 +47,11 @@
 
                 <div class="mb-6">
                     <p class="section-title">Avatar</p>
-                    @if ($team->avatar)
+                    @if ($avatar->hasAvatar($team->avatar))
                         <img src="{{ $team->avatar }}" alt="{{ $team->name }}" class="mt-2 rounded-full" style="width: 100px; height: 100px; object-fit: cover;">
                     @else
-                        <div class="mt-2 rounded-full flex items-center justify-center text-2xl font-bold" style="width: 100px; height: 100px; background: var(--heading-text, #e5e7eb); color: var(--body-bg, #9ca3af);">
-                            {{ strtoupper(substr($team->name, 0, 1)) }}
+                        <div class="mt-2 rounded-full flex items-center justify-center text-2xl font-bold" style="width: 100px; height: 100px; background: {{ $avatar->color($team->name) }}; color: #fff;">
+                            {{ $avatar->initials($team->name) }}
                         </div>
                     @endif
                 </div>

@@ -93,7 +93,7 @@ class TeamController extends Controller
                 'name' => $request->name,
                 'email' => $request->email ?? $team->user->email,
                 'position' => $request->position,
-                'avatar' => $request->avatar ?? $team->user->avatar,
+                'avatar' => $team->avatar,
                 'role' => $role,
             ]);
         }

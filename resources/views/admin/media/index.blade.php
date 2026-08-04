@@ -63,14 +63,26 @@
                                     </div>
                                 @endif
 
+                                @if ($item->in_use)
+                                    <div>
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium badge-active"
+                                            title="{{ implode("\n", $item->usage) }}">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                            </svg>
+                                            Dipakai
+                                        </span>
+                                    </div>
+                                @endif
+
                                 <div class="mt-auto pt-2 flex items-center gap-1">
-                                    <input type="text" value="{{ $item->url }}" readonly
+                                    <input type="text" value="{{ $item->absolute_url }}" readonly
                                         class="flex-1 min-w-0 px-2 py-1 text-xs rounded border truncate"
                                         style="border-color: var(--input-border); background-color: var(--input-bg); color: var(--input-text)"
                                         id="url-{{ $item->id }}">
 
                                     <button type="button"
-                                        onclick="navigator.clipboard.writeText({{ Js::from($item->url) }}).then(() => { this.textContent = 'Copied!'; setTimeout(() => this.textContent = '', 2000); })"
+                                        onclick="navigator.clipboard.writeText({{ Js::from($item->absolute_url) }}).then(() => { this.textContent = 'Copied!'; setTimeout(() => this.textContent = '', 2000); })"
                                         class="inline-flex items-center px-2 py-1 rounded text-xs font-medium btn-edit shrink-0"
                                         title="Copy URL">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -81,11 +93,17 @@
 
                                 <div class="flex items-center gap-2 pt-1">
                                     <a href="{{ route('admin.media.edit', $item) }}" class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium btn-edit">Edit</a>
-                                    <form action="{{ route('admin.media.destroy', $item) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this file?')" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium btn-delete">Delete</button>
-                                    </form>
+                                    @if ($item->in_use)
+                                        <button type="button" disabled
+                                            title="Media sedang dipakai di: {{ implode(', ', $item->usage) }}"
+                                            class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium btn-delete opacity-50 cursor-not-allowed">Delete</button>
+                                    @else
+                                        <form action="{{ route('admin.media.destroy', $item) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this file?')" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium btn-delete">Delete</button>
+                                        </form>
+                                    @endif
                                 </div>
                             </div>
                         </div>

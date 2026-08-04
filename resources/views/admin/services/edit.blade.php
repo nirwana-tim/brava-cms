@@ -42,18 +42,15 @@
                         <x-input-label for="photo" :value="__('Photo')" />
                         <input type="hidden" name="photo" id="photo"
                             value="{{ old('photo', $service->photo) }}" />
-                        <input type="hidden" name="photo_alt" id="photo_alt"
-                            value="{{ old('photo_alt', $service->photo_alt) }}" />
                         <template x-if="photoUrl">
                             <div class="mb-2">
                                 <img :src="photoUrl" :alt="photoAlt"
                                     class="rounded-lg"
                                     style="max-width:240px;max-height:160px;object-fit:cover">
-                                <p x-show="photoAlt" class="text-xs mt-1" x-text="'Alt: ' + photoAlt"
-                                    style="color:var(--muted-text)"></p>
                             </div>
                         </template>
                         <x-admin.media-picker target="photo" collection="services" />
+                        <x-admin.alt-input field="photo_alt" :value="old('photo_alt', $service->photo_alt)" />
                         <x-input-error class="mt-2" :messages="$errors->get('photo')" />
                     </div>
 

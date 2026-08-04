@@ -1,3 +1,4 @@
+@php($avatar = app(App\Services\AvatarService::class))
 <x-admin.layouts.app>
     <x-slot name="title">{{ __('Team') }}</x-slot>
 
@@ -48,7 +49,18 @@
                     <tbody>
                         @forelse ($members as $member)
                             <tr>
-                                <td class="font-medium" style="color: var(--table-text)">{{ $member->name }}</td>
+                                <td>
+                                    <div class="flex items-center gap-3">
+                                        @if ($avatar->hasAvatar($member->avatar))
+                                            <img src="{{ $member->avatar }}" alt="{{ $member->name }}" class="rounded-full" style="width: 32px; height: 32px; object-fit: cover;">
+                                        @else
+                                            <div class="rounded-full flex items-center justify-center text-xs font-bold" style="width: 32px; height: 32px; background: {{ $avatar->color($member->name) }}; color: #fff;">
+                                                {{ $avatar->initials($member->name) }}
+                                            </div>
+                                        @endif
+                                        <span class="font-medium" style="color: var(--table-text)">{{ $member->name }}</span>
+                                    </div>
+                                </td>
                                 <td style="color: var(--table-text-muted)">{{ $member->position ?? '-' }}</td>
                                 <td style="color: var(--table-text-muted)">{{ $member->email ?? '-' }}</td>
                                 <td>

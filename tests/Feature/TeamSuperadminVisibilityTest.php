@@ -61,10 +61,21 @@ test('superadmin can see superadmin team member in teams list', function () {
     $response->assertSee('Super Admin Test');
 });
 
-test('dashboard user stats count excludes superadmin', function () {
+test('dashboard user stats count excludes superadmin and counts only team users', function () {
     $superAdmin = User::factory()->create(['role' => UserRole::SuperAdmin]);
     $admin1 = User::factory()->create(['role' => UserRole::Admin]);
     $admin2 = User::factory()->create(['role' => UserRole::Admin]);
+    $stray = User::factory()->create(['role' => UserRole::Admin]);
+
+    foreach ([$admin1, $admin2] as $user) {
+        TeamMember::create([
+            'user_id' => $user->id,
+            'name' => $user->name,
+            'position' => 'Administrator',
+            'email' => $user->email,
+            'is_active' => true,
+        ]);
+    }
 
     $response = $this->actingAs($admin1)->get(route('admin.dashboard'));
 

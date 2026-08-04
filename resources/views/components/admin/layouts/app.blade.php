@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+@php($avatar = app(App\Services\AvatarService::class))
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
@@ -150,10 +151,10 @@
         <div class="p-4 border-t" style="border-color: var(--sidebar-border)">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden shrink-0" style="background-color: var(--sidebar-user-avatar-bg)">
-                    @if (Auth::user()->avatar)
+                    @if ($avatar->hasAvatar(Auth::user()->avatar))
                         <img src="{{ Auth::user()->avatar }}" alt="{{ Auth::user()->name }}" class="w-full h-full object-cover">
                     @else
-                        <span class="font-semibold text-sm" style="color: var(--sidebar-user-avatar-text)">{{ substr(Auth::user()->name, 0, 1) }}</span>
+                        <span class="font-semibold text-sm" style="color: var(--sidebar-user-avatar-text)">{{ $avatar->initials(Auth::user()->name) }}</span>
                     @endif
                 </div>
                 <div class="flex-1 min-w-0">
@@ -196,10 +197,10 @@
                     <button @click="open = !open" class="flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900">
                         <span class="hidden sm:block" style="color: var(--heading-text)">{{ Auth::user()->name }}</span>
                         <div class="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden" style="background-color: var(--btn-primary-bg)">
-                            @if (Auth::user()->avatar)
+                            @if ($avatar->hasAvatar(Auth::user()->avatar))
                                 <img src="{{ Auth::user()->avatar }}" alt="{{ Auth::user()->name }}" class="w-full h-full object-cover">
                             @else
-                                <span class="font-semibold text-xs" style="color: var(--btn-primary-text)">{{ substr(Auth::user()->name, 0, 1) }}</span>
+                                <span class="font-semibold text-xs" style="color: var(--btn-primary-text)">{{ $avatar->initials(Auth::user()->name) }}</span>
                             @endif
                         </div>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

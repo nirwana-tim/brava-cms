@@ -19,6 +19,18 @@
                     </div>
                 @endif
 
+                @if ($usage !== [])
+                    <div class="mb-4 rounded-lg border p-4" style="border-color: var(--badge-active-bg); background-color: var(--badge-active-bg);">
+                        <p class="text-sm font-medium" style="color: var(--badge-active-text)">Media ini sedang dipakai di:</p>
+                        <ul class="mt-1 list-disc pl-5 text-sm" style="color: var(--badge-active-text)">
+                            @foreach ($usage as $usedIn)
+                                <li>{{ $usedIn }}</li>
+                            @endforeach
+                        </ul>
+                        <p class="mt-2 text-sm" style="color: var(--badge-active-text)">Tidak bisa dihapus sampai referensinya dilepas dari konten tersebut.</p>
+                    </div>
+                @endif
+
                 <div class="space-y-6">
                     @if (str_starts_with($medium->mime_type, 'image/'))
                         <div class="mb-4">
@@ -30,11 +42,11 @@
                         <div>
                             <span class="font-medium" style="color: var(--label-text)">URL</span>
                             <div class="mt-1 flex items-center gap-2">
-                                <input type="text" value="{{ $medium->url }}" readonly
+                                <input type="text" value="{{ $medium->absolute_url }}" readonly
                                     class="flex-1 px-3 py-1.5 text-xs rounded border"
                                     style="border-color: var(--input-border); background-color: var(--input-bg); color: var(--input-text)">
                                 <button type="button"
-                                    onclick="navigator.clipboard.writeText({{ Js::from($medium->url) }}).then(() => { this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy', 2000); })"
+                                    onclick="navigator.clipboard.writeText({{ Js::from($medium->absolute_url) }}).then(() => { this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy', 2000); })"
                                     class="inline-flex items-center px-3 py-1.5 rounded text-xs font-medium btn-edit">
                                     Copy
                                 </button>

@@ -27,7 +27,24 @@ class Media extends Model
 
     public function getUrlAttribute(): string
     {
-        return Storage::url($this->path);
+        $url = Storage::url($this->path);
+
+        if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
+            return preg_replace('#^https?://[^/]+#', '', $url) ?: $url;
+        }
+
+        return $url;
+    }
+
+    public function getAbsoluteUrlAttribute(): string
+    {
+        $url = $this->url;
+
+        if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
+            return $url;
+        }
+
+        return request()->getSchemeAndHttpHost().$url;
     }
 
     protected static function booted(): void
