@@ -35,4 +35,25 @@ class UploadController extends Controller
             return response()->json(['error' => 'Upload failed.'], 422);
         }
     }
+
+    public function destroy(Request $request): JsonResponse
+    {
+        $this->authorize('create', Media::class);
+
+        $request->validate([
+            'path' => ['required', 'string', 'max:255'],
+        ]);
+
+        $path = $request->input('path');
+
+        if (! str_starts_with($path, 'uploads/')) {
+            return response()->json(['error' => 'Invalid upload path.'], 422);
+        }
+
+        if (Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+        }
+
+        return response()->json(['success' => true]);
+    }
 }

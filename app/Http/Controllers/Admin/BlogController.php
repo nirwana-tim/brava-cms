@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\StoreBlogRequest;
 use App\Http\Requests\Admin\UpdateBlogRequest;
 use App\Models\Blog;
 use App\Models\Category;
+use App\Services\MediaService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -16,7 +17,7 @@ class BlogController extends Controller
 {
     use AppliesSeoFallbacks;
 
-    public function __construct()
+    public function __construct(private readonly MediaService $mediaService)
     {
         $this->authorizeResource(Blog::class, 'blog');
     }
@@ -86,9 +87,16 @@ class BlogController extends Controller
 
     public function update(UpdateBlogRequest $request, Blog $blog): RedirectResponse
     {
+        $previousImages = [$blog->featured_image, $blog->og_image];
         $validated = $this->applySeoFallbacks($request->validated(), 'excerpt', 'featured_image', 'featured_image_alt');
 
         $blog->update($validated);
+
+        foreach ($previousImages as $previous) {
+            if ($previous !== null && ! in_array($previous, [$blog->featured_image, $blog->og_image], true)) {
+                $this->mediaService->deleteStoredUpload($previous);
+            }
+        }
 
         if ($request->has('category_ids')) {
             $blog->categories()->sync($request->category_ids ?? []);

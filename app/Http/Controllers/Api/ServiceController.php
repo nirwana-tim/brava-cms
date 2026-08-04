@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\ServiceListResource;
+use App\Services\MediaUsageService;
 use App\Services\ServiceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -10,13 +11,16 @@ use Illuminate\Http\Request;
 class ServiceController extends ApiController
 {
     public function __construct(
-        private readonly ServiceService $service
+        private readonly ServiceService $service,
+        private readonly MediaUsageService $mediaUsageService
     ) {}
 
     public function index(Request $request): JsonResponse
     {
         $filters = $request->only(['search', 'per_page']);
         $services = $this->service->list($filters);
+
+        $this->mediaUsageService->resolveAlts($services->getCollection()->pluck('photo'));
 
         return $this->paginatedSuccess(
             ServiceListResource::collection($services),

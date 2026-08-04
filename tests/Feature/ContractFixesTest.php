@@ -29,8 +29,30 @@ test('api settings endpoint returns grouped structure with boolean cast', functi
 
     $response->assertOk()
         ->assertJsonPath('success', true)
+        ->assertJsonPath('data.general.site_name', 'Brava CMS');
+});
+
+test('api settings endpoint does not expose sensitive groups publicly', function () {
+    Setting::updateOrCreate(
+        ['key' => 'adsense_enabled'],
+        ['value' => '1', 'group' => 'adsense', 'type' => 'boolean']
+    );
+    Setting::updateOrCreate(
+        ['key' => 'adsense_client_id'],
+        ['value' => 'ca-pub-123456', 'group' => 'adsense', 'type' => 'text']
+    );
+    Setting::updateOrCreate(
+        ['key' => 'site_name'],
+        ['value' => 'Brava CMS', 'group' => 'general', 'type' => 'text']
+    );
+
+    $response = $this->getJson('/api/settings');
+
+    $response->assertOk()
         ->assertJsonPath('data.general.site_name', 'Brava CMS')
-        ->assertJsonPath('data.adsense.adsense_enabled', true);
+        ->assertJsonMissingPath('data.adsense')
+        ->assertJsonMissingPath('data.adsense_enabled')
+        ->assertJsonMissingPath('data.adsense_client_id');
 });
 
 test('api settings grouped payload is flushed from cache on model save', function () {

@@ -159,7 +159,7 @@ test('replacing a team member avatar deletes the old upload file', function () {
     expect(Storage::disk('public')->exists('uploads/old-photo.jpg'))->toBeFalse();
 });
 
-test('deleting a team member removes its avatar upload file', function () {
+test('soft deleting a team member keeps its avatar file for restore', function () {
     Storage::fake('public');
     Storage::disk('public')->put('uploads/old-photo.jpg', 'old');
 
@@ -177,6 +177,30 @@ test('deleting a team member removes its avatar upload file', function () {
     ]);
 
     $this->actingAs($superAdmin)->delete(route('admin.team.destroy', $member));
+
+    expect(Storage::disk('public')->exists('uploads/old-photo.jpg'))->toBeTrue();
+    expect(TeamMember::withTrashed()->find($member->id))->not->toBeNull();
+});
+
+test('force deleting a team member removes its avatar upload file', function () {
+    Storage::fake('public');
+    Storage::disk('public')->put('uploads/old-photo.jpg', 'old');
+
+    $superAdmin = User::factory()->create(['role' => 'super_admin']);
+
+    $memberUser = User::factory()->create(['role' => 'staff']);
+
+    $member = TeamMember::create([
+        'user_id' => $memberUser->id,
+        'name' => $memberUser->name,
+        'position' => 'Staff',
+        'email' => $memberUser->email,
+        'is_active' => true,
+        'avatar' => '/storage/uploads/old-photo.jpg',
+    ]);
+
+    $member->delete();
+    $member->forceDelete();
 
     expect(Storage::disk('public')->exists('uploads/old-photo.jpg'))->toBeFalse();
 });

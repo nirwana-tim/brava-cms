@@ -11,3 +11,7 @@ Artisan::command('inspire', function () {
 Schedule::command('promos:clear-stale-highlights')
     ->daily()
     ->withoutOverlapping();
+
+Schedule::command('media:cleanup-filenames --remove-orphans')
+    ->dailyAt('03:30')
+    ->withoutOverlapping();

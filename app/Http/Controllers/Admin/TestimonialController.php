@@ -81,8 +81,6 @@ class TestimonialController extends Controller
 
     public function destroy(Testimonial $testimonial): RedirectResponse
     {
-        $this->mediaService->deleteStoredUpload($testimonial->avatar);
-
         $testimonial->delete();
 
         return redirect()->route('admin.testimonials.index')

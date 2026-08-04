@@ -107,7 +107,13 @@ class PromoService
      */
     public function update(Promo $promo, array $data): Promo
     {
+        $previousImage = $promo->image;
+
         $promo->update($data);
+
+        if ($previousImage !== null && $previousImage !== $promo->image) {
+            app(MediaService::class)->deleteStoredUpload($previousImage);
+        }
 
         return $promo->fresh();
     }

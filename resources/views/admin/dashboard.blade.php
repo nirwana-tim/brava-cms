@@ -236,6 +236,7 @@
     </div>
     @endif
 
+    @if ($canViewAnalytics)
     @push('scripts')
     <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -356,4 +357,5 @@
     });
     </script>
     @endpush
+    @endif
 </x-admin.layouts.app>

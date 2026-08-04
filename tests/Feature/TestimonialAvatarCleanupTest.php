@@ -32,7 +32,7 @@ test('replacing a testimonial avatar deletes the old upload file', function () {
     expect($testimonial->fresh()->avatar)->toBe('/storage/uploads/new-photo.jpg');
 });
 
-test('deleting a testimonial removes its avatar upload file', function () {
+test('soft deleting a testimonial keeps its avatar file for restore', function () {
     Storage::disk('public')->put('uploads/old-photo.jpg', 'old');
 
     $testimonial = Testimonial::factory()->create([
@@ -40,6 +40,20 @@ test('deleting a testimonial removes its avatar upload file', function () {
     ]);
 
     $this->actingAs($this->admin)->delete(route('admin.testimonials.destroy', $testimonial));
+
+    expect(Storage::disk('public')->exists('uploads/old-photo.jpg'))->toBeTrue();
+    expect(Testimonial::withTrashed()->find($testimonial->id))->not->toBeNull();
+});
+
+test('force deleting a testimonial removes its avatar upload file', function () {
+    Storage::disk('public')->put('uploads/old-photo.jpg', 'old');
+
+    $testimonial = Testimonial::factory()->create([
+        'avatar' => '/storage/uploads/old-photo.jpg',
+    ]);
+
+    $testimonial->delete();
+    $testimonial->forceDelete();
 
     expect(Storage::disk('public')->exists('uploads/old-photo.jpg'))->toBeFalse();
     expect(Testimonial::find($testimonial->id))->toBeNull();

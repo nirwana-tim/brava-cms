@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreServiceRequest;
 use App\Http\Requests\Admin\UpdateServiceRequest;
 use App\Models\Service;
+use App\Services\MediaService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ServiceController extends Controller
 {
-    public function __construct()
+    public function __construct(private readonly MediaService $mediaService)
     {
         $this->authorizeResource(Service::class, 'service');
     }
@@ -63,7 +64,13 @@ class ServiceController extends Controller
 
     public function update(UpdateServiceRequest $request, Service $service): RedirectResponse
     {
+        $previousPhoto = $service->photo;
+
         $service->update($request->validated());
+
+        if ($previousPhoto !== null && $previousPhoto !== $service->photo) {
+            $this->mediaService->deleteStoredUpload($previousPhoto);
+        }
 
         return redirect()->route('admin.services.index')
             ->with('success', 'Service updated successfully.');

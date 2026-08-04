@@ -22,6 +22,7 @@ return [
         'team_members' => ['avatar'],
         'testimonials' => ['avatar'],
         'users' => ['avatar'],
+        'settings' => ['value'],
     ],
 
 ];

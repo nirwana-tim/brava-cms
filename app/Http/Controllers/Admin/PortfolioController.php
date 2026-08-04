@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Media;
 use App\Models\PortfolioItem;
 use App\Models\Service;
+use App\Services\MediaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ class PortfolioController extends Controller
 {
     use AppliesSeoFallbacks;
 
-    public function __construct()
+    public function __construct(private readonly MediaService $mediaService)
     {
         $this->authorizeResource(PortfolioItem::class, 'portfolio');
     }
@@ -109,8 +110,16 @@ class PortfolioController extends Controller
 
     public function update(UpdatePortfolioRequest $request, PortfolioItem $portfolio): RedirectResponse
     {
+        $previousImages = [$portfolio->photo, $portfolio->og_image];
         $validated = $this->applySeoFallbacks($request->validated(), 'description', 'photo', 'photo_alt');
+
         $portfolio->update($validated);
+
+        foreach ($previousImages as $previous) {
+            if ($previous !== null && ! in_array($previous, [$portfolio->photo, $portfolio->og_image], true)) {
+                $this->mediaService->deleteStoredUpload($previous);
+            }
+        }
 
         if ($request->has('categories')) {
             $portfolio->categories()->sync($request->categories);
@@ -185,10 +194,16 @@ class PortfolioController extends Controller
             return response()->json(['success' => false], 404);
         }
 
+        $previousPhoto = $portfolio->photo;
+
         $portfolio->update([
             'photo' => $medium->url,
             'photo_alt' => $medium->alt_text,
         ]);
+
+        if ($previousPhoto !== null && $previousPhoto !== $portfolio->photo) {
+            $this->mediaService->deleteStoredUpload($previousPhoto);
+        }
 
         $medium->update([
             'mediable_type' => null,

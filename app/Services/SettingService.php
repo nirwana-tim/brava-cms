@@ -18,6 +18,14 @@ class SettingService
     }
 
     /**
+     * Groups exposed through the public `/api/settings` endpoint.
+     *
+     * AdSense and system groups are excluded because they are not needed by
+     * the public frontend and reveal monetization/operational configuration.
+     */
+    private const PUBLIC_GROUPS = ['general', 'contact', 'social', 'seo'];
+
+    /**
      * Settings grouped by group key for the public API, e.g.
      * `['general' => ['site_name' => 'Brava CMS'], 'seo' => [...]]`.
      *
@@ -39,6 +47,20 @@ class SettingService
                         return [$setting->key => $value];
                     })->all(),
                 ])
+                ->all();
+        });
+    }
+
+    /**
+     * Public-facing subset of the settings, restricted to non-sensitive groups.
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    public function publicGrouped(): array
+    {
+        return Cache::store('api')->flexible('settings.public', [3600, 7200], function () {
+            return collect($this->grouped())
+                ->only(self::PUBLIC_GROUPS)
                 ->all();
         });
     }

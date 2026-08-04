@@ -23,6 +23,7 @@ class MediaUsageService
         'team_members' => 'Team Member',
         'testimonials' => 'Testimonial',
         'users' => 'User',
+        'settings' => 'Setting',
     ];
 
     private const TITLE_COLUMNS = [
@@ -33,6 +34,7 @@ class MediaUsageService
         'team_members' => 'name',
         'testimonials' => 'client_name',
         'users' => 'name',
+        'settings' => 'key',
     ];
 
     /**
@@ -117,11 +119,64 @@ class MediaUsageService
     }
 
     /**
+     * Pre-warm the alt-text cache for a batch of URLs in a single query.
+     *
+     * @param  iterable<string|null>  $urls
+     */
+    public function resolveAlts(iterable $urls): void
+    {
+        $basenames = [];
+
+        foreach ($urls as $url) {
+            $basename = $this->basenameOf($url);
+
+            if ($basename !== null) {
+                $basenames[$basename] = true;
+            }
+        }
+
+        $missing = array_keys(array_diff_key($basenames, self::$altCache));
+
+        if ($missing === []) {
+            return;
+        }
+
+        $media = Media::query()
+            ->where(function ($query) use ($missing) {
+                foreach ($missing as $basename) {
+                    $query->orWhere('path', 'like', '%'.$basename);
+                }
+            })
+            ->get(['path', 'alt_text']);
+
+        foreach ($media as $item) {
+            self::$altCache[basename($item->path)] = $item->alt_text;
+        }
+    }
+
+    /**
      * Resolve the current alt text of the media referenced by the given URL.
      * Falls back to null when no matching media exists. Results are cached
      * per basename for the current request to avoid N+1 queries.
      */
     public function resolveAlt(?string $url): ?string
+    {
+        $basename = $this->basenameOf($url);
+
+        if ($basename === null) {
+            return null;
+        }
+
+        if (array_key_exists($basename, self::$altCache)) {
+            return self::$altCache[$basename];
+        }
+
+        return self::$altCache[$basename] = Media::query()
+            ->where('path', 'like', '%'.$basename)
+            ->value('alt_text');
+    }
+
+    private function basenameOf(?string $url): ?string
     {
         if ($url === null || $url === '') {
             return null;
@@ -133,13 +188,7 @@ class MediaUsageService
             return null;
         }
 
-        if (array_key_exists($basename, self::$altCache)) {
-            return self::$altCache[$basename];
-        }
-
-        return self::$altCache[$basename] = Media::query()
-            ->where('path', 'like', '%'.$basename)
-            ->value('alt_text');
+        return $basename;
     }
 
     public static function flushAltCache(): void

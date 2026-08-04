@@ -13,6 +13,6 @@ class SettingController extends ApiController
 
     public function index(): JsonResponse
     {
-        return $this->success($this->service->grouped());
+        return $this->success($this->service->publicGrouped());
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\MediaService;
 use App\Traits\ClearsApiCache;
 use Database\Factories\TestimonialFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -24,6 +25,15 @@ class Testimonial extends Model
             'is_active' => 'boolean',
             'rating' => 'integer',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (Testimonial $testimonial) {
+            if ($testimonial->isForceDeleting()) {
+                app(MediaService::class)->deleteStoredUpload($testimonial->avatar);
+            }
+        });
     }
 
     public function scopeActive($query)

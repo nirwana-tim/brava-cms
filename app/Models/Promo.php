@@ -14,6 +14,8 @@ class Promo extends Model
     /** @use HasFactory<PromoFactory> */
     use ClearsApiCache, HasFactory, SoftDeletes;
 
+    public const DEFAULT_WA_NUMBER = '6281234567890';
+
     protected $fillable = [
         'title',
         'slug',
@@ -105,7 +107,7 @@ class Promo extends Model
 
     public function buildWaUrl(?string $rawNumber = null): string
     {
-        $rawNumber ??= Setting::where('key', 'whatsapp_number')->value('value') ?? '6281234567890';
+        $rawNumber ??= Setting::where('key', 'whatsapp_number')->value('value') ?? self::DEFAULT_WA_NUMBER;
         $number = preg_replace('/[^0-9]/', '', (string) $rawNumber);
         if (str_starts_with($number, '0')) {
             $number = '62'.substr($number, 1);

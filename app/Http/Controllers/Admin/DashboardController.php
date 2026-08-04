@@ -16,6 +16,12 @@ class DashboardController extends Controller
 {
     public function index(AnalyticsService $analytics): View
     {
+        $user = auth()->user();
+
+        if (! $user->isSuperAdmin() && ! $user->isStaffOrAdmin()) {
+            abort(403);
+        }
+
         $stats = [
             'services' => Service::count(),
             'blogs' => Blog::count(),
@@ -26,7 +32,7 @@ class DashboardController extends Controller
                 ->count(),
         ];
 
-        $canViewAnalytics = auth()->user()->isSuperAdmin() || auth()->user()->isAdmin();
+        $canViewAnalytics = $user->isSuperAdmin() || $user->isAdmin();
 
         $days = (int) request()->query('days', 30);
         if (! in_array($days, [7, 30, 90, 365], true)) {

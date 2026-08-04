@@ -46,6 +46,7 @@
             preview: null,
             altText: '',
             accept: 'image/*',
+            pendingPath: null,
 
             init() {
                 const input = document.getElementById(targetId);
@@ -71,6 +72,7 @@
                             body: formData,
                         });
                         const data = await res.json();
+                        this.pendingPath = data.path;
                         this.setMedia(data.url);
                     } catch (e) {
                         console.error('Upload failed', e);
@@ -90,12 +92,27 @@
                 }
             },
 
-            remove() {
+            async remove() {
+                const path = this.pendingPath;
+                this.pendingPath = null;
                 this.preview = null;
                 const input = document.getElementById(targetId);
                 if (input) {
                     input.value = '';
                     input.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+                if (path) {
+                    const formData = new FormData();
+                    formData.append('path', path);
+                    try {
+                        await fetch('{{ route("admin.upload.destroy") }}', {
+                            method: 'DELETE',
+                            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                            body: formData,
+                        });
+                    } catch (e) {
+                        console.error('Cleanup failed', e);
+                    }
                 }
             },
         }));

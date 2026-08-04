@@ -69,6 +69,8 @@ class ProfileController extends Controller
             return back()->withErrors($e->errors(), 'userDeletion');
         }
 
+        $this->mediaService->deleteStoredUpload($user->avatar);
+
         $user->setRememberToken(null);
 
         Auth::logout();

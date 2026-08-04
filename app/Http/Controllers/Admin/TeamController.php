@@ -158,8 +158,6 @@ class TeamController extends Controller
             $team->user->update(['is_active' => false]);
         }
 
-        $this->mediaService->deleteStoredUpload($team->avatar);
-
         $team->delete();
 
         return redirect()->route('admin.team.index')

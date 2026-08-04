@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\MediaService;
 use App\Traits\ClearsApiCache;
 use Database\Factories\TeamMemberFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -35,7 +36,13 @@ class TeamMember extends Model
     protected static function booted(): void
     {
         static::deleting(function (TeamMember $teamMember) {
-            if ($teamMember->isForceDeleting() && $teamMember->user) {
+            if (! $teamMember->isForceDeleting()) {
+                return;
+            }
+
+            app(MediaService::class)->deleteStoredUpload($teamMember->avatar);
+
+            if ($teamMember->user) {
                 try {
                     $teamMember->user->delete();
                 } catch (ValidationException) {
