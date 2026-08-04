@@ -8,6 +8,6 @@ trait BuildsCanonicalUrl
     {
         $frontendUrl = rtrim((string) (config('app.frontend_url') ?: config('app.url')), '/');
 
-        return $frontendUrl.'/'.ltrim($path, '/');
+        return $frontendUrl.'/'.app()->getLocale().'/'.ltrim($path, '/');
     }
 }

@@ -119,10 +119,14 @@
                     <div class="border-t pt-6">
                         <x-admin.seo-fields
                             :metaTitle="old('meta_title.id', $blog->getTranslation('meta_title', 'id', false))"
+                            :metaTitleEn="old('meta_title.en', $blog->getTranslation('meta_title', 'en', false))"
                             :metaDescription="old('meta_description.id', $blog->getTranslation('meta_description', 'id', false))"
+                            :metaDescriptionEn="old('meta_description.en', $blog->getTranslation('meta_description', 'en', false))"
                             :metaKeywords="old('meta_keywords.id', $blog->getTranslation('meta_keywords', 'id', false))"
+                            :metaKeywordsEn="old('meta_keywords.en', $blog->getTranslation('meta_keywords', 'en', false))"
                             :ogImage="old('og_image', $blog->og_image)"
                             :ogImageAlt="old('og_image_alt.id', $blog->getTranslation('og_image_alt', 'id', false))"
+                            :ogImageAltEn="old('og_image_alt.en', $blog->getTranslation('og_image_alt', 'en', false))"
                             :robotsIndex="old('robots_index', $blog->robots_index)"
                             :robotsFollow="old('robots_follow', $blog->robots_follow)"
                             :schemaType="old('schema_type', $blog->schema_type ?? 'Article')"

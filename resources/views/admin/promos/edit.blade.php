@@ -140,8 +140,12 @@
                     <div class="border-t pt-6">
                         <x-admin.seo-fields
                             :metaTitle="old('meta_title.id', $promo->getTranslation('meta_title', 'id', false))"
+                            :metaTitleEn="old('meta_title.en', $promo->getTranslation('meta_title', 'en', false))"
                             :metaDescription="old('meta_description.id', $promo->getTranslation('meta_description', 'id', false))"
+                            :metaDescriptionEn="old('meta_description.en', $promo->getTranslation('meta_description', 'en', false))"
                             :metaKeywords="old('meta_keywords.id', $promo->getTranslation('meta_keywords', 'id', false))"
+                            :metaKeywordsEn="old('meta_keywords.en', $promo->getTranslation('meta_keywords', 'en', false))"
+                            :showOgImageAlt="false"
                         />
                     </div>
                 </div>

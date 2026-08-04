@@ -118,10 +118,14 @@
                     <div class="border-t pt-6">
                         <x-admin.seo-fields
                             :metaTitle="old('meta_title.id')"
+                            :metaTitleEn="old('meta_title.en')"
                             :metaDescription="old('meta_description.id')"
+                            :metaDescriptionEn="old('meta_description.en')"
                             :metaKeywords="old('meta_keywords.id')"
+                            :metaKeywordsEn="old('meta_keywords.en')"
                             :ogImage="old('og_image')"
                             :ogImageAlt="old('og_image_alt.id')"
+                            :ogImageAltEn="old('og_image_alt.en')"
                             :robotsIndex="old('robots_index', true)"
                             :robotsFollow="old('robots_follow', true)"
                             :schemaType="old('schema_type', 'Article')"

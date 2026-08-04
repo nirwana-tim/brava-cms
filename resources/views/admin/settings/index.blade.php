@@ -36,22 +36,51 @@
                             <h3 class="section-title">{{ $groupLabels[$group] ?? ucfirst($group) }}</h3>
                             <div class="space-y-6">
                                 @foreach ($editable as $setting)
-                                    <div>
-                                        <x-input-label for="setting_{{ $setting->key }}" :value="$setting->label" />
-                                        @if ($setting->type === 'textarea')
-                                            <textarea id="setting_{{ $setting->key }}" name="{{ $setting->key }}" class="form-textarea mt-1" rows="3">{{ old($setting->key, $setting->value) }}</textarea>
-                                        @elseif ($setting->type === 'boolean' || $setting->type === 'bool')
-                                            <div class="mt-1">
-                                                <x-admin.toggle name="{{ $setting->key }}" :checked="old($setting->key, $setting->value)" label="Enabled" />
+                                    @if (in_array($setting->key, \App\Models\Setting::translatableKeys()))
+                                        <div>
+                                            <x-input-label :value="$setting->label" />
+                                            <div class="mt-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div>
+                                                    <x-input-label for="setting_{{ $setting->key }}_id" value="Indonesia" class="text-xs" />
+                                                    @if ($setting->type === 'textarea')
+                                                        <textarea id="setting_{{ $setting->key }}_id" name="{{ $setting->key }}[id]" class="form-textarea mt-1" rows="3">{{ old($setting->key.'.id', $setting->getTranslation('value', 'id', false)) }}</textarea>
+                                                    @else
+                                                        <x-text-input id="setting_{{ $setting->key }}_id" name="{{ $setting->key }}[id]" type="text" class="mt-1 block w-full" :value="old($setting->key.'.id', $setting->getTranslation('value', 'id', false))" />
+                                                    @endif
+                                                </div>
+                                                <div>
+                                                    <x-input-label for="setting_{{ $setting->key }}_en" value="English" class="text-xs" />
+                                                    @if ($setting->type === 'textarea')
+                                                        <textarea id="setting_{{ $setting->key }}_en" name="{{ $setting->key }}[en]" class="form-textarea mt-1" rows="3">{{ old($setting->key.'.en', $setting->getTranslation('value', 'en', false)) }}</textarea>
+                                                    @else
+                                                        <x-text-input id="setting_{{ $setting->key }}_en" name="{{ $setting->key }}[en]" type="text" class="mt-1 block w-full" :value="old($setting->key.'.en', $setting->getTranslation('value', 'en', false))" placeholder="Kosongkan untuk fallback ke Indonesia" />
+                                                    @endif
+                                                </div>
                                             </div>
-                                        @else
-                                            <x-text-input id="setting_{{ $setting->key }}" name="{{ $setting->key }}" type="text" class="mt-1 block w-full" :value="old($setting->key, $setting->value)" />
-                                        @endif
-                                        <x-input-error class="mt-2" :messages="$errors->get($setting->key)" />
-                                        @if ($setting->hint)
-                                            <p class="mt-1.5 text-xs" style="color: var(--muted-text)">{{ $setting->hint }}</p>
-                                        @endif
-                                    </div>
+                                            <x-input-error class="mt-2" :messages="$errors->get($setting->key.'.id')" />
+                                            <x-input-error class="mt-2" :messages="$errors->get($setting->key.'.en')" />
+                                            @if ($setting->hint)
+                                                <p class="mt-1.5 text-xs" style="color: var(--muted-text)">{{ $setting->hint }}</p>
+                                            @endif
+                                        </div>
+                                    @else
+                                        <div>
+                                            <x-input-label for="setting_{{ $setting->key }}" :value="$setting->label" />
+                                            @if ($setting->type === 'textarea')
+                                                <textarea id="setting_{{ $setting->key }}" name="{{ $setting->key }}" class="form-textarea mt-1" rows="3">{{ old($setting->key, $setting->value) }}</textarea>
+                                            @elseif ($setting->type === 'boolean' || $setting->type === 'bool')
+                                                <div class="mt-1">
+                                                    <x-admin.toggle name="{{ $setting->key }}" :checked="old($setting->key, $setting->value)" label="Enabled" />
+                                                </div>
+                                            @else
+                                                <x-text-input id="setting_{{ $setting->key }}" name="{{ $setting->key }}" type="text" class="mt-1 block w-full" :value="old($setting->key, $setting->value)" />
+                                            @endif
+                                            <x-input-error class="mt-2" :messages="$errors->get($setting->key)" />
+                                            @if ($setting->hint)
+                                                <p class="mt-1.5 text-xs" style="color: var(--muted-text)">{{ $setting->hint }}</p>
+                                            @endif
+                                        </div>
+                                    @endif
                                 @endforeach
                             </div>
                         </div>

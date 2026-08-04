@@ -12,7 +12,9 @@ class FaqService
 
     public function all(): Collection
     {
-        return Cache::store('api')->flexible('faqs.all', [3600, 7200], function () {
+        $locale = app()->getLocale();
+
+        return Cache::store('api')->flexible('faqs.all.'.$locale, [3600, 7200], function () {
             return $this->model->active()
                 ->orderBy('sort_order')
                 ->get();

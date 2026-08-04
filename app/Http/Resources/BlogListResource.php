@@ -17,8 +17,8 @@ class BlogListResource extends JsonResource
             'title' => $this->title,
             'slug' => $this->slug,
             'slugs' => [
-                'id' => $this->getTranslation('slug', 'id', false),
-                'en' => $this->getTranslation('slug', 'en', false),
+                'id' => $this->getTranslation('slug', 'id', false) ?: null,
+                'en' => $this->getTranslation('slug', 'en', false) ?: null,
             ],
             'excerpt' => $this->excerpt,
             'featured_image' => $this->featured_image ? url($this->featured_image) : null,

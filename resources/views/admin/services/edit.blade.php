@@ -74,6 +74,7 @@
                         </template>
                         <x-admin.media-picker target="photo" collection="services" />
                         <x-admin.alt-input field="photo_alt[id]" :value="old('photo_alt.id', $service->getTranslation('photo_alt', 'id', false))" label="Photo Alt Text (ID)" />
+                        <x-admin.alt-input field="photo_alt[en]" :value="old('photo_alt.en', $service->getTranslation('photo_alt', 'en', false))" label="Photo Alt Text (EN - English)" />
                         <x-input-error class="mt-2" :messages="$errors->get('photo')" />
                     </div>
 
@@ -97,4 +98,31 @@
             </form>
         </div>
     </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const titleId = document.getElementById('title_id');
+        const slugId = document.getElementById('slug_id');
+        if (titleId && slugId) {
+            let slugEdited = false;
+            slugId.addEventListener('input', function () { if (this.value) slugEdited = true; });
+            titleId.addEventListener('input', function () {
+                if (slugEdited) return;
+                slugId.value = this.value.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+            });
+        }
+        const titleEn = document.getElementById('title_en');
+        const slugEn = document.getElementById('slug_en');
+        if (titleEn && slugEn) {
+            let slugEditedEn = false;
+            slugEn.addEventListener('input', function () { if (this.value) slugEditedEn = true; });
+            titleEn.addEventListener('input', function () {
+                if (slugEditedEn) return;
+                slugEn.value = this.value.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+            });
+        }
+    });
+</script>
+@endpush
 </x-admin.layouts.app>

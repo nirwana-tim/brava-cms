@@ -29,7 +29,7 @@ test('blog api returns absolute image urls and canonical url', function () {
 
     expect($data['featured_image'])->toBe(url('/storage/media/cover.jpg'))
         ->and($data['seo']['og_image'])->toBe(url('/storage/media/og.jpg'))
-        ->and($data['seo']['canonical_url'])->toBe(config('app.frontend_url').'/blogs/'.$blog->slug)
+        ->and($data['seo']['canonical_url'])->toBe(config('app.frontend_url').'/id/blogs/'.$blog->slug)
         ->and($data['seo']['schema_type'])->toBe($blog->schema_type)
         ->and($data['updated_at'])->not->toBeNull();
 });
@@ -62,7 +62,7 @@ test('portfolio api returns absolute image urls canonical url and new seo fields
         ->and($data['seo']['og_image'])->toBe(url('/storage/portfolio/cover.jpg'))
         ->and($data['seo']['robots_follow'])->toBeTrue()
         ->and($data['seo']['schema_type'])->toBe('CreativeWork')
-        ->and($data['seo']['canonical_url'])->toBe(config('app.frontend_url').'/portfolio/'.$portfolio->slug);
+        ->and($data['seo']['canonical_url'])->toBe(config('app.frontend_url').'/id/portfolio/'.$portfolio->slug);
 });
 
 test('promo api returns seo block with absolute image and canonical url', function () {
@@ -83,7 +83,7 @@ test('promo api returns seo block with absolute image and canonical url', functi
         ->and($data['seo']['og_image'])->toBe(url('/storage/promos/promo.jpg'))
         ->and($data['seo']['robots_index'])->toBeTrue()
         ->and($data['seo']['schema_type'])->toBe('SpecialAnnouncement')
-        ->and($data['seo']['canonical_url'])->toBe(config('app.frontend_url').'/promos/'.$promo->slug)
+        ->and($data['seo']['canonical_url'])->toBe(config('app.frontend_url').'/id/promos/'.$promo->slug)
         ->and($data['updated_at'])->not->toBeNull();
 });
 

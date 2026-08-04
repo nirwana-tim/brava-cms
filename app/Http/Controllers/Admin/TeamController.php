@@ -109,9 +109,9 @@ class TeamController extends Controller
                 : ($validated['role'] ?? $team->user->role);
 
             $team->user->update([
-                'name' => $validated['name'],
+                'name' => $validated['name']['id'] ?? $team->user->name,
                 'email' => $validated['email'] ?? $team->user->email,
-                'position' => $validated['position'] ?? null,
+                'position' => $validated['position']['id'] ?? null,
                 'avatar' => $team->avatar,
                 'role' => $role,
                 'is_active' => $wantedActive,

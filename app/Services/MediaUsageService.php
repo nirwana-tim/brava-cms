@@ -67,13 +67,7 @@ class MediaUsageService
             $rows = $this->rowsMatching($table, $columns, [basename($media->path)]);
 
             foreach ($rows as $row) {
-                $rawTitle = $row->{self::TITLE_COLUMNS[$table]} ?? '';
-                if (is_string($rawTitle) && str_starts_with($rawTitle, '{')) {
-                    $decoded = json_decode($rawTitle, true);
-                    $titleStr = $decoded['id'] ?? $decoded['en'] ?? $rawTitle;
-                } else {
-                    $titleStr = (string) $rawTitle;
-                }
+                $titleStr = $this->decodeTranslatableTitle($row->{self::TITLE_COLUMNS[$table]} ?? '');
                 $summary[] = self::MODULE_LABELS[$table].' "'.$titleStr.'"';
             }
         }
@@ -97,13 +91,7 @@ class MediaUsageService
             $rows = $this->rowsMatching($table, $columns, $basenames);
 
             foreach ($rows as $row) {
-                $rawTitle = $row->{self::TITLE_COLUMNS[$table]} ?? '';
-                if (is_string($rawTitle) && str_starts_with($rawTitle, '{')) {
-                    $decoded = json_decode($rawTitle, true);
-                    $titleStr = $decoded['id'] ?? $decoded['en'] ?? $rawTitle;
-                } else {
-                    $titleStr = (string) $rawTitle;
-                }
+                $titleStr = $this->decodeTranslatableTitle($row->{self::TITLE_COLUMNS[$table]} ?? '');
 
                 foreach ($columns as $column) {
                     $value = $row->{$column} ?? '';
@@ -236,6 +224,23 @@ class MediaUsageService
     }
 
     /**
+     * Resolve a translatable title stored as JSON (e.g. `{"id": "...", "en": "..."}`)
+     * to its readable form for usage labels.
+     */
+    private function decodeTranslatableTitle(mixed $rawTitle): string
+    {
+        if (is_string($rawTitle) && str_starts_with($rawTitle, '{')) {
+            $decoded = json_decode($rawTitle, true);
+
+            if (is_array($decoded)) {
+                return (string) ($decoded['id'] ?? $decoded['en'] ?? $rawTitle);
+            }
+        }
+
+        return (string) $rawTitle;
+    }
+
+    /**
      * @return list<string>
      */
     private function morphUsage(Media $media): array
@@ -251,7 +256,7 @@ class MediaUsageService
             return [];
         }
 
-        return [$config['label'].' "'.$row->{$config['title']}.'"'];
+        return [$config['label'].' "'.$this->decodeTranslatableTitle($row->{$config['title']}).'"'];
     }
 
     /**
@@ -282,7 +287,7 @@ class MediaUsageService
 
             foreach ($rows as $row) {
                 if ($titles->has($row->mediable_id)) {
-                    $usage[$row->id][] = $config['label'].' "'.$titles[$row->mediable_id].'"';
+                    $usage[$row->id][] = $config['label'].' "'.$this->decodeTranslatableTitle($titles[$row->mediable_id]).'"';
                 }
             }
         }

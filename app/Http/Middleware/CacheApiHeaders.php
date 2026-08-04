@@ -14,6 +14,7 @@ class CacheApiHeaders
 
         if ($request->isMethod('GET') && $request->is('api/*') && $response->isSuccessful()) {
             $response->headers->set('Cache-Control', 'public, max-age=900, s-maxage=900');
+            $response->headers->set('Vary', 'Accept-Language, lang');
         }
 
         return $response;

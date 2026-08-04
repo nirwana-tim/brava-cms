@@ -176,17 +176,17 @@
                     input.dispatchEvent(new Event('input', { bubbles: true }));
                 }
 
-                const altInput = document.getElementById(targetId + '_alt');
-                if (altInput) {
-                    altInput.value = '';
-                    altInput.dispatchEvent(new Event('input', { bubbles: true }));
-                }
+                const altInputs = document.querySelectorAll(`[name^="${targetId}_alt"]`);
+                altInputs.forEach((el) => {
+                    el.value = '';
+                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                });
 
-                const hint = document.getElementById(targetId + '_alt_hint');
-                if (hint) {
+                const hints = document.querySelectorAll(`[id^="${targetId}_alt"][id$="_hint"]`);
+                hints.forEach((hint) => {
                     hint.textContent = alt ? 'Alt default dari media: "' + alt + '". Kosongkan untuk memakainya, atau isi untuk override.' : '';
                     hint.style.display = alt ? '' : 'none';
-                }
+                });
 
                 const parentEl = this.$el?.parentElement?.closest('[x-data]');
                 const parentScope = parentEl ? (window.Alpine ? Alpine.$data(parentEl) : (parentEl._x_dataStack ? parentEl._x_dataStack[0] : (parentEl.__x ? parentEl.__x.$data : null))) : null;

@@ -62,6 +62,8 @@
                         <x-input-label for="avatar" :value="__('Avatar / Logo')" />
                         <input type="hidden" name="avatar" id="avatar" value="{{ old('avatar') }}" />
                         <x-admin.image-upload target="avatar" />
+                        <x-admin.alt-input field="avatar_alt[id]" :value="old('avatar_alt.id')" label="Avatar Alt Text (ID)" />
+                        <x-admin.alt-input field="avatar_alt[en]" :value="old('avatar_alt.en')" label="Avatar Alt Text (EN - English)" />
                         <x-input-error class="mt-2" :messages="$errors->get('avatar')" />
                     </div>
 

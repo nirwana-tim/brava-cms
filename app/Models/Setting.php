@@ -15,7 +15,72 @@ class Setting extends Model
 
     public array $translatable = ['value'];
 
+    /**
+     * Settings whose value is stored as a translatable JSON payload
+     * (e.g. {"id": "...", "en": "..."}). All other settings keep a plain value.
+     */
+    private const TRANSLATABLE_KEYS = [
+        'site_name',
+        'site_description',
+        'default_meta_title',
+        'default_meta_description',
+        'hero_title',
+        'hero_subtitle',
+        'contact_address',
+        'footer_copyright',
+    ];
+
     protected $fillable = ['key', 'value', 'group', 'type'];
+
+    public static function translatableKeys(): array
+    {
+        return self::TRANSLATABLE_KEYS;
+    }
+
+    public function getTranslatableAttributes(): array
+    {
+        return in_array($this->key, self::TRANSLATABLE_KEYS, true) ? ['value'] : [];
+    }
+
+    public function getAttributeValue($key): mixed
+    {
+        if ($key === 'value') {
+            $raw = $this->getAttributeFromArray('value');
+
+            if (in_array($this->key, self::TRANSLATABLE_KEYS, true)) {
+                if (is_string($raw) && ! str_starts_with(ltrim($raw), '{')) {
+                    return $raw;
+                }
+
+                return $this->getTranslation($key, $this->getLocale(), $this->useFallbackLocale());
+            }
+
+            if (is_string($raw) && str_starts_with(ltrim($raw), '{')) {
+                $decoded = json_decode($raw, true);
+
+                if (is_array($decoded) && array_key_exists('id', $decoded)) {
+                    return $decoded['id'];
+                }
+            }
+
+            return parent::getAttributeValue($key);
+        }
+
+        return parent::getAttributeValue($key);
+    }
+
+    public function setAttribute($key, $value)
+    {
+        if ($key === 'value' && in_array($this->key, self::TRANSLATABLE_KEYS, true)) {
+            if (is_array($value)) {
+                return $this->setTranslations($key, $value);
+            }
+
+            return $this->setTranslation($key, $this->getLocale(), $value);
+        }
+
+        return parent::setAttribute($key, $value);
+    }
 
     private const LABELS = [
         'site_name' => 'Site Name',

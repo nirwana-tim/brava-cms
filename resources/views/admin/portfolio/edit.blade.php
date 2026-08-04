@@ -112,6 +112,7 @@
                         </template>
                         <x-admin.media-picker target="photo" collection="portfolio" />
                         <x-admin.alt-input field="photo_alt[id]" :value="old('photo_alt.id', $portfolio->getTranslation('photo_alt', 'id', false))" label="Cover Photo Alt Text (ID)" />
+                        <x-admin.alt-input field="photo_alt[en]" :value="old('photo_alt.en', $portfolio->getTranslation('photo_alt', 'en', false))" label="Cover Photo Alt Text (EN - English)" />
                         <x-input-error class="mt-2" :messages="$errors->get('photo')" />
                     </div>
 
@@ -128,10 +129,14 @@
                     <div class="border-t pt-6">
                         <x-admin.seo-fields
                             :metaTitle="old('meta_title.id', $portfolio->getTranslation('meta_title', 'id', false))"
+                            :metaTitleEn="old('meta_title.en', $portfolio->getTranslation('meta_title', 'en', false))"
                             :metaDescription="old('meta_description.id', $portfolio->getTranslation('meta_description', 'id', false))"
+                            :metaDescriptionEn="old('meta_description.en', $portfolio->getTranslation('meta_description', 'en', false))"
                             :metaKeywords="old('meta_keywords.id', $portfolio->getTranslation('meta_keywords', 'id', false))"
+                            :metaKeywordsEn="old('meta_keywords.en', $portfolio->getTranslation('meta_keywords', 'en', false))"
                             :ogImage="old('og_image', $portfolio->og_image)"
                             :ogImageAlt="old('og_image_alt.id', $portfolio->getTranslation('og_image_alt', 'id', false))"
+                            :ogImageAltEn="old('og_image_alt.en', $portfolio->getTranslation('og_image_alt', 'en', false))"
                             :robotsIndex="old('robots_index', $portfolio->robots_index)"
                             :robotsFollow="old('robots_follow', $portfolio->robots_follow)"
                             :schemaType="old('schema_type', $portfolio->schema_type ?? 'WebPage')"

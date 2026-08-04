@@ -73,6 +73,7 @@
                         </template>
                         <x-admin.media-picker target="photo" collection="services" />
                         <x-admin.alt-input field="photo_alt[id]" :value="old('photo_alt.id')" label="Photo Alt Text (ID)" />
+                        <x-admin.alt-input field="photo_alt[en]" :value="old('photo_alt.en')" label="Photo Alt Text (EN - English)" />
                         <x-input-error class="mt-2" :messages="$errors->get('photo')" />
                     </div>
 

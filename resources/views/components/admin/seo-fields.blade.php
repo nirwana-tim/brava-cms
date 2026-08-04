@@ -1,9 +1,14 @@
 @props([
     'metaTitle' => null,
+    'metaTitleEn' => null,
     'metaDescription' => null,
+    'metaDescriptionEn' => null,
     'metaKeywords' => null,
+    'metaKeywordsEn' => null,
     'ogImage' => null,
     'ogImageAlt' => null,
+    'ogImageAltEn' => null,
+    'showOgImageAlt' => true,
     'robotsIndex' => true,
     'robotsFollow' => true,
     'schemaType' => 'WebPage',
@@ -22,7 +27,7 @@
             </div>
             <div>
                 <x-input-label for="meta_title_en" :value="__('Meta Title (EN)')" />
-                <x-text-input id="meta_title_en" name="meta_title[en]" type="text" class="mt-1 block w-full" :value="is_array($metaTitle) ? ($metaTitle['en'] ?? '') : old('meta_title.en')" placeholder="Max 70 characters" />
+                <x-text-input id="meta_title_en" name="meta_title[en]" type="text" class="mt-1 block w-full" :value="old('meta_title.en', is_array($metaTitle) ? ($metaTitle['en'] ?? '') : $metaTitleEn)" placeholder="Max 70 characters" />
                 <x-input-error class="mt-2" :messages="$errors->get('meta_title.en')" />
             </div>
         </div>
@@ -35,7 +40,7 @@
             </div>
             <div>
                 <x-input-label for="meta_description_en" :value="__('Meta Description (EN)')" />
-                <textarea id="meta_description_en" name="meta_description[en]" class="form-textarea mt-1 w-full" rows="3" placeholder="Max 160 characters">{{ is_array($metaDescription) ? ($metaDescription['en'] ?? '') : old('meta_description.en') }}</textarea>
+                <textarea id="meta_description_en" name="meta_description[en]" class="form-textarea mt-1 w-full" rows="3" placeholder="Max 160 characters">{{ old('meta_description.en', is_array($metaDescription) ? ($metaDescription['en'] ?? '') : $metaDescriptionEn) }}</textarea>
                 <x-input-error class="mt-2" :messages="$errors->get('meta_description.en')" />
             </div>
         </div>
@@ -48,7 +53,7 @@
             </div>
             <div>
                 <x-input-label for="meta_keywords_en" :value="__('Meta Keywords (EN)')" />
-                <x-text-input id="meta_keywords_en" name="meta_keywords[en]" type="text" class="mt-1 block w-full" :value="is_array($metaKeywords) ? ($metaKeywords['en'] ?? '') : old('meta_keywords.en')" placeholder="Comma separated" />
+                <x-text-input id="meta_keywords_en" name="meta_keywords[en]" type="text" class="mt-1 block w-full" :value="old('meta_keywords.en', is_array($metaKeywords) ? ($metaKeywords['en'] ?? '') : $metaKeywordsEn)" placeholder="Comma separated" />
                 <x-input-error class="mt-2" :messages="$errors->get('meta_keywords.en')" />
             </div>
         </div>
@@ -74,6 +79,21 @@
                 <x-input-error class="mt-2" :messages="$errors->get('schema_type')" />
             </div>
         </div>
+
+        @if ($showOgImageAlt)
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <x-input-label for="og_image_alt_id" :value="__('OpenGraph Image Alt (ID)')" />
+                    <x-text-input id="og_image_alt_id" name="og_image_alt[id]" type="text" class="mt-1 block w-full" :value="old('og_image_alt.id', is_array($ogImageAlt) ? ($ogImageAlt['id'] ?? '') : $ogImageAlt)" />
+                    <x-input-error class="mt-2" :messages="$errors->get('og_image_alt.id')" />
+                </div>
+                <div>
+                    <x-input-label for="og_image_alt_en" :value="__('OpenGraph Image Alt (EN)')" />
+                    <x-text-input id="og_image_alt_en" name="og_image_alt[en]" type="text" class="mt-1 block w-full" :value="old('og_image_alt.en', is_array($ogImageAlt) ? ($ogImageAlt['en'] ?? '') : $ogImageAltEn)" />
+                    <x-input-error class="mt-2" :messages="$errors->get('og_image_alt.en')" />
+                </div>
+            </div>
+        @endif
 
         <div class="flex items-center gap-6 pt-2">
             <x-admin.toggle name="robots_index" :checked="old('robots_index', $robotsIndex)" label="Allow Search Indexing (Robots Index)" />
