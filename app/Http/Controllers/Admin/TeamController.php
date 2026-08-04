@@ -61,6 +61,7 @@ class TeamController extends Controller
                 'role' => $request->enum('role', UserRole::class) ?? (auth()->user()->isSuperAdmin() ? UserRole::Admin : UserRole::Staff),
                 'position' => $team->position,
                 'avatar' => $team->avatar,
+                'email_verified_at' => now(),
             ]);
 
             $team->user()->associate($user)->save();
@@ -82,19 +83,31 @@ class TeamController extends Controller
 
     public function update(UpdateTeamRequest $request, TeamMember $team): RedirectResponse
     {
-        $team->update($request->validated());
+        $validated = $request->validated();
+
+        $wantedActive = array_key_exists('is_active', $validated)
+            ? (bool) $validated['is_active']
+            : (bool) $team->is_active;
+
+        if ($team->user_id === auth()->id() && ! $wantedActive) {
+            return redirect()->route('admin.team.index')
+                ->with('error', 'Anda tidak dapat menonaktifkan akun Anda sendiri.');
+        }
+
+        $team->update($validated);
 
         if ($team->user) {
             $role = $team->user_id === auth()->id()
                 ? $team->user->role
-                : ($request->enum('role', UserRole::class) ?? $team->user->role);
+                : ($validated['role'] ?? $team->user->role);
 
             $team->user->update([
-                'name' => $request->name,
-                'email' => $request->email ?? $team->user->email,
-                'position' => $request->position,
+                'name' => $validated['name'],
+                'email' => $validated['email'] ?? $team->user->email,
+                'position' => $validated['position'] ?? null,
                 'avatar' => $team->avatar,
                 'role' => $role,
+                'is_active' => $wantedActive,
             ]);
         }
 
@@ -132,6 +145,10 @@ class TeamController extends Controller
         if ($team->user_id && $team->user_id === auth()->id()) {
             return redirect()->route('admin.team.index')
                 ->with('error', 'You cannot delete your own account.');
+        }
+
+        if ($team->user) {
+            $team->user->update(['is_active' => false]);
         }
 
         $team->delete();

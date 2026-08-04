@@ -179,42 +179,14 @@ Response:
             "title": "Corporate Website Package",
             "slug": "corporate-website-package",
             "description": "Short description",
-            "photo": "/storage/services/img.jpg",
-            "published_at": "2026-07-27T10:00:00Z"
+            "photo": "/storage/services/img.jpg"
         }
     ],
     "meta": { "current_page": 1, "last_page": 1, "per_page": 12, "total": 3 }
 }
 ```
 
-#### `GET /api/services/{slug}`
-
-Response:
-
-```json
-{
-    "success": true,
-    "data": {
-        "id": 1,
-        "title": "Corporate Website Package",
-        "slug": "corporate-website-package",
-        "description": "Full description",
-        "content": "<p>HTML content</p>",
-        "photo": "/storage/services/img.jpg",
-        "published_at": "2026-07-27T10:00:00Z",
-        "portfolio_items": [
-            {
-                "id": 1,
-                "title": "TechCorp Corporate Website",
-                "slug": "techcorp-corporate-website",
-                "description": "A modern corporate website with integrated CMS.",
-                "client": "TechCorp Indonesia",
-                "completed_at": "2026-05-15"
-            }
-        ]
-    }
-}
-```
+> Services have no detail page; the list is the only `services` endpoint.
 
 ---
 
@@ -596,7 +568,7 @@ GET /api/blogs?fields=id,title,slug,excerpt,published_at,author
 | `/api/settings`         | 1 hour | Cache::flexible([3600, 7200], ...) |
 | `/api/categories`       | 1 hour | Cache::flexible                    |
 | `/api/services`         | 15 min | Cache::flexible([900, 1800], ...)  |
-| `/api/services/{slug}`  | 30 min | Cache::flexible                    |
+| `/api/services`       | 15 min | Cache::flexible                    |
 | `/api/blogs`            | 15 min | Cache::flexible                    |
 | `/api/blogs/{slug}`     | 30 min | Cache::flexible                    |
 | `/api/testimonials`     | 1 hour | Cache::flexible                    |
@@ -666,4 +638,4 @@ Cache is automatically flushed via the `App\Traits\ClearsApiCache` trait on mode
 
 ### Database Indexes
 
-Every `slug`, `is_active`, `status`, `published_at`, `sort_order` column is indexed. See `docs/SCHEMA.md`.
+Every `slug`, `is_active`, `status`, `sort_order` column is indexed. See `docs/SCHEMA.md`.

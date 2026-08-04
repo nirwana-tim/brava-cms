@@ -16,7 +16,7 @@ class BlogController extends ApiController
 
     public function index(Request $request): JsonResponse
     {
-        $filters = $request->only(['category', 'tag', 'search', 'featured', 'per_page']);
+        $filters = $request->only(['category', 'search', 'featured', 'per_page']);
         $posts = $this->service->list($filters);
 
         return $this->paginatedSuccess(

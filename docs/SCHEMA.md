@@ -62,10 +62,10 @@
 | title | string(255) | |
 | slug | string(255) | unique |
 | description | text | nullable |
-| content | longText | nullable |
 | photo | string(255) | nullable |
-| is_active | boolean | default true |
-| published_at | timestamp | nullable |
+| photo_alt | string(255) | nullable |
+| is_active | boolean | default true, indexed |
+| sort_order | integer | default 0 |
 | timestamps | | |
 | softDeletes | | |
 

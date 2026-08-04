@@ -26,14 +26,21 @@ class DashboardController extends Controller
                 ->count(),
         ];
 
+        $canViewAnalytics = auth()->user()->isSuperAdmin() || auth()->user()->isAdmin();
+
         $days = (int) request()->query('days', 30);
         if (! in_array($days, [7, 30, 90, 365], true)) {
             $days = 30;
         }
 
-        $data = $analytics->getOverview($days);
-        $isDummy = ! $analytics->isReady();
+        $data = null;
+        $isDummy = false;
 
-        return view('admin.dashboard', compact('stats', 'data', 'isDummy', 'days'));
+        if ($canViewAnalytics) {
+            $data = $analytics->getOverview($days);
+            $isDummy = ! $analytics->isReady();
+        }
+
+        return view('admin.dashboard', compact('stats', 'data', 'isDummy', 'days', 'canViewAnalytics'));
     }
 }

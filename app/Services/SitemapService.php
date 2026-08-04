@@ -17,7 +17,7 @@ class SitemapService
     public function build(): array
     {
         return Cache::store('api')->flexible('sitemap.all', [900, 1800], function () {
-            $frontendUrl = rtrim((string) config('app.frontend_url'), '/');
+            $frontendUrl = rtrim((string) (config('app.frontend_url') ?: config('app.url')), '/');
 
             $urls = collect()
                 ->merge(Blog::query()

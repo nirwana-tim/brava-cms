@@ -24,7 +24,8 @@ class PortfolioService
                     });
                 })
                 ->latest()
-                ->paginate($perPage);
+                ->paginate($perPage)
+                ->withQueryString();
         });
     }
 

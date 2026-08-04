@@ -2,7 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\Blog;
 use App\Models\Media;
+use App\Models\PortfolioItem;
+use App\Models\Promo;
+use App\Models\Service;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -31,6 +35,18 @@ class MediaUsageService
         'users' => 'name',
     ];
 
+    /**
+     * Media linked via the polymorphic `mediable` relation (e.g. portfolio gallery).
+     *
+     * @var array<class-string, array{table: string, label: string, title: string}>
+     */
+    private const MEDIABLE_MAP = [
+        PortfolioItem::class => ['table' => 'portfolio_items', 'label' => 'Portfolio', 'title' => 'title'],
+        Blog::class => ['table' => 'blogs', 'label' => 'Blog', 'title' => 'title'],
+        Service::class => ['table' => 'services', 'label' => 'Service', 'title' => 'title'],
+        Promo::class => ['table' => 'promos', 'label' => 'Promo', 'title' => 'title'],
+    ];
+
     public function isInUse(Media $media): bool
     {
         return $this->usageSummary($media) !== [];
@@ -53,7 +69,7 @@ class MediaUsageService
             }
         }
 
-        return $summary;
+        return array_values(array_unique([...$summary, ...$this->morphUsage($media)]));
     }
 
     /**
@@ -80,7 +96,7 @@ class MediaUsageService
                     }
 
                     foreach ($media as $item) {
-                        if (str_contains($value, basename($item->path))) {
+                        if (str_contains($value, '/'.basename($item->path))) {
                             $usage[$item->id][] = self::MODULE_LABELS[$table].' "'.$row->{self::TITLE_COLUMNS[$table]}.'"';
                         }
                     }
@@ -88,9 +104,13 @@ class MediaUsageService
             }
         }
 
+        foreach ($this->morphUsageBatch($media) as $id => $labels) {
+            $usage[$id] = array_merge($usage[$id] ?? [], $labels);
+        }
+
         foreach ($media as $item) {
             $item->in_use = isset($usage[$item->id]);
-            $item->usage = $usage[$item->id] ?? [];
+            $item->usage = array_values(array_unique($usage[$item->id] ?? []));
         }
 
         return $media;
@@ -144,10 +164,65 @@ class MediaUsageService
             ->where(function ($query) use ($columns, $basenames) {
                 foreach ($columns as $column) {
                     foreach ($basenames as $basename) {
-                        $query->orWhere($column, 'like', '%'.$basename.'%');
+                        $query->orWhere($column, 'like', '%/'.$basename.'%');
                     }
                 }
             })
             ->get();
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function morphUsage(Media $media): array
+    {
+        if ($media->mediable_type === null || $media->mediable_id === null || ! isset(self::MEDIABLE_MAP[$media->mediable_type])) {
+            return [];
+        }
+
+        $config = self::MEDIABLE_MAP[$media->mediable_type];
+        $row = DB::table($config['table'])->where('id', $media->mediable_id)->first();
+
+        if (! $row) {
+            return [];
+        }
+
+        return [$config['label'].' "'.$row->{$config['title']}.'"'];
+    }
+
+    /**
+     * Resolve morph-linked usage labels for a batch of media.
+     *
+     * @return array<int, list<string>>
+     */
+    private function morphUsageBatch(EloquentCollection $media): array
+    {
+        $linked = DB::table('media')
+            ->whereIn('id', $media->pluck('id'))
+            ->whereNotNull('mediable_id')
+            ->whereNotNull('mediable_type')
+            ->select(['id', 'mediable_type', 'mediable_id'])
+            ->get();
+
+        $usage = [];
+
+        foreach ($linked->groupBy('mediable_type') as $type => $rows) {
+            if (! isset(self::MEDIABLE_MAP[$type])) {
+                continue;
+            }
+
+            $config = self::MEDIABLE_MAP[$type];
+            $titles = DB::table($config['table'])
+                ->whereIn('id', $rows->pluck('mediable_id'))
+                ->pluck($config['title'], 'id');
+
+            foreach ($rows as $row) {
+                if ($titles->has($row->mediable_id)) {
+                    $usage[$row->id][] = $config['label'].' "'.$titles[$row->mediable_id].'"';
+                }
+            }
+        }
+
+        return $usage;
     }
 }

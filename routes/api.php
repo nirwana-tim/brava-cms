@@ -29,4 +29,4 @@ Route::middleware('throttle:60,1')->group(function () {
 });
 
 Route::post('/contact', [ContactController::class, 'store'])
-    ->middleware('throttle:5,1');
+    ->middleware(['throttle:contact', 'throttle:contact-hourly']);

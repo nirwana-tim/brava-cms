@@ -68,6 +68,10 @@ class TrashController extends Controller
         $item = $modelClass::onlyTrashed()->findOrFail($id);
         $item->restore();
 
+        if ($item instanceof TeamMember && $item->user) {
+            $item->user->update(['is_active' => true]);
+        }
+
         return redirect()->route('admin.trash.index', ['type' => $type])
             ->with('success', 'Item successfully restored from Trash.');
     }

@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 #[Signature('media:normalize-urls {--dry-run : Preview changes without applying them}')]
@@ -49,6 +50,7 @@ class NormalizeMediaUrls extends Command
         if ($dryRun) {
             $this->line("<info>{$changed} nilai siap dinormalisasi.</info>");
         } else {
+            Cache::store('api')->flush();
             $this->info("Selesai: {$changed} nilai URL dinormalisasi menjadi relatif.");
         }
 

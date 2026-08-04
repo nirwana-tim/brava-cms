@@ -28,7 +28,8 @@ class BlogService
                     });
                 })
                 ->orderByDesc('published_at')
-                ->paginate($perPage);
+                ->paginate($perPage)
+                ->withQueryString();
         });
     }
 

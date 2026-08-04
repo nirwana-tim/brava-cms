@@ -17,10 +17,29 @@ class SettingService
         });
     }
 
-    public function getByGroup(string $group): Collection
+    /**
+     * Settings grouped by group key for the public API, e.g.
+     * `['general' => ['site_name' => 'Brava CMS'], 'seo' => [...]]`.
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    public function grouped(): array
     {
-        return Cache::store('api')->flexible('settings.group.'.$group, [3600, 7200], function () use ($group) {
-            return $this->model->inGroup($group)->get()->keyBy('key');
+        return Cache::store('api')->flexible('settings.grouped', [3600, 7200], function () {
+            return $this->all()
+                ->groupBy('group')
+                ->mapWithKeys(fn ($settings, string $group) => [
+                    $group => $settings->mapWithKeys(function (Setting $setting) {
+                        $value = $setting->value;
+
+                        if (in_array($setting->type, ['boolean', 'bool'], true)) {
+                            $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+                        }
+
+                        return [$setting->key => $value];
+                    })->all(),
+                ])
+                ->all();
         });
     }
 }

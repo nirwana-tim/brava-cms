@@ -32,6 +32,7 @@ class PromoService
 
         return Cache::store('api')->flexible('promos.list.'.md5(serialize($filters).'_'.$excludeId).'.p'.request()->integer('page', 1), [900, 1800], function () use ($filters, $perPage, $excludeId) {
             return Promo::active()
+                ->where(fn ($q) => $q->whereNull('valid_until')->orWhere('valid_until', '>=', now()))
                 ->when($excludeId, fn ($q) => $q->where('id', '!=', $excludeId))
                 ->when(! empty($filters['search']), function ($query) use ($filters) {
                     $search = $filters['search'];
@@ -42,14 +43,18 @@ class PromoService
                     });
                 })
                 ->latest()
-                ->paginate($perPage);
+                ->paginate($perPage)
+                ->withQueryString();
         });
     }
 
     public function getBySlug(string $slug): ?Promo
     {
         return Cache::store('api')->flexible("promos.slug.{$slug}", [1800, 3600], function () use ($slug) {
-            return Promo::active()->where('slug', $slug)->first();
+            return Promo::active()
+                ->where(fn ($q) => $q->whereNull('valid_until')->orWhere('valid_until', '>=', now()))
+                ->where('slug', $slug)
+                ->first();
         });
     }
 

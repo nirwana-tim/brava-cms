@@ -79,7 +79,7 @@ class PortfolioController extends Controller
             DB::transaction(function () use ($portfolio, $ids) {
                 Media::query()
                     ->whereIn('id', $ids)
-                    ->where(fn ($q) => $q->whereNull('mediable_id')->orWhere('mediable_type', PortfolioItem::class))
+                    ->whereNull('mediable_id')
                     ->update([
                         'mediable_type' => PortfolioItem::class,
                         'mediable_id' => $portfolio->id,

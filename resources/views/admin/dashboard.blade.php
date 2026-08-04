@@ -29,6 +29,7 @@
         </div>
     </div>
 
+    @if ($canViewAnalytics)
     {{-- Analytics Section --}}
     <div class="mb-6">
         <div class="flex flex-wrap items-center justify-between gap-3 mb-1">
@@ -233,6 +234,7 @@
             </div>
         </div>
     </div>
+    @endif
 
     @push('scripts')
     <script>

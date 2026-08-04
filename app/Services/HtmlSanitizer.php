@@ -93,32 +93,29 @@ class HtmlSanitizer
             $name = strtolower($attribute->nodeName);
             $value = $attribute->nodeValue;
 
-            if ($name === 'style') {
-                $hasUnsafeStyle = (bool) preg_match(
-                    '/expression\s*\(|javascript\s*:|vbscript\s*:|@import|position\s*:\s*fixed|z-index|url\s*\(\s*["\']?\s*(?:https?:)?\/\//i',
-                    $value
-                );
-
-                if ($hasUnsafeStyle) {
-                    $element->removeAttribute($name);
-                }
-
-                continue;
-            }
-
             if (! in_array($name, $allowed, true)) {
                 $element->removeAttribute($name);
 
                 continue;
             }
 
-            if (in_array($name, ['href', 'src'], true)) {
-                $scheme = strtolower((string) parse_url((string) $value, PHP_URL_SCHEME));
-
-                if (in_array($scheme, ['javascript', 'vbscript', 'data'], true)) {
-                    $element->removeAttribute($name);
-                }
+            if (in_array($name, ['href', 'src'], true) && ! $this->isSafeUrl($name, $value)) {
+                $element->removeAttribute($name);
             }
         }
+    }
+
+    private function isSafeUrl(string $attribute, string $value): bool
+    {
+        $decoded = rawurldecode(str_replace(["\0", "\r", "\n", "\t", ' '], '', (string) $value));
+        $scheme = strtolower((string) parse_url($decoded, PHP_URL_SCHEME));
+
+        if ($scheme === '') {
+            return true;
+        }
+
+        $allowed = $attribute === 'src' ? ['http', 'https'] : ['http', 'https', 'mailto', 'tel'];
+
+        return in_array($scheme, $allowed, true);
     }
 }

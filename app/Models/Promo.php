@@ -45,7 +45,7 @@ class Promo extends Model
     protected static function booted(): void
     {
         static::saving(function (Promo $promo) {
-            if ($promo->is_highlighted && (! $promo->is_active || ($promo->valid_until && $promo->valid_until->isPast()))) {
+            if ($promo->isDirty('is_highlighted') && $promo->is_highlighted && (! $promo->is_active || ($promo->valid_until && $promo->valid_until->isPast()))) {
                 throw new \InvalidArgumentException('Promo yang non-aktif atau sudah kedaluwarsa tidak dapat dijadikan Highlight.');
             }
         });

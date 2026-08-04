@@ -80,7 +80,7 @@ test('api highlight endpoint falls back to regular running promo if highlighted 
         ->assertJsonPath('data.title', 'Active Regular Promo');
 });
 
-test('api list endpoint excludes highlighted and inactive, but includes expired', function () {
+test('api list endpoint excludes highlighted, inactive, and expired', function () {
     $highlight = Promo::factory()->highlighted()->create(['title' => 'Highlight Promo']);
     $regular1 = Promo::factory()->create(['title' => 'Regular Active 1', 'is_highlighted' => false]);
     $regular2 = Promo::factory()->create(['title' => 'Regular Active 2', 'is_highlighted' => false]);
@@ -92,8 +92,8 @@ test('api list endpoint excludes highlighted and inactive, but includes expired'
     $response->assertStatus(200);
     $titles = collect($response->json('data'))->pluck('title')->toArray();
 
-    expect($titles)->toContain('Regular Active 1', 'Regular Active 2', 'Expired Promo');
-    expect($titles)->not->toContain('Highlight Promo', 'Inactive Promo');
+    expect($titles)->toContain('Regular Active 1', 'Regular Active 2');
+    expect($titles)->not->toContain('Highlight Promo', 'Inactive Promo', 'Expired Promo');
 });
 
 test('api list endpoint returns state field and coming soon promo', function () {
@@ -108,8 +108,8 @@ test('api list endpoint returns state field and coming soon promo', function () 
     $data = collect($response->json('data'));
     $titles = $data->pluck('title')->toArray();
 
-    expect($titles)->not->toContain('Hero Bg');
-    expect($titles)->toContain('Active Promo', 'Coming Promo', 'Expired Promo');
+    expect($titles)->toContain('Active Promo', 'Coming Promo');
+    expect($titles)->not->toContain('Hero Bg', 'Expired Promo');
 
     $activeItem = $data->firstWhere('title', 'Active Promo');
     expect($activeItem['state'])->toBe('active');
@@ -118,10 +118,6 @@ test('api list endpoint returns state field and coming soon promo', function () 
     $comingItem = $data->firstWhere('title', 'Coming Promo');
     expect($comingItem['state'])->toBe('coming_soon');
     expect($comingItem['is_coming_soon'])->toBeTrue();
-
-    $expiredItem = $data->firstWhere('title', 'Expired Promo');
-    expect($expiredItem['state'])->toBe('expired');
-    expect($expiredItem['is_coming_soon'])->toBeFalse();
 });
 
 test('is_coming_soon accessor returns true when valid_from is in future', function () {

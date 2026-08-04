@@ -10,13 +10,6 @@ class CategoryService
 {
     public function __construct(private readonly Category $model) {}
 
-    public function all(): Collection
-    {
-        return Cache::store('api')->flexible('categories.all', [3600, 7200], function () {
-            return $this->model->latest()->get();
-        });
-    }
-
     public function getByType(string $type): Collection
     {
         return Cache::store('api')->flexible('categories.type.'.$type, [3600, 7200], function () use ($type) {

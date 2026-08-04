@@ -11,6 +11,7 @@ use App\Services\MediaUsageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class MediaController extends Controller
@@ -75,16 +76,22 @@ class MediaController extends Controller
             return back()->withErrors(['file' => $e->getMessage()])->withInput();
         }
 
-        Media::create([
-            'name' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
-            'file_name' => $file->getClientOriginalName(),
-            'mime_type' => $file->getMimeType(),
-            'size' => $file->getSize(),
-            'disk' => 'public',
-            'path' => $path,
-            'alt_text' => $request->alt_text,
-            'collection' => $request->collection,
-        ]);
+        try {
+            Media::create([
+                'name' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
+                'file_name' => $file->getClientOriginalName(),
+                'mime_type' => $file->getMimeType(),
+                'size' => $file->getSize(),
+                'disk' => 'public',
+                'path' => $path,
+                'alt_text' => $request->alt_text,
+                'collection' => $request->collection,
+            ]);
+        } catch (\Throwable $e) {
+            Storage::disk('public')->delete($path);
+
+            throw $e;
+        }
 
         return redirect()->route('admin.media.index')
             ->with('success', 'Media uploaded successfully.');
@@ -105,16 +112,22 @@ class MediaController extends Controller
 
             $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
 
-            $media = Media::create([
-                'name' => $name,
-                'file_name' => $file->getClientOriginalName(),
-                'mime_type' => $file->getMimeType(),
-                'size' => $file->getSize(),
-                'disk' => 'public',
-                'path' => $path,
-                'alt_text' => str_replace(['-', '_'], ' ', $name),
-                'collection' => $request->collection,
-            ]);
+            try {
+                $media = Media::create([
+                    'name' => $name,
+                    'file_name' => $file->getClientOriginalName(),
+                    'mime_type' => $file->getMimeType(),
+                    'size' => $file->getSize(),
+                    'disk' => 'public',
+                    'path' => $path,
+                    'alt_text' => str_replace(['-', '_'], ' ', $name),
+                    'collection' => $request->collection,
+                ]);
+            } catch (\Throwable $e) {
+                Storage::disk('public')->delete($path);
+
+                throw $e;
+            }
 
             return response()->json([
                 'id' => $media->id,

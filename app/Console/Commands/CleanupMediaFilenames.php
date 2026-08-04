@@ -6,6 +6,7 @@ use App\Models\Media;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -34,6 +35,10 @@ class CleanupMediaFilenames extends Command
         if ($removeOrphans) {
             $this->line('');
             $this->removeOrphans($dryRun);
+        }
+
+        if (! $dryRun) {
+            Cache::store('api')->flush();
         }
 
         return self::SUCCESS;
