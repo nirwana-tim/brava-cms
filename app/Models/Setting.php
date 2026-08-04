@@ -97,15 +97,15 @@ class Setting extends Model
     ];
 
     private const HINTS = [
-        'google_analytics_id' => '⚠️ Kritis (SuperAdmin): Mengubah ID ini akan mengganti tujuan pelacakan data pengunjung di Google Analytics 4. Pastikan format diawali huruf G- (contoh: G-XXXXXXXXXX) agar tracking script di frontend Next.js tetap aktif.',
-        'default_meta_title' => 'ℹ️ SEO Impact (SuperAdmin): Digunakan sebagai judul standar (root title) di mesin pencari Google dan OpenGraph sosial media saat halaman tidak memiliki meta title khusus.',
-        'default_meta_description' => 'ℹ️ SEO Impact (SuperAdmin): Digunakan sebagai deskripsi standar (root description) pada hasil pencarian Google. Usahakan 150–160 karakter agar tidak terpotong.',
-        'site_name' => '⚠️ System Branding: Nama utama sistem yang tampil di title bar browser dan header API frontend Next.js.',
-        'site_description' => 'ℹ️ Brand Bio & SEO (SuperAdmin): Deskripsi utama brand yang digunakan pada struktur Schema.org JSON-LD dan metadata deskripsi default global.',
-        'adsense_enabled' => '⚠️ Revenue (SuperAdmin): Aktifkan untuk menampilkan iklan AdSense di frontend. Iklan hanya tampil jika Publisher ID (ca-pub-...) juga terisi.',
-        'adsense_client_id' => '⚠️ Revenue (SuperAdmin): Publisher ID dari dashboard AdSense, format diawali huruf ca-pub- (contoh: ca-pub-XXXXXXXXXXXXXXXX). Dipakai loader script di frontend Next.js.',
-        'adsense_slot_1' => 'ℹ️ AdSlot pertama (posisi bebas, contoh: atas blog). Isi Slot ID dari halaman ad unit AdSense. Tiap ad unit wajib punya slot ID berbeda agar tidak dianggap duplikat.',
-        'adsense_slot_2' => 'ℹ️ AdSlot kedua (posisi bebas, contoh: sidebar blog). Isi Slot ID dari ad unit kedua AdSense, harus berbeda dari AdSlot 1.',
+        'google_analytics_id' => 'ID properti Google Analytics 4 (format: G-XXXXXXXXXX). Mengubah nilai ini mengganti tujuan pelacakan pengunjung di frontend.',
+        'default_meta_title' => 'Judul standar (root title) untuk Google dan OpenGraph saat halaman tidak memiliki meta title khusus.',
+        'default_meta_description' => 'Deskripsi standar (root description) untuk hasil pencarian Google. Usahakan 150–160 karakter.',
+        'site_name' => 'Nama utama yang tampil di title bar browser dan header API frontend.',
+        'site_description' => 'Deskripsi utama brand untuk Schema.org JSON-LD dan metadata deskripsi global.',
+        'adsense_enabled' => 'Aktifkan untuk menampilkan iklan AdSense di frontend. Iklan hanya tampil jika Publisher ID terisi.',
+        'adsense_client_id' => 'Publisher ID AdSense (format: ca-pub-XXXXXXXXXXXXXXXX). Dipakai loader script di frontend.',
+        'adsense_slot_1' => 'Slot ID ad unit pertama (mis. atas blog). Tiap ad unit wajib punya slot ID berbeda.',
+        'adsense_slot_2' => 'Slot ID ad unit kedua (mis. sidebar blog). Harus berbeda dari slot pertama.',
         'phone' => 'Nomor telepon yang ditampilkan di website. Format: +62 812 3456 7890.',
         'whatsapp_number' => 'Nomor WhatsApp untuk tombol chat. Format: 6281234567890 (tanpa + dan spasi).',
     ];

@@ -49,8 +49,8 @@ test('superadmin can see all settings including seo and sees impact notes', func
     $response->assertStatus(200);
     $response->assertSee('site_name');
     $response->assertSee('G-ORIGINAL123');
-    $response->assertSee('⚠️ Kritis (SuperAdmin)');
-    $response->assertSee('⚠️ System Branding');
+    $response->assertSee('ID properti Google Analytics 4');
+    $response->assertSee('Nama utama yang tampil di title bar browser');
 });
 
 test('normal admin cannot modify seo or general settings via put request', function () {

@@ -16,7 +16,7 @@
 
 <details class="mt-4 border rounded-lg p-4" style="border-color: var(--table-border)">
     <summary class="text-sm font-semibold cursor-pointer select-none" style="color: var(--heading-text)">
-        ⚙️ SEO & OpenGraph Settings (ID / EN)
+        SEO & OpenGraph Settings (ID / EN)
     </summary>
     <div class="mt-4 space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -31,6 +31,7 @@
                 <x-input-error class="mt-2" :messages="$errors->get('meta_title.en')" />
             </div>
         </div>
+        <p class="form-hint mt-1">Optimal 50–60 karakter untuk Google Search. Otomatis menjadi judul share WhatsApp/sosmed (OG Title) dan mengikuti judul utama jika dikosongkan.</p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -44,6 +45,7 @@
                 <x-input-error class="mt-2" :messages="$errors->get('meta_description.en')" />
             </div>
         </div>
+        <p class="form-hint mt-1">Optimal 150–160 karakter (termasuk spasi). Otomatis menjadi deskripsi share WhatsApp/sosmed (OG Description) dan mengikuti ringkasan artikel jika dikosongkan.</p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -57,6 +59,7 @@
                 <x-input-error class="mt-2" :messages="$errors->get('meta_keywords.en')" />
             </div>
         </div>
+        <p class="form-hint mt-1">Daftar 3–5 kata/frasa kunci relevan, dipisahkan koma.</p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t" style="border-color: var(--table-border)">
             <div>
@@ -79,6 +82,7 @@
                 <x-input-error class="mt-2" :messages="$errors->get('schema_type')" />
             </div>
         </div>
+        <p class="form-hint mt-1">Optimal rasio 1.91:1 (1200x630 px) untuk banner sosmed. Otomatis mengikuti gambar utama jika dikosongkan.</p>
 
         @if ($showOgImageAlt)
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

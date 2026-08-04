@@ -9,17 +9,17 @@
         }
     }" class="space-y-6">
     <div class="flex items-center gap-2 border-b pb-2 mb-6" style="border-color: var(--table-border)">
-        <button type="button" 
-                @click="setTab('id')" 
-                :class="langTab === 'id' ? 'bg-blue-600 text-white font-semibold shadow' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200'" 
+        <button type="button"
+                @click="setTab('id')"
+                :style="langTab === 'id' ? 'background-color: var(--btn-primary-bg); color: var(--btn-primary-text); font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.2);' : 'background-color: var(--btn-secondary-bg); color: var(--btn-secondary-text); border: 1px solid var(--btn-secondary-border);'"
                 class="px-4 py-2 text-sm rounded-lg transition flex items-center gap-2 cursor-pointer">
-            <span class="text-base">🇮🇩</span> Bahasa Indonesia (Default)
+            Bahasa Indonesia (Default)
         </button>
-        <button type="button" 
-                @click="setTab('en')" 
-                :class="langTab === 'en' ? 'bg-blue-600 text-white font-semibold shadow' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200'" 
+        <button type="button"
+                @click="setTab('en')"
+                :style="langTab === 'en' ? 'background-color: var(--btn-primary-bg); color: var(--btn-primary-text); font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.2);' : 'background-color: var(--btn-secondary-bg); color: var(--btn-secondary-text); border: 1px solid var(--btn-secondary-border);'"
                 class="px-4 py-2 text-sm rounded-lg transition flex items-center gap-2 cursor-pointer">
-            <span class="text-base">🇬🇧</span> English (Inggris)
+            English (Inggris)
         </button>
     </div>
 
