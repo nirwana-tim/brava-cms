@@ -18,40 +18,106 @@
                     </div>
                 @endif
 
-                <div class="space-y-6">
-                    <div>
-                        <x-input-label for="title" :value="__('Promo Title')" :required="true" />
-                        <x-text-input id="title" name="title" type="text" class="mt-1 block w-full" :value="old('title')" required placeholder="e.g. 40% Diskon Untuk Pemesanan Seragam Perusahaan" />
-                        <x-input-error class="mt-2" :messages="$errors->get('title')" />
+                <x-admin.language-tabs>
+                    <!-- ID Tab -->
+                    <div x-show="langTab === 'id'" class="space-y-6">
+                        <div>
+                            <x-input-label for="title_id" :value="__('Promo Title (ID)')" :required="true" />
+                            <x-text-input id="title_id" name="title[id]" type="text" class="mt-1 block w-full" :value="old('title.id')" required placeholder="e.g. 40% Diskon Untuk Pemesanan Seragam" />
+                            <x-input-error class="mt-2" :messages="$errors->get('title.id')" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="slug_id" :value="__('Slug (ID)')" :required="true" />
+                            <x-text-input id="slug_id" name="slug[id]" type="text" class="mt-1 block w-full" :value="old('slug.id')" required placeholder="e.g. 40-diskon-seragam" />
+                            <x-input-error class="mt-2" :messages="$errors->get('slug.id')" />
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <x-input-label for="badge_text_id" :value="__('Badge Text (ID)')" />
+                                <x-text-input id="badge_text_id" name="badge_text[id]" type="text" class="mt-1 block w-full" :value="old('badge_text.id')" placeholder="e.g. PROMO TERBATAS" />
+                                <x-input-error class="mt-2" :messages="$errors->get('badge_text.id')" />
+                            </div>
+
+                            <div>
+                                <x-input-label for="discount_info_id" :value="__('Discount Info (ID)')" />
+                                <x-text-input id="discount_info_id" name="discount_info[id]" type="text" class="mt-1 block w-full" :value="old('discount_info.id')" placeholder="e.g. 40% / Rp 500.000" />
+                                <x-input-error class="mt-2" :messages="$errors->get('discount_info.id')" />
+                            </div>
+                        </div>
+
+                        <div>
+                            <x-input-label for="description_id" :value="__('Description (ID)')" />
+                            <textarea id="description_id" name="description[id]" class="form-textarea mt-1 w-full" rows="4" placeholder="Keterangan promo...">{{ old('description.id') }}</textarea>
+                            <x-input-error class="mt-2" :messages="$errors->get('description.id')" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="cta_text_id" :value="__('CTA Button Text (ID)')" />
+                            <x-text-input id="cta_text_id" name="cta_text[id]" type="text" class="mt-1 block w-full" :value="old('cta_text.id', 'Klaim Promo')" />
+                            <x-input-error class="mt-2" :messages="$errors->get('cta_text.id')" />
+                        </div>
                     </div>
 
-                    <div>
-                        <x-input-label for="slug" :value="__('Slug')" :required="true" />
-                        <x-text-input id="slug" name="slug" type="text" class="mt-1 block w-full" :value="old('slug')" required placeholder="e.g. 40-diskon-untuk-pemesanan-seragam-perusahaan" />
-                        <x-input-error class="mt-2" :messages="$errors->get('slug')" />
-                    </div>
+                    <!-- EN Tab -->
+                    <div x-show="langTab === 'en'" class="space-y-6">
+                        <div>
+                            <x-input-label for="title_en" :value="__('Promo Title (EN - English)')" />
+                            <x-text-input id="title_en" name="title[en]" type="text" class="mt-1 block w-full" :value="old('title.en')" placeholder="Leave blank to fallback to Indonesian" />
+                            <x-input-error class="mt-2" :messages="$errors->get('title.en')" />
+                        </div>
 
+                        <div>
+                            <x-input-label for="slug_en" :value="__('Slug (EN - English)')" />
+                            <x-text-input id="slug_en" name="slug[en]" type="text" class="mt-1 block w-full" :value="old('slug.en')" placeholder="e.g. 40-percent-discount-uniforms" />
+                            <x-input-error class="mt-2" :messages="$errors->get('slug.en')" />
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <x-input-label for="badge_text_en" :value="__('Badge Text (EN - English)')" />
+                                <x-text-input id="badge_text_en" name="badge_text[en]" type="text" class="mt-1 block w-full" :value="old('badge_text.en')" placeholder="e.g. LIMITED OFFER" />
+                                <x-input-error class="mt-2" :messages="$errors->get('badge_text.en')" />
+                            </div>
+
+                            <div>
+                                <x-input-label for="discount_info_en" :value="__('Discount Info (EN - English)')" />
+                                <x-text-input id="discount_info_en" name="discount_info[en]" type="text" class="mt-1 block w-full" :value="old('discount_info.en')" placeholder="e.g. 40% OFF" />
+                                <x-input-error class="mt-2" :messages="$errors->get('discount_info.en')" />
+                            </div>
+                        </div>
+
+                        <div>
+                            <x-input-label for="description_en" :value="__('Description (EN - English)')" />
+                            <textarea id="description_en" name="description[en]" class="form-textarea mt-1 w-full" rows="4" placeholder="Promo details...">{{ old('description.en') }}</textarea>
+                            <x-input-error class="mt-2" :messages="$errors->get('description.en')" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="cta_text_en" :value="__('CTA Button Text (EN - English)')" />
+                            <x-text-input id="cta_text_en" name="cta_text[en]" type="text" class="mt-1 block w-full" :value="old('cta_text.en', 'Claim Promo')" />
+                            <x-input-error class="mt-2" :messages="$errors->get('cta_text.en')" />
+                        </div>
+                    </div>
+                </x-admin.language-tabs>
+
+                <div class="mt-6 space-y-6 border-t pt-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <x-input-label for="badge_text" :value="__('Badge Text')" />
-                            <x-text-input id="badge_text" name="badge_text" type="text" class="mt-1 block w-full" :value="old('badge_text')" placeholder="e.g. PROMO TERBATAS" />
-                            <x-input-error class="mt-2" :messages="$errors->get('badge_text')" />
+                            <x-input-label for="code" :value="__('Promo / Voucher Code')" />
+                            <x-text-input id="code" name="code" type="text" class="mt-1 block w-full uppercase" :value="old('code')" placeholder="e.g. SERAGAM40" />
+                            <x-input-error class="mt-2" :messages="$errors->get('code')" />
                         </div>
 
                         <div>
-                            <x-input-label for="discount_info" :value="__('Discount Info')" />
-                            <x-text-input id="discount_info" name="discount_info" type="text" class="mt-1 block w-full" :value="old('discount_info')" placeholder="e.g. 40% / Rp 500.000" />
-                            <x-input-error class="mt-2" :messages="$errors->get('discount_info')" />
+                            <x-input-label for="cta_url" :value="__('CTA Link URL')" />
+                            <x-text-input id="cta_url" name="cta_url" type="text" class="mt-1 block w-full" :value="old('cta_url')" placeholder="e.g. https://wa.me/628123456789" />
+                            <x-input-error class="mt-2" :messages="$errors->get('cta_url')" />
                         </div>
                     </div>
 
-                    <div>
-                        <x-input-label for="description" :value="__('Description')" />
-                        <textarea id="description" name="description" class="form-textarea mt-1 w-full" rows="4" placeholder="Keterangan dan syarat ketentuan promo...">{{ old('description') }}</textarea>
-                        <x-input-error class="mt-2" :messages="$errors->get('description')" />
-                    </div>
-
-                    <div x-data="{ image: @js(old('image')), imageAlt: @js(old('image_alt')) }">
+                    <div x-data="{ image: @js(old('image')), imageAlt: @js(old('image_alt.id')) }">
                         <x-input-label for="image" :value="__('Banner Image')" />
                         <input type="hidden" name="image" id="image" value="{{ old('image') }}" />
                         <template x-if="image">
@@ -60,72 +126,48 @@
                             </div>
                         </template>
                         <x-admin.media-picker target="image" collection="promos" />
-                        <x-admin.alt-input field="image_alt" :value="old('image_alt')" />
+                        <x-admin.alt-input field="image_alt[id]" :value="old('image_alt.id')" label="Banner Image Alt Text (ID)" />
                         <x-input-error class="mt-2" :messages="$errors->get('image')" />
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <x-input-label for="valid_from" :value="__('Valid From')" />
-                            <x-text-input id="valid_from" name="valid_from" type="datetime-local" class="mt-1 block w-full" :value="old('valid_from')" />
-                            <p class="mt-1 text-xs" style="color: var(--muted-text)">Kosongkan jika promo langsung berlaku. Jika diisi, promo tampil sebagai "Coming Soon" sampai tanggal ini — pengunjung bisa lihat tapi belum bisa klaim.</p>
-                            <x-input-error class="mt-2" :messages="$errors->get('valid_from')" />
+                            <x-input-label for="starts_at" :value="__('Start Date')" />
+                            <x-text-input id="starts_at" name="starts_at" type="datetime-local" class="mt-1 block w-full" :value="old('starts_at')" />
+                            <x-input-error class="mt-2" :messages="$errors->get('starts_at')" />
                         </div>
 
                         <div>
-                            <x-input-label for="valid_until" :value="__('Valid Until')" />
-                            <x-text-input id="valid_until" name="valid_until" type="datetime-local" class="mt-1 block w-full" :value="old('valid_until')" />
-                            <p class="mt-1 text-xs" style="color: var(--muted-text)">Kosongkan jika tidak ada batas waktu. Promo yang sudah lewat tanggal ini tetap tampil sebagai "Expired" — hilangkan centang Active untuk menyembunyikannya.</p>
-                            <x-input-error class="mt-2" :messages="$errors->get('valid_until')" />
+                            <x-input-label for="ends_at" :value="__('End Date')" />
+                            <x-text-input id="ends_at" name="ends_at" type="datetime-local" class="mt-1 block w-full" :value="old('ends_at')" />
+                            <x-input-error class="mt-2" :messages="$errors->get('ends_at')" />
                         </div>
                     </div>
 
-                    <div>
-                        <x-input-label for="wa_template" :value="__('WhatsApp Message Template')" />
-                        <textarea id="wa_template" name="wa_template" class="form-textarea mt-1 w-full" rows="2" placeholder="Halo Brava, saya ingin klaim Diskon 40% Pemesanan Seragam...">{{ old('wa_template') }}</textarea>
-                        <p class="mt-1 text-xs" style="color: var(--muted-text)">Pesan otomatis yang akan dikirim saat pengunjung mengklik tombol 'Klaim Sekarang' di Modal atau Hero Banner.</p>
-                        <x-input-error class="mt-2" :messages="$errors->get('wa_template')" />
+                    <div class="flex items-center gap-6">
+                        <x-admin.toggle name="is_active" :checked="old('is_active', true)" label="Active" />
+                        <x-admin.toggle name="is_featured" :checked="old('is_featured', false)" label="Featured on Homepage" />
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t" style="border-color: var(--card-border)">
-                        <div>
-                            <x-admin.toggle name="is_highlighted" :checked="old('is_highlighted')" label="Highlight as Hero Banner" />
-                            <p class="text-xs mt-1 text-amber-600">Hanya ada 1 promo Highlight. Jika dicentang, promo highlight lain otomatis turun menjadi reguler.</p>
-                        </div>
-
-                        <div>
-                            <x-admin.toggle name="is_active" :checked="old('is_active', true)" label="Active" />
-                            <p class="text-xs mt-1" style="color: var(--muted-text)">Non-aktifkan untuk menyembunyikan promo sepenuhnya dari website, termasuk yang sudah terlewat tanggalnya.</p>
-                        </div>
+                    <div class="border-t pt-6">
+                        <x-admin.seo-fields
+                            :metaTitle="old('meta_title.id')"
+                            :metaDescription="old('meta_description.id')"
+                            :metaKeywords="old('meta_keywords.id')"
+                            :ogImage="old('og_image')"
+                            :ogImageAlt="old('og_image_alt.id')"
+                            :robotsIndex="old('robots_index', true)"
+                            :robotsFollow="old('robots_follow', true)"
+                            :schemaType="old('schema_type', 'Offer')"
+                        />
                     </div>
+                </div>
 
-                    <details class="mt-4 pt-4 border-t" style="border-color: var(--card-border)">
-                        <summary class="text-sm font-medium cursor-pointer" style="color: var(--label-text)">{{ __('SEO Settings') }}</summary>
-                        <div class="mt-4 space-y-4">
-                            <div>
-                                <x-input-label for="meta_title" :value="__('Meta Title')" />
-                                <x-text-input id="meta_title" name="meta_title" type="text" class="mt-1 block w-full" :value="old('meta_title')" placeholder="e.g. Promo Diskon 40% Seragam Kantor | Brava" />
-                                <p class="form-hint">Optimal 50–60 karakter untuk Google Search. Otomatis mengikuti Judul Promo jika dikosongkan.</p>
-                            </div>
-                            <div>
-                                <x-input-label for="meta_description" :value="__('Meta Description')" />
-                                <textarea id="meta_description" name="meta_description" class="form-textarea mt-1 w-full" rows="3">{{ old('meta_description') }}</textarea>
-                                <p class="form-hint">Optimal 150–160 karakter (termasuk spasi). Otomatis mengikuti deskripsi promo jika dikosongkan.</p>
-                            </div>
-                            <div>
-                                <x-input-label for="meta_keywords" :value="__('Meta Keywords')" />
-                                <x-text-input id="meta_keywords" name="meta_keywords" type="text" class="mt-1 block w-full" :value="old('meta_keywords')" placeholder="e.g. promo seragam, diskon konveksi, baju kantor murah" />
-                                <p class="form-hint">Daftar 3–5 kata/frasa kunci relevan dipisahkan koma untuk pelabelan topik internal & referensi AI.</p>
-                            </div>
-                        </div>
-                    </details>
-
-                    <div class="flex items-center gap-4 pt-4">
-                        <x-primary-button>{{ __('Create Promo') }}</x-primary-button>
-                        <a href="{{ route('admin.promos.index') }}">
-                            <x-secondary-button type="button">{{ __('Cancel') }}</x-secondary-button>
-                        </a>
-                    </div>
+                <div class="mt-6 flex items-center gap-4">
+                    <x-primary-button>{{ __('Save Promo') }}</x-primary-button>
+                    <a href="{{ route('admin.promos.index') }}">
+                        <x-secondary-button type="button">{{ __('Cancel') }}</x-secondary-button>
+                    </a>
                 </div>
             </form>
         </div>
@@ -134,15 +176,26 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const title = document.getElementById('title');
-        const slug = document.getElementById('slug');
-        if (!title || !slug) return;
-        let slugEdited = false;
-        slug.addEventListener('input', function () { if (this.value) slugEdited = true; });
-        title.addEventListener('input', function () {
-            if (slugEdited) return;
-            slug.value = this.value.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-        });
+        const titleId = document.getElementById('title_id');
+        const slugId = document.getElementById('slug_id');
+        if (titleId && slugId) {
+            let slugEdited = false;
+            slugId.addEventListener('input', function () { if (this.value) slugEdited = true; });
+            titleId.addEventListener('input', function () {
+                if (slugEdited) return;
+                slugId.value = this.value.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+            });
+        }
+        const titleEn = document.getElementById('title_en');
+        const slugEn = document.getElementById('slug_en');
+        if (titleEn && slugEn) {
+            let slugEditedEn = false;
+            slugEn.addEventListener('input', function () { if (this.value) slugEditedEn = true; });
+            titleEn.addEventListener('input', function () {
+                if (slugEditedEn) return;
+                slugEn.value = this.value.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+            });
+        }
     });
 </script>
 @endpush

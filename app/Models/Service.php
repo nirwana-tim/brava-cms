@@ -9,11 +9,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Translatable\HasTranslations;
 
 class Service extends Model
 {
     /** @use HasFactory<ServiceFactory> */
-    use ClearsApiCache, HasFactory, SoftDeletes;
+    use ClearsApiCache, HasFactory, HasTranslations, SoftDeletes;
+
+    public array $translatable = ['title', 'slug', 'description', 'photo_alt'];
 
     protected $fillable = [
         'title', 'slug', 'description', 'photo', 'photo_alt', 'sort_order',

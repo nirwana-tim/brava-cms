@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\PortfolioItem;
+use App\Models\Service;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
@@ -14,8 +15,10 @@ beforeEach(function () {
 
 test('portfolio admin can store specifications and features', function () {
     $user = User::factory()->create(['role' => 'admin']);
+    $service = Service::factory()->create();
 
     $response = $this->actingAs($user)->post('/admin/portfolio', [
+        'service_id' => $service->id,
         'title' => 'Seragam PDH',
         'slug' => 'seragam-pdh',
         'photo' => '/storage/portfolio/cover.jpg',
@@ -32,7 +35,7 @@ test('portfolio admin can store specifications and features', function () {
 
     $response->assertRedirect();
 
-    $portfolio = PortfolioItem::where('slug', 'seragam-pdh')->first();
+    $portfolio = PortfolioItem::where('slug->id', 'seragam-pdh')->orWhere('slug->en', 'seragam-pdh')->first();
 
     expect($portfolio)->not->toBeNull()
         ->and($portfolio->specifications)->toBe([
@@ -44,8 +47,10 @@ test('portfolio admin can store specifications and features', function () {
 
 test('portfolio specifications require key and value', function () {
     $user = User::factory()->create(['role' => 'admin']);
+    $service = Service::factory()->create();
 
     $response = $this->actingAs($user)->post('/admin/portfolio', [
+        'service_id' => $service->id,
         'title' => 'Invalid Specs',
         'slug' => 'invalid-specs',
         'photo' => '/storage/portfolio/cover.jpg',

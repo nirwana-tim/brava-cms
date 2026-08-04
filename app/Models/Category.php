@@ -8,11 +8,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Translatable\HasTranslations;
 
 class Category extends Model
 {
     /** @use HasFactory<CategoryFactory> */
-    use ClearsApiCache, HasFactory, SoftDeletes;
+    use ClearsApiCache, HasFactory, HasTranslations, SoftDeletes;
+
+    public array $translatable = ['name', 'slug', 'description'];
 
     protected $fillable = ['name', 'slug', 'type', 'description'];
 

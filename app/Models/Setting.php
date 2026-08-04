@@ -6,11 +6,14 @@ use App\Traits\ClearsApiCache;
 use Database\Factories\SettingFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Translatable\HasTranslations;
 
 class Setting extends Model
 {
     /** @use HasFactory<SettingFactory> */
-    use ClearsApiCache, HasFactory;
+    use ClearsApiCache, HasFactory, HasTranslations;
+
+    public array $translatable = ['value'];
 
     protected $fillable = ['key', 'value', 'group', 'type'];
 

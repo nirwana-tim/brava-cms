@@ -16,6 +16,10 @@ class ServiceListResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
+            'slugs' => [
+                'id' => $this->getTranslation('slug', 'id', false),
+                'en' => $this->getTranslation('slug', 'en', false),
+            ],
             'description' => $this->description,
             'photo' => $this->photo ? url($this->photo) : null,
             'photo_alt' => $this->photo_alt ?: $this->mediaAlt($this->photo),

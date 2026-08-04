@@ -17,6 +17,10 @@ class BlogResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
+            'slugs' => [
+                'id' => $this->getTranslation('slug', 'id', false),
+                'en' => $this->getTranslation('slug', 'en', false),
+            ],
             'excerpt' => $this->excerpt,
             'content' => $this->content,
             'featured_image' => $this->featured_image ? url($this->featured_image) : null,

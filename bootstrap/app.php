@@ -3,6 +3,7 @@
 use App\Http\Middleware\CacheApiHeaders;
 use App\Http\Middleware\EnsureStaffOrAdmin;
 use App\Http\Middleware\NoRobots;
+use App\Http\Middleware\SetLocaleFromQuery;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -21,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->appendToGroup('web', NoRobots::class);
+        $middleware->appendToGroup('api', SetLocaleFromQuery::class);
         $middleware->appendToGroup('api', CacheApiHeaders::class);
         $middleware->alias(['staff_or_admin' => EnsureStaffOrAdmin::class]);
     })

@@ -25,6 +25,10 @@ class PromoResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
+            'slugs' => [
+                'id' => $this->getTranslation('slug', 'id', false),
+                'en' => $this->getTranslation('slug', 'en', false),
+            ],
             'badge_text' => $this->badge_text,
             'discount_info' => $this->discount_info,
             'description' => $this->description,

@@ -10,11 +10,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Validation\ValidationException;
+use Spatie\Translatable\HasTranslations;
 
 class TeamMember extends Model
 {
     /** @use HasFactory<TeamMemberFactory> */
-    use ClearsApiCache, HasFactory, SoftDeletes;
+    use ClearsApiCache, HasFactory, HasTranslations, SoftDeletes;
+
+    public array $translatable = ['name', 'position', 'bio'];
 
     protected $fillable = [
         'user_id', 'name', 'position', 'avatar', 'email', 'phone', 'bio',

@@ -80,6 +80,7 @@ test('clearing avatar on a team member clears the linked user avatar', function 
 
     $this->actingAs($superAdmin)->put(route('admin.team.update', $member), [
         'name' => $memberUser->name,
+        'position' => 'Staff',
         'email' => $memberUser->email,
         'avatar' => null,
         'is_active' => true,
@@ -104,6 +105,7 @@ test('updating a team member with a new avatar syncs it to the linked user', fun
 
     $this->actingAs($superAdmin)->put(route('admin.team.update', $member), [
         'name' => $memberUser->name,
+        'position' => 'Staff',
         'email' => $memberUser->email,
         'avatar' => '/storage/uploads/new-photo.jpg',
         'is_active' => true,
@@ -151,6 +153,7 @@ test('replacing a team member avatar deletes the old upload file', function () {
 
     $this->actingAs($superAdmin)->put(route('admin.team.update', $member), [
         'name' => $memberUser->name,
+        'position' => 'Staff',
         'email' => $memberUser->email,
         'avatar' => '/storage/uploads/new-photo.jpg',
         'is_active' => true,

@@ -1,6 +1,9 @@
 @props(['name' => 'content', 'value' => '', 'label' => 'Content', 'id' => null])
 
-@php $editorId = $id ?? $name; @endphp
+@php
+    $editorId = $id ?? \Illuminate\Support\Str::slug($name, '_');
+    $dotName = \Illuminate\Support\Str::replace(['[', ']'], ['.', ''], $name);
+@endphp
 
 <div>
     @if ($label)
@@ -11,8 +14,8 @@
         name="{{ $name }}"
         class="rich-editor mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
         rows="15"
-    >{{ old($name, $value) }}</textarea>
-    <x-input-error class="mt-2" :messages="$errors->get($name)" />
+    >{{ old($dotName, $value) }}</textarea>
+    <x-input-error class="mt-2" :messages="$errors->get($dotName)" />
 
     <div x-data="tinymceMediaHandler(@js($editorId))" x-cloak>
         <div x-show="showPicker"
@@ -108,7 +111,16 @@
 </div>
 
 @push('scripts')
+@once
 <script src="{{ asset('tinymce/tinymce.min.js') }}" referrerpolicy="origin"></script>
+<script>
+    document.addEventListener('submit', function (e) {
+        if (window.tinymce) {
+            window.tinymce.triggerSave();
+        }
+    });
+</script>
+@endonce
 <script>
 tinymce.init({
     selector: '#{{ $editorId }}',
@@ -132,7 +144,7 @@ tinymce.init({
         window.dispatchEvent(new CustomEvent('open-tinymce-picker-{{ $editorId }}'));
     },
     setup: function (editor) {
-        editor.on('change', function () {
+        editor.on('change keyup NodeChange blur', function () {
             editor.save();
         });
     },

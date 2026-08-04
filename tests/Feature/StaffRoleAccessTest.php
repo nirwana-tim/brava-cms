@@ -24,7 +24,7 @@ test('staff can create content', function () {
     ]);
 
     $response->assertRedirect(route('admin.blogs.index'));
-    $this->assertDatabaseHas('blogs', ['slug' => 'staff-post', 'author_id' => $staff->id]);
+    $this->assertDatabaseHas('blogs', ['slug->id' => 'staff-post', 'author_id' => $staff->id]);
 });
 
 test('staff cannot access team management', function () {
@@ -52,11 +52,11 @@ test('admin can create team member with staff role', function () {
 
     $response = $this->actingAs($admin)->post('/admin/team', [
         'name' => 'New Staff',
-        'email' => 'newstaff@brava.id',
-        'password' => 'password123',
-        'password_confirmation' => 'password123',
         'position' => 'Content Editor',
-        'role' => UserRole::Staff->value,
+        'email' => 'newstaff@brava.id',
+        'create_user_account' => '1',
+        'user_role' => UserRole::Staff->value,
+        'user_password' => 'password123',
     ]);
 
     $response->assertRedirect(route('admin.team.index'));
@@ -99,7 +99,8 @@ test('admin cannot change their own role to staff', function () {
 
     $response = $this->actingAs($admin)->put(route('admin.team.update', $team), [
         'name' => $admin->name,
-        'role' => UserRole::Staff->value,
+        'position' => 'Administrator',
+        'user_role' => UserRole::Staff->value,
     ]);
 
     $response->assertRedirect(route('admin.team.index'));

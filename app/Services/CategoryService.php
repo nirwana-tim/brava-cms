@@ -12,7 +12,9 @@ class CategoryService
 
     public function getByType(string $type): Collection
     {
-        return Cache::store('api')->flexible('categories.type.'.$type, [3600, 7200], function () use ($type) {
+        $locale = app()->getLocale();
+
+        return Cache::store('api')->flexible('categories.type.'.$locale.'.'.$type, [3600, 7200], function () use ($type) {
             return $this->model->byType($type)->latest()->get();
         });
     }

@@ -61,12 +61,12 @@ test('normal admin cannot modify seo or general settings via put request', funct
         'google_analytics_id' => 'G-HACKED999',
     ])->assertRedirect('/admin/settings');
 
-    expect(Setting::where('key', 'site_name')->value('value'))->toBe('Brava CMS');
-    expect(Setting::where('key', 'google_analytics_id')->value('value'))->toBe('G-ORIGINAL123');
+    expect(Setting::where('key', 'site_name')->first()->value)->toBe('Brava CMS');
+    expect(Setting::where('key', 'google_analytics_id')->first()->value)->toBe('G-ORIGINAL123');
 });
 
 test('normal admin cannot modify adsense settings via put request', function () {
-    Setting::where('key', 'adsense_slot_1')->update(['value' => 'ORIGINAL-SLOT']);
+    Setting::where('key', 'adsense_slot_1')->update(['value' => json_encode(['id' => 'ORIGINAL-SLOT', 'en' => null])]);
 
     $admin = User::factory()->create(['role' => UserRole::Admin]);
 
@@ -75,8 +75,8 @@ test('normal admin cannot modify adsense settings via put request', function () 
         'adsense_client_id' => 'ca-pub-HACKED',
     ])->assertRedirect('/admin/settings');
 
-    expect(Setting::where('key', 'adsense_slot_1')->value('value'))->toBe('ORIGINAL-SLOT');
-    expect(Setting::where('key', 'adsense_client_id')->value('value'))->toBe('');
+    expect(Setting::where('key', 'adsense_slot_1')->first()->value)->toBe('ORIGINAL-SLOT');
+    expect(Setting::where('key', 'adsense_client_id')->first()->value ?? '')->toBe('');
 });
 
 test('superadmin can update adsense settings via put request', function () {

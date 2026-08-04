@@ -10,7 +10,9 @@ class PromoService
 {
     public function getHighlighted(): ?Promo
     {
-        return Cache::store('api')->flexible('promos.highlight', [900, 1800], function () {
+        $locale = app()->getLocale();
+
+        return Cache::store('api')->flexible('promos.highlight.'.$locale, [900, 1800], function () {
             $highlight = Promo::currentlyRunning()->highlighted()->latest()->first();
 
             if (! $highlight) {
@@ -29,17 +31,21 @@ class PromoService
         $perPage = max(1, min((int) ($filters['per_page'] ?? 12), 100));
         $highlight = $this->getHighlighted();
         $excludeId = $highlight?->id;
+        $locale = app()->getLocale();
 
-        return Cache::store('api')->flexible('promos.list.'.md5(serialize($filters).'_'.$excludeId).'.p'.request()->integer('page', 1), [900, 1800], function () use ($filters, $perPage, $excludeId) {
+        return Cache::store('api')->flexible('promos.list.'.$locale.'.'.md5(serialize($filters).'_'.$excludeId).'.p'.request()->integer('page', 1), [900, 1800], function () use ($filters, $perPage, $excludeId, $locale) {
             return Promo::active()
                 ->where(fn ($q) => $q->whereNull('valid_until')->orWhere('valid_until', '>=', now()))
                 ->when($excludeId, fn ($q) => $q->where('id', '!=', $excludeId))
-                ->when(! empty($filters['search']), function ($query) use ($filters) {
+                ->when(! empty($filters['search']), function ($query) use ($filters, $locale) {
                     $search = $filters['search'];
-                    $query->where(function ($q) use ($search) {
-                        $q->where('title', 'like', "%{$search}%")
-                            ->orWhere('description', 'like', "%{$search}%")
-                            ->orWhere('badge_text', 'like', "%{$search}%");
+                    $query->where(function ($q) use ($search, $locale) {
+                        $q->where("title->{$locale}", 'like', "%{$search}%")
+                            ->orWhere('title->id', 'like', "%{$search}%")
+                            ->orWhere("description->{$locale}", 'like', "%{$search}%")
+                            ->orWhere('description->id', 'like', "%{$search}%")
+                            ->orWhere("badge_text->{$locale}", 'like', "%{$search}%")
+                            ->orWhere('badge_text->id', 'like', "%{$search}%");
                     });
                 })
                 ->latest()
@@ -50,10 +56,15 @@ class PromoService
 
     public function getBySlug(string $slug): ?Promo
     {
-        return Cache::store('api')->flexible("promos.slug.{$slug}", [1800, 3600], function () use ($slug) {
+        $locale = app()->getLocale();
+
+        return Cache::store('api')->flexible("promos.slug.{$locale}.{$slug}", [1800, 3600], function () use ($slug, $locale) {
             return Promo::active()
                 ->where(fn ($q) => $q->whereNull('valid_until')->orWhere('valid_until', '>=', now()))
-                ->where('slug', $slug)
+                ->where(function ($q) use ($slug, $locale) {
+                    $q->where("slug->{$locale}", $slug)
+                        ->orWhere('slug->id', $slug);
+                })
                 ->first();
         });
     }

@@ -8,11 +8,17 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Translatable\HasTranslations;
 
 class Promo extends Model
 {
     /** @use HasFactory<PromoFactory> */
-    use ClearsApiCache, HasFactory, SoftDeletes;
+    use ClearsApiCache, HasFactory, HasTranslations, SoftDeletes;
+
+    public array $translatable = [
+        'title', 'slug', 'badge_text', 'discount_info', 'description',
+        'image_alt', 'wa_template', 'meta_title', 'meta_description', 'meta_keywords',
+    ];
 
     public const DEFAULT_WA_NUMBER = '6281234567890';
 
@@ -107,7 +113,7 @@ class Promo extends Model
 
     public function buildWaUrl(?string $rawNumber = null): string
     {
-        $rawNumber ??= Setting::where('key', 'whatsapp_number')->value('value') ?? self::DEFAULT_WA_NUMBER;
+        $rawNumber ??= Setting::where('key', 'whatsapp_number')->first()?->value ?? self::DEFAULT_WA_NUMBER;
         $number = preg_replace('/[^0-9]/', '', (string) $rawNumber);
         if (str_starts_with($number, '0')) {
             $number = '62'.substr($number, 1);

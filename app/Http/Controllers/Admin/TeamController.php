@@ -58,8 +58,8 @@ class TeamController extends Controller
             $user = User::create([
                 'name' => $team->name,
                 'email' => $team->email,
-                'password' => Hash::make($request->password),
-                'role' => $request->enum('role', UserRole::class) ?? (auth()->user()->isSuperAdmin() ? UserRole::Admin : UserRole::Staff),
+                'password' => Hash::make($request->input('user_password') ?? $request->input('password') ?? 'password123'),
+                'role' => $request->enum('user_role', UserRole::class) ?? $request->enum('role', UserRole::class) ?? (auth()->user()->isSuperAdmin() ? UserRole::Admin : UserRole::Staff),
                 'position' => $team->position,
                 'avatar' => $team->avatar,
                 'email_verified_at' => now(),

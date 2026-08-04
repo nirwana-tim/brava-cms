@@ -13,6 +13,10 @@ class PortfolioListResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
+            'slugs' => [
+                'id' => $this->getTranslation('slug', 'id', false),
+                'en' => $this->getTranslation('slug', 'en', false),
+            ],
             'description' => $this->description,
             'client' => $this->client,
             'photo' => $this->photo ? url($this->photo) : null,

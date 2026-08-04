@@ -12,7 +12,9 @@ class SettingService
 
     public function all(): Collection
     {
-        return Cache::store('api')->flexible('settings.all', [3600, 7200], function () {
+        $locale = app()->getLocale();
+
+        return Cache::store('api')->flexible('settings.all.'.$locale, [3600, 7200], function () {
             return $this->model->get()->keyBy('key');
         });
     }
@@ -33,7 +35,9 @@ class SettingService
      */
     public function grouped(): array
     {
-        return Cache::store('api')->flexible('settings.grouped', [3600, 7200], function () {
+        $locale = app()->getLocale();
+
+        return Cache::store('api')->flexible('settings.grouped.'.$locale, [3600, 7200], function () {
             return $this->all()
                 ->groupBy('group')
                 ->mapWithKeys(fn ($settings, string $group) => [
@@ -58,7 +62,9 @@ class SettingService
      */
     public function publicGrouped(): array
     {
-        return Cache::store('api')->flexible('settings.public', [3600, 7200], function () {
+        $locale = app()->getLocale();
+
+        return Cache::store('api')->flexible('settings.public.'.$locale, [3600, 7200], function () {
             return collect($this->grouped())
                 ->only(self::PUBLIC_GROUPS)
                 ->all();

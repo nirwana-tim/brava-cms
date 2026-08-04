@@ -48,6 +48,14 @@ Base URL: `https://brava.id` for production, `http://localhost:3000` for local N
 
 > **Note:** Image fields (`featured_image`, `photo`, `og_image`, `avatar`, `url`, etc.) are returned as **absolute URLs** based on `APP_URL`. Canonical URLs are built from the `FRONTEND_URL` env variable.
 
+### Multilingual & Internationalization (i18n)
+
+All GET API endpoints accept an optional `?lang=en` or `?lang=id` query parameter (default: `id`).
+
+- **Query Param**: `?lang=en` or `?lang=id`
+- **Automatic Fallback**: If an English (`en`) field is null or empty, the API automatically falls back to Indonesian (`id`).
+- **Dual Slugs**: Resource responses include a `slugs` object `{"id": "slug-id", "en": "slug-en"}` so the frontend Next.js app can build localized URLs (`/id/blogs/slug-id` and `/en/blogs/slug-en`) and power language switchers.
+
 ### Validation Error
 
 ```json

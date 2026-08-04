@@ -5,6 +5,7 @@ use App\Enums\UserRole;
 use App\Models\Blog;
 use App\Models\PortfolioItem;
 use App\Models\Promo;
+use App\Models\Service;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
@@ -29,8 +30,10 @@ test('blog api featured filter returns only featured posts', function () {
 
 test('portfolio gallery limit rejects more than 4 media ids', function () {
     $admin = User::factory()->create(['role' => UserRole::SuperAdmin]);
+    $service = Service::factory()->create();
 
     $response = $this->actingAs($admin)->post('/admin/portfolio', [
+        'service_id' => $service->id,
         'title' => 'Proyek Audit',
         'slug' => 'proyek-audit',
         'photo' => '/storage/portfolio/cover.jpg',
@@ -38,13 +41,15 @@ test('portfolio gallery limit rejects more than 4 media ids', function () {
     ]);
 
     $response->assertSessionHasErrors('gallery_media_ids');
-    expect(PortfolioItem::where('slug', 'proyek-audit')->exists())->toBeFalse();
+    expect(PortfolioItem::where('slug->id', 'proyek-audit')->exists())->toBeFalse();
 });
 
 test('portfolio gallery accepts up to 4 media ids', function () {
     $admin = User::factory()->create(['role' => UserRole::SuperAdmin]);
+    $service = Service::factory()->create();
 
     $response = $this->actingAs($admin)->post('/admin/portfolio', [
+        'service_id' => $service->id,
         'title' => 'Proyek Valid',
         'slug' => 'proyek-valid',
         'photo' => '/storage/portfolio/cover.jpg',

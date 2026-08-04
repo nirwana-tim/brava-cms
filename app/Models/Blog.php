@@ -12,11 +12,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Translatable\HasTranslations;
 
 class Blog extends Model
 {
     /** @use HasFactory<BlogFactory> */
-    use ClearsApiCache, HasFactory, SoftDeletes;
+    use ClearsApiCache, HasFactory, HasTranslations, SoftDeletes;
+
+    public array $translatable = [
+        'title', 'slug', 'excerpt', 'content',
+        'meta_title', 'meta_description', 'meta_keywords',
+        'featured_image_alt', 'og_image_alt',
+    ];
 
     protected $fillable = [
         'author_id', 'title', 'slug', 'excerpt', 'content', 'featured_image',

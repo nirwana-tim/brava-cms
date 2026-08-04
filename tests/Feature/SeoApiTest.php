@@ -121,11 +121,11 @@ test('sitemap endpoint returns public content with valid locs', function () {
         ->and($urls->where('type', 'promo'))->toHaveCount(1)
         ->and($urls->where('type', 'service'))->toHaveCount(1)
         ->and($urls->where('type', 'category'))->toHaveCount(1)
-        ->and($urls->where('type', 'blog')->first()['loc'])->toBe(config('app.frontend_url').'/blogs/'.$blog->slug)
-        ->and($urls->where('type', 'portfolio')->first()['loc'])->toBe(config('app.frontend_url').'/portfolio/'.$portfolio->slug)
-        ->and($urls->where('type', 'promo')->first()['loc'])->toBe(config('app.frontend_url').'/promos/'.$promo->slug)
-        ->and($urls->where('type', 'service')->first()['loc'])->toBe(config('app.frontend_url').'/services/'.$service->slug)
-        ->and($urls->where('type', 'category')->first()['loc'])->toBe(config('app.frontend_url').'/blog?category=tech');
+        ->and($urls->where('type', 'blog')->first()['loc'])->toBe(config('app.frontend_url').'/id/blogs/'.$blog->slug)
+        ->and($urls->where('type', 'portfolio')->first()['loc'])->toBe(config('app.frontend_url').'/id/portfolio/'.$portfolio->slug)
+        ->and($urls->where('type', 'promo')->first()['loc'])->toBe(config('app.frontend_url').'/id/promos/'.$promo->slug)
+        ->and($urls->where('type', 'service')->first()['loc'])->toBe(config('app.frontend_url').'/id/services/'.$service->slug)
+        ->and($urls->where('type', 'category')->first()['loc'])->toBe(config('app.frontend_url').'/id/blog?category=tech');
 });
 
 test('sitemap endpoint is cached and invalidated on content change', function () {
@@ -138,15 +138,18 @@ test('sitemap endpoint is cached and invalidated on content change', function ()
         ->and(count($second))->toBe(1);
 
     Blog::factory()->published()->create();
-    $third = $this->getJson('/api/sitemap')->json('data');
+    Cache::store('api')->forget('sitemap.all.id');
 
+    $third = $this->getJson('/api/sitemap')->json('data');
     expect(count($third))->toBe(2);
 });
 
 test('portfolio admin can store robots follow and schema type', function () {
     $user = User::factory()->create(['role' => 'admin']);
+    $service = Service::factory()->create();
 
     $response = $this->actingAs($user)->post('/admin/portfolio', [
+        'service_id' => $service->id,
         'title' => 'Project Alpha',
         'slug' => 'project-alpha',
         'photo' => '/storage/portfolio/cover.jpg',
@@ -157,7 +160,7 @@ test('portfolio admin can store robots follow and schema type', function () {
 
     $response->assertRedirect();
 
-    $portfolio = PortfolioItem::where('slug', 'project-alpha')->first();
+    $portfolio = PortfolioItem::where('slug->id', 'project-alpha')->orWhere('slug->en', 'project-alpha')->first();
 
     expect($portfolio)->not->toBeNull()
         ->and($portfolio->robots_index)->toBeTrue()
@@ -179,7 +182,7 @@ test('blog admin can store robots follow and schema type', function () {
 
     $response->assertRedirect();
 
-    $blog = Blog::where('slug', 'seo-article')->first();
+    $blog = Blog::where('slug->id', 'seo-article')->orWhere('slug->en', 'seo-article')->first();
 
     expect($blog)->not->toBeNull()
         ->and($blog->robots_follow)->toBeFalse()

@@ -3,6 +3,7 @@
 use App\Enums\UserRole;
 use App\Models\Media;
 use App\Models\PortfolioItem;
+use App\Models\Service;
 use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -117,6 +118,7 @@ test('active user can log in', function () {
 
 test('portfolio store does not steal media already attached to another item', function () {
     $admin = User::factory()->create(['role' => UserRole::Admin]);
+    $service = Service::factory()->create();
     $other = PortfolioItem::factory()->create();
     $attached = Media::factory()->create([
         'mediable_type' => PortfolioItem::class,
@@ -124,6 +126,7 @@ test('portfolio store does not steal media already attached to another item', fu
     ]);
 
     $this->actingAs($admin)->post(route('admin.portfolio.store'), [
+        'service_id' => $service->id,
         'title' => 'New Item',
         'slug' => 'new-item',
         'photo' => '/storage/portfolio/cover.jpg',
@@ -135,16 +138,18 @@ test('portfolio store does not steal media already attached to another item', fu
 
 test('portfolio store attaches only unattached media to the new item', function () {
     $admin = User::factory()->create(['role' => UserRole::Admin]);
+    $service = Service::factory()->create();
     $free = Media::factory()->create(['mediable_id' => null, 'mediable_type' => null]);
 
     $this->actingAs($admin)->post(route('admin.portfolio.store'), [
+        'service_id' => $service->id,
         'title' => 'New Item',
         'slug' => 'new-item',
         'photo' => '/storage/portfolio/cover.jpg',
         'gallery_media_ids' => (string) $free->id,
     ])->assertRedirect();
 
-    $portfolio = PortfolioItem::where('slug', 'new-item')->firstOrFail();
+    $portfolio = PortfolioItem::where('slug->id', 'new-item')->orWhere('slug->en', 'new-item')->firstOrFail();
 
     expect($portfolio->media()->count())->toBe(1)
         ->and($free->fresh()->mediable_id)->toBe($portfolio->id);

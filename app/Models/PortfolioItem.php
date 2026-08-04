@@ -10,11 +10,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Translatable\HasTranslations;
 
 class PortfolioItem extends Model
 {
     /** @use HasFactory<PortfolioItemFactory> */
-    use ClearsApiCache, HasFactory, SoftDeletes;
+    use ClearsApiCache, HasFactory, HasTranslations, SoftDeletes;
+
+    public array $translatable = [
+        'title', 'slug', 'description', 'client',
+        'photo_alt', 'meta_title', 'meta_description', 'meta_keywords', 'og_image_alt',
+    ];
 
     protected $fillable = [
         'service_id', 'title', 'slug', 'description',

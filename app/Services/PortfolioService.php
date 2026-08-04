@@ -13,14 +13,17 @@ class PortfolioService
     public function list(array $filters = []): LengthAwarePaginator
     {
         $perPage = max(1, min((int) ($filters['per_page'] ?? 12), 100));
+        $locale = app()->getLocale();
 
-        return Cache::store('api')->flexible('portfolio.list.'.md5(serialize($filters)).'.p'.request()->integer('page', 1), [1800, 3600], function () use ($filters, $perPage) {
+        return Cache::store('api')->flexible('portfolio.list.'.$locale.'.'.md5(serialize($filters)).'.p'.request()->integer('page', 1), [1800, 3600], function () use ($filters, $perPage, $locale) {
             return $this->model->with('service')
                 ->active()
-                ->when($filters['search'] ?? null, function ($query, $search) {
-                    $query->where(function ($q) use ($search) {
-                        $q->where('title', 'like', '%'.$search.'%')
-                            ->orWhere('description', 'like', '%'.$search.'%');
+                ->when($filters['search'] ?? null, function ($query, $search) use ($locale) {
+                    $query->where(function ($q) use ($search, $locale) {
+                        $q->where("title->{$locale}", 'like', '%'.$search.'%')
+                            ->orWhere('title->id', 'like', '%'.$search.'%')
+                            ->orWhere("description->{$locale}", 'like', '%'.$search.'%')
+                            ->orWhere('description->id', 'like', '%'.$search.'%');
                     });
                 })
                 ->latest()
@@ -31,8 +34,16 @@ class PortfolioService
 
     public function getBySlug(string $slug): ?PortfolioItem
     {
-        return Cache::store('api')->remember('portfolio.slug.'.$slug, 1800, function () use ($slug) {
-            return $this->model->active()->where('slug', $slug)->with(['service', 'media'])->first();
+        $locale = app()->getLocale();
+
+        return Cache::store('api')->remember("portfolio.slug.{$locale}.{$slug}", 1800, function () use ($slug, $locale) {
+            return $this->model->active()
+                ->where(function ($q) use ($slug, $locale) {
+                    $q->where("slug->{$locale}", $slug)
+                        ->orWhere('slug->id', $slug);
+                })
+                ->with(['service', 'media'])
+                ->first();
         });
     }
 }

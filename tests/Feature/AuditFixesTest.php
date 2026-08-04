@@ -116,11 +116,12 @@ test('admin cannot assign another admin role when creating team member', functio
 
     $this->actingAs($admin)->post('/admin/team', [
         'name' => 'New Staff',
+        'position' => 'Staff Position',
         'email' => 'newstaff@brava.id',
-        'role' => UserRole::Admin->value,
-        'password' => 'password123',
-        'password_confirmation' => 'password123',
-    ])->assertSessionHasErrors('role');
+        'create_user_account' => '1',
+        'user_role' => UserRole::Admin->value,
+        'user_password' => 'password123',
+    ])->assertSessionHasErrors('user_role');
 
     expect(User::where('email', 'newstaff@brava.id')->exists())->toBeFalse();
 });
@@ -130,10 +131,11 @@ test('admin can create staff member with staff role', function () {
 
     $this->actingAs($admin)->post('/admin/team', [
         'name' => 'New Staff',
+        'position' => 'Staff Position',
         'email' => 'newstaff@brava.id',
-        'role' => UserRole::Staff->value,
-        'password' => 'password123',
-        'password_confirmation' => 'password123',
+        'create_user_account' => '1',
+        'user_role' => UserRole::Staff->value,
+        'user_password' => 'password123',
     ])->assertRedirect();
 
     expect(User::where('email', 'newstaff@brava.id')->value('role'))->toBe(UserRole::Staff);
@@ -144,10 +146,11 @@ test('superadmin can assign admin role when creating team member', function () {
 
     $this->actingAs($superadmin)->post('/admin/team', [
         'name' => 'New Admin',
+        'position' => 'Admin Position',
         'email' => 'newadmin@brava.id',
-        'role' => UserRole::Admin->value,
-        'password' => 'password123',
-        'password_confirmation' => 'password123',
+        'create_user_account' => '1',
+        'user_role' => UserRole::Admin->value,
+        'user_password' => 'password123',
     ])->assertRedirect();
 
     expect(User::where('email', 'newadmin@brava.id')->value('role'))->toBe(UserRole::Admin);
@@ -189,7 +192,7 @@ test('clearing api cache does not flush the whole cache', function () {
     $blog = Blog::factory()->create();
 
     expect(Cache::get('unrelated.key'))->toBe('keep-me')
-        ->and(Cache::store('api')->has('blog.list.'.md5(serialize([])).'.p1'))->toBeFalse();
+        ->and(Cache::store('api')->has('blog.list.id.'.md5(serialize([])).'.p1'))->toBeFalse();
 });
 
 test('admin cannot update team member of another admin', function () {
@@ -206,6 +209,7 @@ test('admin cannot update team member of another admin', function () {
 
     $this->actingAs($admin)->put(route('admin.team.update', $team), [
         'name' => 'Hacked',
+        'position' => 'Administrator',
         'email' => 'hacked@brava.id',
     ])->assertForbidden();
 });
@@ -242,6 +246,7 @@ test('admin can update team member of staff', function () {
 
     $this->actingAs($admin)->put(route('admin.team.update', $team), [
         'name' => 'Updated Staff',
+        'position' => 'Content Editor',
     ])->assertRedirect(route('admin.team.index'));
 
     expect($team->fresh()->name)->toBe('Updated Staff');
@@ -413,7 +418,7 @@ test('blog image url rejects javascript scheme but allows relative path', functi
         'featured_image' => '/storage/uploads/img.jpg',
     ])->assertRedirect();
 
-    expect(Blog::where('slug', 'good-image')->value('featured_image'))->toBe('/storage/uploads/img.jpg');
+    expect(Blog::where('slug->id', 'good-image')->orWhere('slug->en', 'good-image')->value('featured_image'))->toBe('/storage/uploads/img.jpg');
 });
 
 test('sanitizer strips external background-image and fixed positioning', function () {

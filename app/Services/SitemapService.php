@@ -16,58 +16,75 @@ class SitemapService
      */
     public function build(): array
     {
-        return Cache::store('api')->flexible('sitemap.all', [900, 1800], function () {
+        $locale = app()->getLocale();
+
+        return Cache::store('api')->flexible('sitemap.all.'.$locale, [900, 1800], function () use ($locale) {
             $frontendUrl = rtrim((string) (config('app.frontend_url') ?: config('app.url')), '/');
 
             $urls = collect()
                 ->merge(Blog::query()
                     ->published()
-                    ->select(['slug', 'updated_at'])
                     ->get()
                     ->map(fn (Blog $blog) => [
                         'type' => 'blog',
-                        'slug' => $blog->slug,
-                        'loc' => $frontendUrl.'/blogs/'.$blog->slug,
+                        'slug' => $blog->getTranslation('slug', $locale),
+                        'slugs' => [
+                            'id' => $blog->getTranslation('slug', 'id', false),
+                            'en' => $blog->getTranslation('slug', 'en', false),
+                        ],
+                        'loc' => $frontendUrl.'/'.$locale.'/blogs/'.$blog->getTranslation('slug', $locale),
                         'lastmod' => $blog->updated_at?->toIso8601String(),
                     ]))
                 ->merge(PortfolioItem::query()
                     ->active()
-                    ->select(['slug', 'updated_at'])
                     ->get()
                     ->map(fn (PortfolioItem $item) => [
                         'type' => 'portfolio',
-                        'slug' => $item->slug,
-                        'loc' => $frontendUrl.'/portfolio/'.$item->slug,
+                        'slug' => $item->getTranslation('slug', $locale),
+                        'slugs' => [
+                            'id' => $item->getTranslation('slug', 'id', false),
+                            'en' => $item->getTranslation('slug', 'en', false),
+                        ],
+                        'loc' => $frontendUrl.'/'.$locale.'/portfolio/'.$item->getTranslation('slug', $locale),
                         'lastmod' => $item->updated_at?->toIso8601String(),
                     ]))
                 ->merge(Promo::query()
                     ->active()
-                    ->select(['slug', 'updated_at'])
                     ->get()
                     ->map(fn (Promo $promo) => [
                         'type' => 'promo',
-                        'slug' => $promo->slug,
-                        'loc' => $frontendUrl.'/promos/'.$promo->slug,
+                        'slug' => $promo->getTranslation('slug', $locale),
+                        'slugs' => [
+                            'id' => $promo->getTranslation('slug', 'id', false),
+                            'en' => $promo->getTranslation('slug', 'en', false),
+                        ],
+                        'loc' => $frontendUrl.'/'.$locale.'/promos/'.$promo->getTranslation('slug', $locale),
                         'lastmod' => $promo->updated_at?->toIso8601String(),
                     ]))
                 ->merge(Service::query()
                     ->active()
-                    ->select(['slug', 'updated_at'])
                     ->get()
                     ->map(fn (Service $service) => [
                         'type' => 'service',
-                        'slug' => $service->slug,
-                        'loc' => $frontendUrl.'/services/'.$service->slug,
+                        'slug' => $service->getTranslation('slug', $locale),
+                        'slugs' => [
+                            'id' => $service->getTranslation('slug', 'id', false),
+                            'en' => $service->getTranslation('slug', 'en', false),
+                        ],
+                        'loc' => $frontendUrl.'/'.$locale.'/services/'.$service->getTranslation('slug', $locale),
                         'lastmod' => $service->updated_at?->toIso8601String(),
                     ]))
                 ->merge(Category::query()
                     ->whereNotNull('type')
-                    ->select(['slug', 'type', 'updated_at'])
                     ->get()
                     ->map(fn (Category $category) => [
                         'type' => 'category',
-                        'slug' => $category->slug,
-                        'loc' => $frontendUrl.'/'.$category->type.'?category='.$category->slug,
+                        'slug' => $category->getTranslation('slug', $locale),
+                        'slugs' => [
+                            'id' => $category->getTranslation('slug', 'id', false),
+                            'en' => $category->getTranslation('slug', 'en', false),
+                        ],
+                        'loc' => $frontendUrl.'/'.$locale.'/'.$category->type.'?category='.$category->getTranslation('slug', $locale),
                         'lastmod' => $category->updated_at?->toIso8601String(),
                     ]))
                 ->values();

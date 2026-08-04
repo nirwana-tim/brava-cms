@@ -51,7 +51,7 @@
             </svg>
             + Tambah Spesifikasi
         </button>
-        <x-input-error class="mt-2" :messages="$errors->get('specifications')" />
+        <x-input-error class="mt-2" :messages="$errors?->get('specifications')" />
     </div>
 
     <div class="border-t pt-4 mt-4" style="border-color: var(--card-header-border)">
@@ -87,6 +87,6 @@
             </svg>
             + Tambah Fitur
         </button>
-        <x-input-error class="mt-2" :messages="$errors->get('features')" />
+        <x-input-error class="mt-2" :messages="$errors?->get('features')" />
     </div>
 </div>

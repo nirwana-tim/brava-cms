@@ -13,18 +13,21 @@ class BlogService
     public function list(array $filters = []): LengthAwarePaginator
     {
         $perPage = max(1, min((int) ($filters['per_page'] ?? 12), 100));
+        $locale = app()->getLocale();
 
-        return Cache::store('api')->flexible('blog.list.'.md5(serialize($filters)).'.p'.request()->integer('page', 1), [900, 1800], function () use ($filters, $perPage) {
+        return Cache::store('api')->flexible('blog.list.'.$locale.'.'.md5(serialize($filters)).'.p'.request()->integer('page', 1), [900, 1800], function () use ($filters, $perPage, $locale) {
             return $this->model->with(['author', 'categories'])
                 ->published()
-                ->when($filters['category'] ?? null, function ($query, $category) {
-                    $query->whereHas('categories', fn ($q) => $q->where('slug', $category));
+                ->when($filters['category'] ?? null, function ($query, $category) use ($locale) {
+                    $query->whereHas('categories', fn ($q) => $q->where("slug->{$locale}", $category)->orWhere('slug->id', $category));
                 })
                 ->when(filter_var($filters['featured'] ?? null, FILTER_VALIDATE_BOOLEAN), fn ($q) => $q->featured())
-                ->when($filters['search'] ?? null, function ($query, $search) {
-                    $query->where(function ($q) use ($search) {
-                        $q->where('title', 'like', '%'.$search.'%')
-                            ->orWhere('excerpt', 'like', '%'.$search.'%');
+                ->when($filters['search'] ?? null, function ($query, $search) use ($locale) {
+                    $query->where(function ($q) use ($search, $locale) {
+                        $q->where("title->{$locale}", 'like', '%'.$search.'%')
+                            ->orWhere('title->id', 'like', '%'.$search.'%')
+                            ->orWhere("excerpt->{$locale}", 'like', '%'.$search.'%')
+                            ->orWhere('excerpt->id', 'like', '%'.$search.'%');
                     });
                 })
                 ->orderByDesc('published_at')
@@ -35,8 +38,16 @@ class BlogService
 
     public function getBySlug(string $slug): ?Blog
     {
-        return Cache::store('api')->remember('blog.slug.'.$slug, 1800, function () use ($slug) {
-            return $this->model->published()->where('slug', $slug)->with(['author', 'categories', 'media'])->first();
+        $locale = app()->getLocale();
+
+        return Cache::store('api')->remember("blog.slug.{$locale}.{$slug}", 1800, function () use ($slug, $locale) {
+            return $this->model->published()
+                ->where(function ($q) use ($slug, $locale) {
+                    $q->where("slug->{$locale}", $slug)
+                        ->orWhere('slug->id', $slug);
+                })
+                ->with(['author', 'categories', 'media'])
+                ->first();
         });
     }
 }

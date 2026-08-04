@@ -67,7 +67,14 @@ class MediaUsageService
             $rows = $this->rowsMatching($table, $columns, [basename($media->path)]);
 
             foreach ($rows as $row) {
-                $summary[] = self::MODULE_LABELS[$table].' "'.$row->{self::TITLE_COLUMNS[$table]}.'"';
+                $rawTitle = $row->{self::TITLE_COLUMNS[$table]} ?? '';
+                if (is_string($rawTitle) && str_starts_with($rawTitle, '{')) {
+                    $decoded = json_decode($rawTitle, true);
+                    $titleStr = $decoded['id'] ?? $decoded['en'] ?? $rawTitle;
+                } else {
+                    $titleStr = (string) $rawTitle;
+                }
+                $summary[] = self::MODULE_LABELS[$table].' "'.$titleStr.'"';
             }
         }
 
@@ -90,6 +97,14 @@ class MediaUsageService
             $rows = $this->rowsMatching($table, $columns, $basenames);
 
             foreach ($rows as $row) {
+                $rawTitle = $row->{self::TITLE_COLUMNS[$table]} ?? '';
+                if (is_string($rawTitle) && str_starts_with($rawTitle, '{')) {
+                    $decoded = json_decode($rawTitle, true);
+                    $titleStr = $decoded['id'] ?? $decoded['en'] ?? $rawTitle;
+                } else {
+                    $titleStr = (string) $rawTitle;
+                }
+
                 foreach ($columns as $column) {
                     $value = $row->{$column} ?? '';
 
@@ -99,7 +114,7 @@ class MediaUsageService
 
                     foreach ($media as $item) {
                         if (str_contains($value, '/'.basename($item->path))) {
-                            $usage[$item->id][] = self::MODULE_LABELS[$table].' "'.$row->{self::TITLE_COLUMNS[$table]}.'"';
+                            $usage[$item->id][] = self::MODULE_LABELS[$table].' "'.$titleStr.'"';
                         }
                     }
                 }
