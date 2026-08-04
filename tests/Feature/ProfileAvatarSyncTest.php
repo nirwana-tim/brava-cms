@@ -3,6 +3,7 @@
 use App\Models\TeamMember;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
@@ -110,4 +111,72 @@ test('updating a team member with a new avatar syncs it to the linked user', fun
 
     expect($memberUser->fresh()->avatar)->toBe('/storage/uploads/new-photo.jpg');
     expect(TeamMember::find($member->id)->avatar)->toBe('/storage/uploads/new-photo.jpg');
+});
+
+test('replacing a profile avatar deletes the old upload file', function () {
+    Storage::fake('public');
+    Storage::disk('public')->put('uploads/old-photo.jpg', 'old');
+
+    $user = User::factory()->create([
+        'role' => 'admin',
+        'avatar' => '/storage/uploads/old-photo.jpg',
+    ]);
+
+    $this->actingAs($user)->patch(route('profile.update'), [
+        'name' => $user->name,
+        'email' => $user->email,
+        'avatar' => '/storage/uploads/new-photo.jpg',
+    ]);
+
+    expect(Storage::disk('public')->exists('uploads/old-photo.jpg'))->toBeFalse();
+    expect($user->fresh()->avatar)->toBe('/storage/uploads/new-photo.jpg');
+});
+
+test('replacing a team member avatar deletes the old upload file', function () {
+    Storage::fake('public');
+    Storage::disk('public')->put('uploads/old-photo.jpg', 'old');
+
+    $superAdmin = User::factory()->create(['role' => 'super_admin']);
+
+    $memberUser = User::factory()->create(['role' => 'staff']);
+
+    $member = TeamMember::create([
+        'user_id' => $memberUser->id,
+        'name' => $memberUser->name,
+        'position' => 'Staff',
+        'email' => $memberUser->email,
+        'is_active' => true,
+        'avatar' => '/storage/uploads/old-photo.jpg',
+    ]);
+
+    $this->actingAs($superAdmin)->put(route('admin.team.update', $member), [
+        'name' => $memberUser->name,
+        'email' => $memberUser->email,
+        'avatar' => '/storage/uploads/new-photo.jpg',
+        'is_active' => true,
+    ]);
+
+    expect(Storage::disk('public')->exists('uploads/old-photo.jpg'))->toBeFalse();
+});
+
+test('deleting a team member removes its avatar upload file', function () {
+    Storage::fake('public');
+    Storage::disk('public')->put('uploads/old-photo.jpg', 'old');
+
+    $superAdmin = User::factory()->create(['role' => 'super_admin']);
+
+    $memberUser = User::factory()->create(['role' => 'staff']);
+
+    $member = TeamMember::create([
+        'user_id' => $memberUser->id,
+        'name' => $memberUser->name,
+        'position' => 'Staff',
+        'email' => $memberUser->email,
+        'is_active' => true,
+        'avatar' => '/storage/uploads/old-photo.jpg',
+    ]);
+
+    $this->actingAs($superAdmin)->delete(route('admin.team.destroy', $member));
+
+    expect(Storage::disk('public')->exists('uploads/old-photo.jpg'))->toBeFalse();
 });

@@ -112,29 +112,35 @@
 
             async uploadFromModal(event) {
                 const file = event.target.files[0];
+                event.target.value = '';
                 if (!file) return;
 
-                this.uploadingFromModal = true;
-                const formData = new FormData();
-                formData.append('file', file);
-                formData.append('collection', collectionName);
+                Alpine.store('imageEditor').open(file, async ({ file: processed, alt }) => {
+                    this.uploadingFromModal = true;
+                    const formData = new FormData();
+                    formData.append('file', processed);
+                    formData.append('collection', collectionName);
 
-                try {
-                    const res = await fetch('{{ route("admin.media.upload-ajax") }}', {
-                        method: 'POST',
-                        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                        body: formData,
-                    });
-                    const data = await res.json();
-                    this.setMedia(data.url, data.alt_text);
-                    await this.loadPicker();
-                } catch (e) {
-                    console.error('Upload failed', e);
-                    alert('Upload failed. Please try again.');
-                } finally {
-                    this.uploadingFromModal = false;
-                    event.target.value = '';
-                }
+                    if (alt) {
+                        formData.append('alt_text', alt);
+                    }
+
+                    try {
+                        const res = await fetch('{{ route("admin.media.upload-ajax") }}', {
+                            method: 'POST',
+                            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                            body: formData,
+                        });
+                        const data = await res.json();
+                        this.setMedia(data.url, data.alt_text);
+                        await this.loadPicker();
+                    } catch (e) {
+                        console.error('Upload failed', e);
+                        alert('Upload failed. Please try again.');
+                    } finally {
+                        this.uploadingFromModal = false;
+                    }
+                });
             },
 
             openPicker() {

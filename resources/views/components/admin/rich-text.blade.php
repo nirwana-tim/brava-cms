@@ -175,33 +175,39 @@ tinymce.init({
 
             async uploadFromModal(event) {
                 const file = event.target.files[0];
+                event.target.value = '';
                 if (!file) return;
 
-                this.uploading = true;
-                const formData = new FormData();
-                formData.append('file', file);
+                Alpine.store('imageEditor').open(file, async ({ file: processed, alt }) => {
+                    this.uploading = true;
+                    const formData = new FormData();
+                    formData.append('file', processed);
 
-                try {
-                    const res = await fetch('{{ route("admin.media.upload-ajax") }}', {
-                        method: 'POST',
-                        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                        body: formData,
-                    });
-                    const data = await res.json();
-                    await this.loadItems();
-                    const cb = window.__tinymcePickerCallback;
-                    if (cb) {
-                        cb(data.url, { alt: data.alt_text });
-                        window.__tinymcePickerCallback = null;
-                        this.closePicker();
+                    if (alt) {
+                        formData.append('alt_text', alt);
                     }
-                } catch (e) {
-                    console.error('Upload failed', e);
-                    alert('Upload failed. Please try again.');
-                } finally {
-                    this.uploading = false;
-                    event.target.value = '';
-                }
+
+                    try {
+                        const res = await fetch('{{ route("admin.media.upload-ajax") }}', {
+                            method: 'POST',
+                            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                            body: formData,
+                        });
+                        const data = await res.json();
+                        await this.loadItems();
+                        const cb = window.__tinymcePickerCallback;
+                        if (cb) {
+                            cb(data.url, { alt: data.alt_text });
+                            window.__tinymcePickerCallback = null;
+                            this.closePicker();
+                        }
+                    } catch (e) {
+                        console.error('Upload failed', e);
+                        alert('Upload failed. Please try again.');
+                    } finally {
+                        this.uploading = false;
+                    }
+                });
             },
 
             selectItem(item) {

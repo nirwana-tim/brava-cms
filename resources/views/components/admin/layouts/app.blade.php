@@ -254,6 +254,8 @@
     </div>
 </div>
 
+<x-admin.image-editor />
+
 @stack('scripts')
 </body>
 </html>

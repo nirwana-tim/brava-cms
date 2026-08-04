@@ -56,27 +56,29 @@
 
             async upload(event) {
                 const file = event.target.files[0];
+                event.target.value = '';
                 if (!file) return;
 
-                this.uploading = true;
-                const formData = new FormData();
-                formData.append('file', file);
+                Alpine.store('imageEditor').open(file, async ({ file: processed }) => {
+                    this.uploading = true;
+                    const formData = new FormData();
+                    formData.append('file', processed);
 
-                try {
-                    const res = await fetch('{{ route("admin.upload") }}', {
-                        method: 'POST',
-                        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                        body: formData,
-                    });
-                    const data = await res.json();
-                    this.setMedia(data.url);
-                } catch (e) {
-                    console.error('Upload failed', e);
-                    alert('Upload failed. Please try again.');
-                } finally {
-                    this.uploading = false;
-                    event.target.value = '';
-                }
+                    try {
+                        const res = await fetch('{{ route("admin.upload") }}', {
+                            method: 'POST',
+                            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                            body: formData,
+                        });
+                        const data = await res.json();
+                        this.setMedia(data.url);
+                    } catch (e) {
+                        console.error('Upload failed', e);
+                        alert('Upload failed. Please try again.');
+                    } finally {
+                        this.uploading = false;
+                    }
+                });
             },
 
             setMedia(url) {

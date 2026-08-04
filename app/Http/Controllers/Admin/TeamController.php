@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\StoreTeamRequest;
 use App\Http\Requests\Admin\UpdateTeamRequest;
 use App\Models\TeamMember;
 use App\Models\User;
+use App\Services\MediaService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -15,7 +16,7 @@ use Illuminate\View\View;
 
 class TeamController extends Controller
 {
-    public function __construct()
+    public function __construct(private readonly MediaService $mediaService)
     {
         $this->authorizeResource(TeamMember::class, 'team');
     }
@@ -85,6 +86,8 @@ class TeamController extends Controller
     {
         $validated = $request->validated();
 
+        $previousAvatar = $team->avatar;
+
         $wantedActive = array_key_exists('is_active', $validated)
             ? (bool) $validated['is_active']
             : (bool) $team->is_active;
@@ -95,6 +98,10 @@ class TeamController extends Controller
         }
 
         $team->update($validated);
+
+        if ($previousAvatar !== $team->avatar) {
+            $this->mediaService->deleteStoredUpload($previousAvatar);
+        }
 
         if ($team->user) {
             $role = $team->user_id === auth()->id()
@@ -150,6 +157,8 @@ class TeamController extends Controller
         if ($team->user) {
             $team->user->update(['is_active' => false]);
         }
+
+        $this->mediaService->deleteStoredUpload($team->avatar);
 
         $team->delete();
 

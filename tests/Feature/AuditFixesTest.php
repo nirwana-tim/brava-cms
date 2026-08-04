@@ -167,6 +167,22 @@ test('staff can upload media via ajax with valid file', function () {
     ])->assertOk();
 });
 
+test('upload ajax persists custom alt text when provided', function () {
+    $staff = User::factory()->staff()->create();
+
+    $file = UploadedFile::fake()->image('product.png', 100, 100);
+
+    $this->actingAs($staff)->postJson('/admin/media/upload-ajax', [
+        'file' => $file,
+        'alt_text' => 'Produk unggulan dari koleksi terbaru',
+    ])->assertOk();
+
+    $media = Media::latest()->first();
+
+    expect($media)->not->toBeNull()
+        ->and($media->alt_text)->toBe('Produk unggulan dari koleksi terbaru');
+});
+
 test('clearing api cache does not flush the whole cache', function () {
     Cache::put('unrelated.key', 'keep-me');
 

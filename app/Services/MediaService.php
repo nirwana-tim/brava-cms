@@ -89,4 +89,40 @@ class MediaService
 
         return $filename.'-'.uniqid().'.'.$extension;
     }
+
+    public function deleteStoredUpload(?string $value): void
+    {
+        if ($value === null || trim($value) === '') {
+            return;
+        }
+
+        $path = $this->storedUploadPath($value);
+
+        if ($path === null || ! Storage::disk('public')->exists($path)) {
+            return;
+        }
+
+        Storage::disk('public')->delete($path);
+    }
+
+    private function storedUploadPath(string $value): ?string
+    {
+        $path = trim($value);
+
+        if (preg_match('#^https?://#i', $path)) {
+            $path = (string) parse_url($path, PHP_URL_PATH);
+        }
+
+        if (str_starts_with($path, '/storage/')) {
+            $path = substr($path, strlen('/storage/'));
+        } elseif (str_starts_with($path, 'storage/')) {
+            $path = substr($path, strlen('storage/'));
+        }
+
+        if (! str_starts_with($path, 'uploads/')) {
+            return null;
+        }
+
+        return $path;
+    }
 }

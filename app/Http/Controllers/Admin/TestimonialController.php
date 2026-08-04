@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreTestimonialRequest;
 use App\Http\Requests\Admin\UpdateTestimonialRequest;
 use App\Models\Testimonial;
+use App\Services\MediaService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class TestimonialController extends Controller
 {
-    public function __construct()
+    public function __construct(private readonly MediaService $mediaService)
     {
         $this->authorizeResource(Testimonial::class, 'testimonial');
     }
@@ -66,7 +67,13 @@ class TestimonialController extends Controller
 
     public function update(UpdateTestimonialRequest $request, Testimonial $testimonial): RedirectResponse
     {
+        $previousAvatar = $testimonial->avatar;
+
         $testimonial->update($request->validated());
+
+        if ($previousAvatar !== $testimonial->avatar) {
+            $this->mediaService->deleteStoredUpload($previousAvatar);
+        }
 
         return redirect()->route('admin.testimonials.index')
             ->with('success', 'Testimonial updated successfully.');
@@ -74,6 +81,8 @@ class TestimonialController extends Controller
 
     public function destroy(Testimonial $testimonial): RedirectResponse
     {
+        $this->mediaService->deleteStoredUpload($testimonial->avatar);
+
         $testimonial->delete();
 
         return redirect()->route('admin.testimonials.index')

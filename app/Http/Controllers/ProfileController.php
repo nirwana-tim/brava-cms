@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Services\MediaService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,6 +13,8 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+    public function __construct(private readonly MediaService $mediaService) {}
+
     /**
      * Display the user's profile form.
      */
@@ -27,16 +30,23 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $previousAvatar = $user->avatar;
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $user->fill($request->validated());
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        $user->save();
 
-        if ($request->user()->teamMember) {
-            $request->user()->teamMember->update(['avatar' => $request->user()->avatar]);
+        if ($previousAvatar !== $user->avatar) {
+            $this->mediaService->deleteStoredUpload($previousAvatar);
+        }
+
+        if ($user->teamMember) {
+            $user->teamMember->update(['avatar' => $user->avatar]);
         }
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');

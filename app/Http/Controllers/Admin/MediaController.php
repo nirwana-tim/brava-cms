@@ -104,6 +104,7 @@ class MediaController extends Controller
         $request->validate([
             'file' => ['required', 'file', 'mimes:jpg,jpeg,png,gif,webp', 'max:10240'],
             'collection' => ['nullable', 'string', 'max:255'],
+            'alt_text' => ['nullable', 'string', 'max:255'],
         ]);
 
         try {
@@ -120,7 +121,7 @@ class MediaController extends Controller
                     'size' => $file->getSize(),
                     'disk' => 'public',
                     'path' => $path,
-                    'alt_text' => str_replace(['-', '_'], ' ', $name),
+                    'alt_text' => $request->input('alt_text') ?: str_replace(['-', '_'], ' ', $name),
                     'collection' => $request->collection,
                 ]);
             } catch (\Throwable $e) {
