@@ -59,7 +59,7 @@
                         </div>
 
                         <div>
-                            <x-input-label for="excerpt_en" :value="__('Excerpt (EN)')" />
+                            <x-input-label for="excerpt_en" :value="__('Excerpt (EN - English)')" />
                             <textarea id="excerpt_en" name="excerpt[en]" class="form-textarea mt-1" rows="3">{{ old('excerpt.en') }}</textarea>
                             <x-input-error class="mt-2" :messages="$errors->get('excerpt.en')" />
                         </div>
@@ -70,13 +70,13 @@
                     </div>
                 </x-admin.language-tabs>
 
-                <div class="mt-8 space-y-6 border-t pt-6" style="border-color: var(--table-border)">
-                    <div x-data="{ featuredImage: @js(old('featured_image')) }">
+                <div class="mt-6 space-y-6 border-t pt-6">
+                    <div x-data="{ imageUrl: @js(old('featured_image')), imageAlt: @js(old('featured_image_alt.id')) }">
                         <x-input-label for="featured_image" :value="__('Featured Image')" />
                         <input type="hidden" name="featured_image" id="featured_image" value="{{ old('featured_image') }}" />
-                        <template x-if="featuredImage">
+                        <template x-if="imageUrl">
                             <div class="mb-2">
-                                <img :src="featuredImage" class="rounded-lg" style="max-width:240px;max-height:160px;object-fit:cover">
+                                <img :src="imageUrl" :alt="imageAlt" class="rounded-lg" style="max-width:240px;max-height:160px;object-fit:cover">
                             </div>
                         </template>
                         <x-admin.media-picker target="featured_image" collection="blogs" />
@@ -84,16 +84,9 @@
                     </div>
 
                     <div>
-                        <x-input-label for="published_at" :value="__('Published At')" />
-                        <x-text-input id="published_at" name="published_at" type="date" class="mt-1 block w-full" :value="old('published_at')" />
-                        <p class="form-hint">Opsional. Kosongkan agar otomatis diisi tanggal hari ini saat status Published.</p>
-                        <x-input-error class="mt-2" :messages="$errors->get('published_at')" />
-                    </div>
-
-                    <div>
                         <x-input-label for="status" :value="__('Status')" :required="true" />
                         <select id="status" name="status" class="form-select mt-1">
-                            <option value="draft" {{ old('status') === 'draft' ? 'selected' : '' }}>Draft</option>
+                            <option value="draft" {{ old('status', 'draft') === 'draft' ? 'selected' : '' }}>Draft</option>
                             <option value="published" {{ old('status') === 'published' ? 'selected' : '' }}>Published</option>
                             <option value="archived" {{ old('status') === 'archived' ? 'selected' : '' }}>Archived</option>
                         </select>
@@ -122,41 +115,18 @@
                         <x-admin.toggle name="is_featured" :checked="old('is_featured')" label="Featured" />
                     </div>
 
-                    <details class="mt-4">
-                        <summary class="text-sm font-medium cursor-pointer" style="color: var(--label-text)">SEO Settings (ID / EN)</summary>
-                        <div class="mt-4 space-y-4">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <x-input-label for="meta_title_id" :value="__('Meta Title (ID)')" />
-                                    <x-text-input id="meta_title_id" name="meta_title[id]" type="text" class="mt-1 block w-full" :value="old('meta_title.id')" />
-                                </div>
-                                <div>
-                                    <x-input-label for="meta_title_en" :value="__('Meta Title (EN)')" />
-                                    <x-text-input id="meta_title_en" name="meta_title[en]" type="text" class="mt-1 block w-full" :value="old('meta_title.en')" />
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <x-input-label for="meta_description_id" :value="__('Meta Description (ID)')" />
-                                    <textarea id="meta_description_id" name="meta_description[id]" class="form-textarea mt-1" rows="3">{{ old('meta_description.id') }}</textarea>
-                                </div>
-                                <div>
-                                    <x-input-label for="meta_description_en" :value="__('Meta Description (EN)')" />
-                                    <textarea id="meta_description_en" name="meta_description[en]" class="form-textarea mt-1" rows="3">{{ old('meta_description.en') }}</textarea>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <x-input-label for="meta_keywords_id" :value="__('Meta Keywords (ID)')" />
-                                    <x-text-input id="meta_keywords_id" name="meta_keywords[id]" type="text" class="mt-1 block w-full" :value="old('meta_keywords.id')" />
-                                </div>
-                                <div>
-                                    <x-input-label for="meta_keywords_en" :value="__('Meta Keywords (EN)')" />
-                                    <x-text-input id="meta_keywords_en" name="meta_keywords[en]" type="text" class="mt-1 block w-full" :value="old('meta_keywords.en')" />
-                                </div>
-                            </div>
-                        </div>
-                    </details>
+                    <div class="border-t pt-6">
+                        <x-admin.seo-fields
+                            :metaTitle="old('meta_title.id')"
+                            :metaDescription="old('meta_description.id')"
+                            :metaKeywords="old('meta_keywords.id')"
+                            :ogImage="old('og_image')"
+                            :ogImageAlt="old('og_image_alt.id')"
+                            :robotsIndex="old('robots_index', true)"
+                            :robotsFollow="old('robots_follow', true)"
+                            :schemaType="old('schema_type', 'Article')"
+                        />
+                    </div>
                 </div>
 
                 <div class="mt-6 flex items-center gap-4">
