@@ -7,8 +7,10 @@
 ## Base URL
 
 ```
-Base URL: `https://brava.id` for production, `http://localhost:3000` for local Next.js.
+Base URL: `https://brava.id/api/v1` for production, `http://localhost:8000/api/v1` for local development.
 ```
+
+> All endpoints are versioned under `/api/v1`. Versioning is enforced via the URL prefix — see `routes/api.php`. The Next.js frontend must call versioned paths (e.g. `/api/v1/services`).
 
 ## Response Format
 
@@ -37,10 +39,10 @@ Base URL: `https://brava.id` for production, `http://localhost:3000` for local N
         "to": 12,
         "total": 50,
         "links": {
-            "first": "http://localhost:8000/api/services?page=1",
-            "last": "http://localhost:8000/api/services?page=5",
+            "first": "http://localhost:8000/api/v1/services?page=1",
+            "last": "http://localhost:8000/api/v1/services?page=5",
             "prev": null,
-            "next": "http://localhost:8000/api/services?page=2"
+            "next": "http://localhost:8000/api/v1/services?page=2"
         }
     }
 }
@@ -94,7 +96,7 @@ All GET API endpoints accept an optional `?lang=en` or `?lang=id` query paramete
 
 > Public, no auth. Returns all active site settings keyed by group.
 
-#### `GET /api/settings`
+#### `GET /api/v1/settings`
 
 Response:
 
@@ -138,7 +140,7 @@ Response:
 
 > Public, no auth.
 
-#### `GET /api/categories`
+#### `GET /api/v1/categories`
 
 > The `type` query parameter is **required**. Categories are filtered by content type (e.g. `blog`, `portfolio`). A request without `type` returns `422` with `Type parameter is required`.
 
@@ -146,7 +148,7 @@ Response:
 | -------- | ------ | ----------------------------------------------------------------------------- |
 | `type` | string | **Required.** Category content type. Supported: `blog`, `portfolio` |
 
-Example: `GET /api/categories?type=blog`
+Example: `GET /api/v1/categories?type=blog`
 
 Response:
 
@@ -168,7 +170,7 @@ Response:
 
 ### Services
 
-#### `GET /api/services`
+#### `GET /api/v1/services`
 
 | Param        | Type   | Description                  |
 | ------------ | ------ | ---------------------------- |
@@ -199,7 +201,7 @@ Response:
 
 ### Blogs
 
-#### `GET /api/blogs`
+#### `GET /api/v1/blogs`
 
 | Param        | Type   | Description                  |
 | ------------ | ------ | ---------------------------- |
@@ -236,7 +238,7 @@ Response:
 }
 ```
 
-#### `GET /api/blogs/{slug}`
+#### `GET /api/v1/blogs/{slug}`
 
 Response:
 
@@ -278,7 +280,7 @@ Response:
 
 ### Portfolio
 
-#### `GET /api/portfolio`
+#### `GET /api/v1/portfolio`
 
 | Param        | Type   | Description                  |
 | ------------ | ------ | ---------------------------- |
@@ -312,7 +314,7 @@ Response:
 }
 ```
 
-#### `GET /api/portfolio/{slug}`
+#### `GET /api/v1/portfolio/{slug}`
 
 Response:
 
@@ -354,7 +356,7 @@ Response:
 
 ### Testimonials
 
-#### `GET /api/testimonials`
+#### `GET /api/v1/testimonials`
 
 Response (no pagination — returns all active, sorted by `sort_order`):
 
@@ -378,7 +380,7 @@ Response (no pagination — returns all active, sorted by `sort_order`):
 
 ### FAQs
 
-#### `GET /api/faqs`
+#### `GET /api/v1/faqs`
 
 | Param | Type | Description |
 |-------|------|-------------|
@@ -403,7 +405,7 @@ Response:
 
 ### Contact Form
 
-#### `POST /api/contact`
+#### `POST /api/v1/contact`
 
 Request:
 
@@ -430,7 +432,7 @@ Response:
 
 ### Sitemap
 
-#### `GET /api/sitemap`
+#### `GET /api/v1/sitemap`
 
 Returns all publicly indexable content as a single list — used by Next.js to generate `sitemap.xml`. Cached and auto-invalidated on content changes.
 
@@ -498,11 +500,11 @@ Every detail endpoint returns a `seo` object where applicable. Next.js should ma
 </Head>
 ```
 
-`schemaJSON` for blogs should use `data.seo.schema_type` (e.g. `Article`, `BlogPosting`) with `data.published_at` → `datePublished` and `data.updated_at` → `dateModified`. Generate `sitemap.xml` from `GET /api/sitemap`.
+`schemaJSON` for blogs should use `data.seo.schema_type` (e.g. `Article`, `BlogPosting`) with `data.published_at` → `datePublished` and `data.updated_at` → `dateModified`. Generate `sitemap.xml` from `GET /api/v1/sitemap`.
 
 ### Global Fallback
 
-If `meta_title` is empty on an entity, fallback to `default_meta_title` from `/api/settings`.
+If `meta_title` is empty on an entity, fallback to `default_meta_title` from `/api/v1/settings`.
 
 ---
 
@@ -512,9 +514,9 @@ All public API routes are protected by rate limiting in `RouteServiceProvider` o
 
 | Endpoint              | Limit       | Window   | Notes               |
 | --------------------- | ----------- | -------- | ------------------- |
-| `GET /api/*`        | 60 requests | 1 minute | Read-only endpoints |
-| `POST /api/contact` | 5 requests  | 1 minute | Prevent spam        |
-| `POST /api/contact` | 20 requests | 1 hour   | Hard ceiling per IP |
+| `GET /api/v1/*`        | 60 requests | 1 minute | Read-only endpoints |
+| `POST /api/v1/contact` | 5 requests  | 1 minute | Prevent spam        |
+| `POST /api/v1/contact` | 20 requests | 1 hour   | Hard ceiling per IP |
 
 ### Implementation
 
@@ -550,7 +552,7 @@ CORS is wide-open for GET requests (Next.js needs it). For production, restrict 
 
 ### HTTP Cache Headers
 
-Every successful `GET /api/*` response includes:
+Every successful `GET /api/v1/*` response includes:
 
 ```
 Cache-Control: public, max-age=900, s-maxage=900
@@ -563,31 +565,31 @@ Cache-Control: public, max-age=900, s-maxage=900
 ### Sparse Fieldsets
 
 ```
-GET /api/services?fields=id,title,slug,description
-GET /api/blogs?fields=id,title,slug,excerpt,published_at,author
+GET /api/v1/services?fields=id,title,slug,description
+GET /api/v1/blogs?fields=id,title,slug,excerpt,published_at,author
 ```
 
 ### Caching Strategy (Laravel)
 
 | Endpoint                  | TTL    | Strategy                           |
 | ------------------------- | ------ | ---------------------------------- |
-| `/api/settings`         | 1 hour | Cache::flexible([3600, 7200], ...) |
-| `/api/categories`       | 1 hour | Cache::flexible                    |
-| `/api/services`         | 15 min | Cache::flexible([900, 1800], ...)  |
-| `/api/services`       | 15 min | Cache::flexible                    |
-| `/api/blogs`            | 15 min | Cache::flexible                    |
-| `/api/blogs/{slug}`     | 30 min | Cache::flexible                    |
-| `/api/testimonials`     | 1 hour | Cache::flexible                    |
-| `/api/faqs`             | 1 hour | Cache::flexible                    |
-| `/api/portfolio`        | 30 min | Cache::flexible                    |
-| `/api/promos/highlight` | 15 min | Cache::flexible([900, 1800], ...)  |
-| `/api/promos`           | 15 min | Cache::flexible([900, 1800], ...)  |
+| `/api/v1/settings`         | 1 hour | Cache::flexible([3600, 7200], ...) |
+| `/api/v1/categories`       | 1 hour | Cache::flexible                    |
+| `/api/v1/services`         | 15 min | Cache::flexible([900, 1800], ...)  |
+| `/api/v1/services`       | 15 min | Cache::flexible                    |
+| `/api/v1/blogs`            | 15 min | Cache::flexible                    |
+| `/api/v1/blogs/{slug}`     | 30 min | Cache::flexible                    |
+| `/api/v1/testimonials`     | 1 hour | Cache::flexible                    |
+| `/api/v1/faqs`             | 1 hour | Cache::flexible                    |
+| `/api/v1/portfolio`        | 30 min | Cache::flexible                    |
+| `/api/v1/promos/highlight` | 15 min | Cache::flexible([900, 1800], ...)  |
+| `/api/v1/promos`           | 15 min | Cache::flexible([900, 1800], ...)  |
 
 ---
 
 ### Promos & Special Offers
 
-#### `GET /api/promos/highlight`
+#### `GET /api/v1/promos/highlight`
 
 Returns the single active highlighted promo (hero banner & modal popup). Automatically falls back to the latest active promo if the highlighted promo has expired.
 
@@ -625,7 +627,7 @@ Response:
 }
 ```
 
-#### `GET /api/promos`
+#### `GET /api/v1/promos`
 
 Returns paginated list of active non-highlighted promos (`where('is_highlighted', false)`).
 

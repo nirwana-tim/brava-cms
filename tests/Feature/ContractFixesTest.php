@@ -26,7 +26,7 @@ test('api settings endpoint returns grouped structure with boolean cast', functi
         ['value' => '1', 'group' => 'adsense', 'type' => 'boolean']
     );
 
-    $response = $this->getJson('/api/settings');
+    $response = $this->getJson('/api/v1/settings');
 
     $response->assertOk()
         ->assertJsonPath('success', true)
@@ -47,7 +47,7 @@ test('api settings endpoint does not expose sensitive groups publicly', function
         ['value' => 'Brava CMS', 'group' => 'general', 'type' => 'text']
     );
 
-    $response = $this->getJson('/api/settings');
+    $response = $this->getJson('/api/v1/settings');
 
     $response->assertOk()
         ->assertJsonPath('data.general.site_name', 'Brava CMS')
@@ -62,15 +62,15 @@ test('api settings grouped payload is flushed from cache on model save', functio
         ['value' => 'Brava CMS', 'group' => 'general', 'type' => 'text']
     );
 
-    expect($this->getJson('/api/settings')->json('data.general.site_name'))->toBe('Brava CMS');
+    expect($this->getJson('/api/v1/settings')->json('data.general.site_name'))->toBe('Brava CMS');
 
     $setting->update(['value' => 'Renamed']);
 
-    expect($this->getJson('/api/settings')->json('data.general.site_name'))->toBe('Renamed');
+    expect($this->getJson('/api/v1/settings')->json('data.general.site_name'))->toBe('Renamed');
 });
 
 test('contact endpoint accepts valid payload with 200 contract shape', function () {
-    $this->postJson('/api/contact', [
+    $this->postJson('/api/v1/contact', [
         'name' => 'John Doe',
         'email' => 'john@example.com',
         'phone' => '+6281234567890',
@@ -82,7 +82,7 @@ test('contact endpoint accepts valid payload with 200 contract shape', function 
 });
 
 test('contact endpoint returns 422 contract shape on invalid payload', function () {
-    $this->postJson('/api/contact', ['name' => ''])
+    $this->postJson('/api/v1/contact', ['name' => ''])
         ->assertStatus(422)
         ->assertJsonPath('success', false)
         ->assertJsonStructure(['message', 'errors']);
@@ -92,10 +92,10 @@ test('contact endpoint is rate limited to 5 requests per minute', function () {
     $payload = ['name' => 'A', 'email' => 'a@example.com', 'message' => 'x'];
 
     for ($i = 0; $i < 5; $i++) {
-        $this->postJson('/api/contact', $payload)->assertOk();
+        $this->postJson('/api/v1/contact', $payload)->assertOk();
     }
 
-    $this->postJson('/api/contact', $payload)->assertStatus(429);
+    $this->postJson('/api/v1/contact', $payload)->assertStatus(429);
 });
 
 test('inactive user cannot log in', function () {

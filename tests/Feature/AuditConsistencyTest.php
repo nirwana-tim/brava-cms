@@ -21,7 +21,7 @@ test('blog api featured filter returns only featured posts', function () {
     $featured = Blog::factory()->create(['is_featured' => true, 'status' => PostStatus::Published]);
     Blog::factory()->create(['is_featured' => false, 'status' => PostStatus::Published]);
 
-    $response = $this->getJson('/api/blogs?featured=1');
+    $response = $this->getJson('/api/v1/blogs?featured=1');
 
     $response->assertOk();
     $ids = collect($response->json('data'))->pluck('id');

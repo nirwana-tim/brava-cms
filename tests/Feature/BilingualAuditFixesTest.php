@@ -17,7 +17,7 @@ test('public settings api exposes non-translatable contact and social values', f
     Setting::create(['key' => 'whatsapp_number', 'value' => '62811112222', 'group' => 'contact', 'type' => 'text']);
     Setting::create(['key' => 'facebook_url', 'value' => 'https://facebook.com/brava', 'group' => 'social', 'type' => 'text']);
 
-    $this->getJson('/api/settings?lang=id')
+    $this->getJson('/api/v1/settings?lang=id')
         ->assertOk()
         ->assertJsonPath('data.contact.address', 'Jl. Contoh No. 1')
         ->assertJsonPath('data.contact.email', 'hello@brava.id')
@@ -70,7 +70,7 @@ test('promo wa url uses the configured whatsapp number', function () {
     Setting::create(['key' => 'whatsapp_number', 'value' => '62811112222', 'group' => 'contact', 'type' => 'text']);
     $promo = Promo::factory()->create(['is_active' => true]);
 
-    $response = $this->getJson('/api/promos/'.$promo->slug.'?lang=id');
+    $response = $this->getJson('/api/v1/promos/'.$promo->slug.'?lang=id');
 
     $response->assertOk()->assertJsonPath('data.wa_url', fn ($value) => str_contains($value, 'wa.me/62811112222'));
 });
@@ -81,7 +81,7 @@ test('promo image alt resolves from translatable data', function () {
         'image_alt' => ['id' => 'Banner Promo', 'en' => 'Promo Banner'],
     ]);
 
-    $this->getJson('/api/promos/'.$promo->slug.'?lang=id')
+    $this->getJson('/api/v1/promos/'.$promo->slug.'?lang=id')
         ->assertOk()
         ->assertJsonPath('data.image_alt', 'Banner Promo');
 });
@@ -98,13 +98,13 @@ test('slugs.en is null when no english slug exists', function () {
         'status' => PostStatus::Published,
     ]);
 
-    $this->getJson('/api/blogs/'.$blog->slug.'?lang=id')
+    $this->getJson('/api/v1/blogs/'.$blog->slug.'?lang=id')
         ->assertOk()
         ->assertJsonPath('data.slugs.en', null);
 });
 
 test('api responses expose vary header for language negotiation', function () {
-    $this->getJson('/api/settings?lang=id')
+    $this->getJson('/api/v1/settings?lang=id')
         ->assertOk()
         ->assertHeader('Vary', 'Accept-Language, lang')
         ->assertHeaderContains('Cache-Control', 'max-age=900');
@@ -113,7 +113,7 @@ test('api responses expose vary header for language negotiation', function () {
 test('canonical url includes the locale prefix', function () {
     $promo = Promo::factory()->create(['is_active' => true]);
 
-    $this->getJson('/api/promos/'.$promo->slug.'?lang=id')
+    $this->getJson('/api/v1/promos/'.$promo->slug.'?lang=id')
         ->assertOk()
         ->assertJsonPath('data.seo.canonical_url', fn ($value) => str_contains($value, '/id/promos/'.$promo->slug));
 });

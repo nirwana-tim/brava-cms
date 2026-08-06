@@ -92,8 +92,8 @@ Lihat dokumen terpisah: `C:\laragon\www\brava-compro\docs\I18N_BILINGUAL_PLAN.md
 
 ## 7. Testing (Pest)
 
-- API per-locale: `/api/blogs?lang=en` → konten EN; tanpa `lang` → ID; field EN kosong → fallback ID.
-- Resolusi slug per-locale (`/api/blogs/convection-tips?lang=en`).
+- API per-locale: `/api/v1/blogs?lang=en` → konten EN; tanpa `lang` → ID; field EN kosong → fallback ID.
+- Resolusi slug per-locale (`/api/v1/blogs/convection-tips?lang=en`).
 - Validasi admin per-locale + validasi unik slug.
 
 ## 8. Estimasi Effort / Biaya

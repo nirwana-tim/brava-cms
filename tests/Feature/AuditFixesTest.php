@@ -26,7 +26,7 @@ test('api categories endpoint returns categories filtered by type', function () 
     Category::create(['name' => 'Tech', 'slug' => 'tech', 'type' => 'blog']);
     Category::create(['name' => 'Corporate', 'slug' => 'corporate', 'type' => 'portfolio']);
 
-    $response = $this->getJson('/api/categories?type=blog');
+    $response = $this->getJson('/api/v1/categories?type=blog');
 
     $response->assertOk()
         ->assertJsonCount(1, 'data')
@@ -34,7 +34,7 @@ test('api categories endpoint returns categories filtered by type', function () 
 });
 
 test('api categories endpoint rejects requests without type', function () {
-    $this->getJson('/api/categories')->assertStatus(422);
+    $this->getJson('/api/v1/categories')->assertStatus(422);
 });
 
 test('boolean settings can be deactivated via toggle request', function () {
@@ -57,11 +57,11 @@ test('boolean settings can be deactivated via toggle request', function () {
 test('blog list cache is keyed per page', function () {
     Blog::factory()->count(25)->create();
 
-    $this->getJson('/api/blogs?page=1');
-    $firstPageIds = collect($this->getJson('/api/blogs?page=1')->json('data'))->pluck('id');
+    $this->getJson('/api/v1/blogs?page=1');
+    $firstPageIds = collect($this->getJson('/api/v1/blogs?page=1')->json('data'))->pluck('id');
 
-    $this->getJson('/api/blogs?page=2');
-    $secondPageIds = collect($this->getJson('/api/blogs?page=2')->json('data'))->pluck('id');
+    $this->getJson('/api/v1/blogs?page=2');
+    $secondPageIds = collect($this->getJson('/api/v1/blogs?page=2')->json('data'))->pluck('id');
 
     expect($firstPageIds)->not->toEqual($secondPageIds)
         ->and($firstPageIds)->toHaveCount(12)
@@ -81,7 +81,7 @@ test('promo list api builds wa_url from settings without per-item queries', func
         'wa_template' => 'Halo min, saya tertarik.',
     ]);
 
-    $response = $this->getJson('/api/promos');
+    $response = $this->getJson('/api/v1/promos');
 
     $response->assertOk();
     $first = $response->json('data.0');

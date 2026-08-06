@@ -95,7 +95,7 @@ it('orders faqs deterministically by sort_order then id when ties exist', functi
     $tieA = Faq::factory()->create(['sort_order' => 2]);
     $tieB = Faq::factory()->create(['sort_order' => 2]);
 
-    $response = $this->getJson('/api/faqs');
+    $response = $this->getJson('/api/v1/faqs');
 
     $response->assertOk();
     $ids = collect($response->json('data'))->pluck('id')->all();

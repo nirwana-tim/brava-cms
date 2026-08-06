@@ -30,7 +30,7 @@ test('media picker list is limited to 60 items to prevent memory exhaustion', fu
 });
 
 test('contact api rejects oversized messages over 5000 chars', function () {
-    $response = $this->postJson('/api/contact', [
+    $response = $this->postJson('/api/v1/contact', [
         'name' => 'John Doe',
         'email' => 'john@example.com',
         'message' => str_repeat('a', 5001),

@@ -107,7 +107,7 @@ test('sitemap excludes expired promos', function () {
     Promo::factory()->expired()->create(['slug' => 'expired-promo']);
     Promo::factory()->create(['slug' => 'live-promo']);
 
-    $response = $this->getJson('/api/sitemap');
+    $response = $this->getJson('/api/v1/sitemap');
 
     $slugs = collect($response->json('data'))->where('type', 'promo')->pluck('slug')->all();
     expect($slugs)->toContain('live-promo')
@@ -121,7 +121,7 @@ test('canonical url stays id-prefixed when english slug is missing', function ()
         'status' => 'published',
     ]);
 
-    $response = $this->withHeaders(['lang' => 'en'])->getJson('/api/blogs/'.$blog->slug);
+    $response = $this->withHeaders(['lang' => 'en'])->getJson('/api/v1/blogs/'.$blog->slug);
     $response->assertOk()
         ->assertJsonPath('data.seo.canonical_url', config('app.frontend_url').'/id/blogs/'.$blog->slug);
 });
@@ -130,7 +130,7 @@ test('services are ordered by id as tiebreaker in public list', function () {
     $a = Service::create(['title' => 'Alpha', 'slug' => 'alpha', 'description' => 'a', 'sort_order' => 0]);
     $b = Service::create(['title' => 'Beta', 'slug' => 'beta', 'description' => 'b', 'sort_order' => 0]);
 
-    $response = $this->getJson('/api/services');
+    $response = $this->getJson('/api/v1/services');
     $ids = collect($response->json('data'))->pluck('id')->all();
 
     expect($response->assertOk())

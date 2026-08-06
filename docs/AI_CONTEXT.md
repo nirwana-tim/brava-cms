@@ -206,15 +206,15 @@ REST conventions must be followed.
 
 Example:
 
-GET /api/services
+GET /api/v1/services
 
-POST /api/contact
+POST /api/v1/contact
 
-GET /api/blogs
+GET /api/v1/blogs
 
-GET /api/blogs/{slug}
+GET /api/v1/blogs/{slug}
 
-GET /api/sitemap
+GET /api/v1/sitemap
 
 Responses must always use API Resources.
 
@@ -658,7 +658,7 @@ API endpoints use caching via cache services (`Cache::flexible` / `Cache::rememb
 
 Cache is automatically flushed via the `App\Traits\ClearsApiCache` trait when CMS models are saved or deleted.
 
-Successful `GET /api/*` responses include `Cache-Control: public, max-age=900, s-maxage=900` via the `App\Http\Middleware\CacheApiHeaders` middleware (registered on the `api` middleware group). POST requests and non-API routes are never publicly cached.
+Successful `GET /api/v1/*` responses include `Cache-Control: public, max-age=900, s-maxage=900` via the `App\Http\Middleware\CacheApiHeaders` middleware (registered on the `api` middleware group). POST requests and non-API routes are never publicly cached.
 
 Avoid premature optimization.
 

@@ -22,7 +22,7 @@ test('blog api returns absolute image urls and canonical url', function () {
         'og_image' => '/storage/media/og.jpg',
     ]);
 
-    $response = $this->getJson('/api/blogs/'.$blog->slug);
+    $response = $this->getJson('/api/v1/blogs/'.$blog->slug);
 
     $response->assertOk();
     $data = $response->json('data');
@@ -40,7 +40,7 @@ test('blog api falls back og image to featured image', function () {
         'og_image' => null,
     ]);
 
-    $response = $this->getJson('/api/blogs/'.$blog->slug);
+    $response = $this->getJson('/api/v1/blogs/'.$blog->slug);
 
     expect($response->json('data.seo.og_image'))->toBe(url('/storage/media/cover.jpg'));
 });
@@ -53,7 +53,7 @@ test('portfolio api returns absolute image urls canonical url and new seo fields
         'schema_type' => 'CreativeWork',
     ]);
 
-    $response = $this->getJson('/api/portfolio/'.$portfolio->slug);
+    $response = $this->getJson('/api/v1/portfolio/'.$portfolio->slug);
 
     $response->assertOk();
     $data = $response->json('data');
@@ -72,7 +72,7 @@ test('promo api returns seo block with absolute image and canonical url', functi
         'is_active' => true,
     ]);
 
-    $response = $this->getJson('/api/promos/'.$promo->slug);
+    $response = $this->getJson('/api/v1/promos/'.$promo->slug);
 
     $response->assertOk();
     $data = $response->json('data');
@@ -92,9 +92,9 @@ test('list resources expose absolute media urls', function () {
     $portfolio = PortfolioItem::factory()->create(['photo' => '/storage/portfolio/list.jpg']);
     $service = Service::factory()->create(['photo' => '/storage/services/list.jpg']);
 
-    $blogResponse = $this->getJson('/api/blogs');
-    $portfolioResponse = $this->getJson('/api/portfolio');
-    $serviceResponse = $this->getJson('/api/services');
+    $blogResponse = $this->getJson('/api/v1/blogs');
+    $portfolioResponse = $this->getJson('/api/v1/portfolio');
+    $serviceResponse = $this->getJson('/api/v1/services');
 
     expect($blogResponse->json('data.0.featured_image'))->toBe(url('/storage/media/list-cover.jpg'))
         ->and($portfolioResponse->json('data.0.photo'))->toBe(url('/storage/portfolio/list.jpg'))
@@ -111,7 +111,7 @@ test('sitemap endpoint returns public content with valid locs', function () {
     $service = Service::factory()->create(['is_active' => true]);
     $category = Category::create(['name' => 'Tech', 'slug' => 'tech', 'type' => 'blog']);
 
-    $response = $this->getJson('/api/sitemap');
+    $response = $this->getJson('/api/v1/sitemap');
 
     $response->assertOk();
     $urls = collect($response->json('data'));
@@ -131,8 +131,8 @@ test('sitemap endpoint returns public content with valid locs', function () {
 test('sitemap endpoint is cached and invalidated on content change', function () {
     Blog::factory()->published()->create();
 
-    $first = $this->getJson('/api/sitemap')->json('data');
-    $second = $this->getJson('/api/sitemap')->json('data');
+    $first = $this->getJson('/api/v1/sitemap')->json('data');
+    $second = $this->getJson('/api/v1/sitemap')->json('data');
 
     expect(count($first))->toBe(1)
         ->and(count($second))->toBe(1);
@@ -140,7 +140,7 @@ test('sitemap endpoint is cached and invalidated on content change', function ()
     Blog::factory()->published()->create();
     Cache::store('api')->forget('sitemap.all.id');
 
-    $third = $this->getJson('/api/sitemap')->json('data');
+    $third = $this->getJson('/api/v1/sitemap')->json('data');
     expect(count($third))->toBe(2);
 });
 
@@ -192,7 +192,7 @@ test('blog admin can store robots follow and schema type', function () {
 test('draft blogs are excluded from sitemap', function () {
     Blog::factory()->draft()->create(['slug' => 'hidden-draft']);
 
-    $response = $this->getJson('/api/sitemap');
+    $response = $this->getJson('/api/v1/sitemap');
 
     expect(collect($response->json('data'))->where('slug', 'hidden-draft'))->toHaveCount(0);
 });
@@ -200,13 +200,13 @@ test('draft blogs are excluded from sitemap', function () {
 test('draft blogs do not expose seo or canonical via api', function () {
     Blog::factory()->draft()->create(['slug' => 'hidden-draft']);
 
-    $this->getJson('/api/blogs/hidden-draft')->assertStatus(404);
+    $this->getJson('/api/v1/blogs/hidden-draft')->assertStatus(404);
 });
 
 test('successful get api responses include cache control header', function () {
     Blog::factory()->published()->create();
 
-    $response = $this->get('/api/blogs');
+    $response = $this->get('/api/v1/blogs');
 
     $response->assertOk();
     $cacheControl = $response->headers->get('Cache-Control');
@@ -217,7 +217,7 @@ test('successful get api responses include cache control header', function () {
 });
 
 test('post api requests are not publicly cached', function () {
-    $response = $this->postJson('/api/contact', [
+    $response = $this->postJson('/api/v1/contact', [
         'name' => 'John',
         'email' => 'john@example.com',
         'message' => 'Hello',

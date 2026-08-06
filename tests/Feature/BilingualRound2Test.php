@@ -55,11 +55,11 @@ test('settings update persists translatable values as a per-locale json payload'
 test('public settings api returns locale-aware translatable values', function () {
     Setting::create(['key' => 'site_name', 'value' => ['id' => 'Brava', 'en' => 'Brava English'], 'group' => 'general', 'type' => 'text']);
 
-    $this->getJson('/api/settings?lang=id')
+    $this->getJson('/api/v1/settings?lang=id')
         ->assertOk()
         ->assertJsonPath('data.general.site_name', 'Brava');
 
-    $this->getJson('/api/settings?lang=en')
+    $this->getJson('/api/v1/settings?lang=en')
         ->assertOk()
         ->assertJsonPath('data.general.site_name', 'Brava English');
 });

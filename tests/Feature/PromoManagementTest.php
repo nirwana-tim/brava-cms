@@ -53,7 +53,7 @@ test('api highlight endpoint returns active highlighted promo or falls back to l
         'slug' => 'hero-promo',
     ]);
 
-    $response = $this->getJson('/api/promos/highlight');
+    $response = $this->getJson('/api/v1/promos/highlight');
 
     $response->assertStatus(200)
         ->assertJsonPath('data.title', 'Hero Promo')
@@ -74,7 +74,7 @@ test('api highlight endpoint falls back to regular running promo if highlighted 
         'is_highlighted' => false,
     ]);
 
-    $response = $this->getJson('/api/promos/highlight');
+    $response = $this->getJson('/api/v1/promos/highlight');
 
     $response->assertStatus(200)
         ->assertJsonPath('data.title', 'Active Regular Promo');
@@ -87,7 +87,7 @@ test('api list endpoint excludes highlighted, inactive, and expired', function (
     $expired = Promo::factory()->expired()->create(['title' => 'Expired Promo']);
     $inactive = Promo::factory()->inactive()->create(['title' => 'Inactive Promo']);
 
-    $response = $this->getJson('/api/promos');
+    $response = $this->getJson('/api/v1/promos');
 
     $response->assertStatus(200);
     $titles = collect($response->json('data'))->pluck('title')->toArray();
@@ -102,7 +102,7 @@ test('api list endpoint returns state field and coming soon promo', function () 
     $coming = Promo::factory()->comingSoon()->create(['title' => 'Coming Promo']);
     $expired = Promo::factory()->expired()->create(['title' => 'Expired Promo']);
 
-    $response = $this->getJson('/api/promos');
+    $response = $this->getJson('/api/v1/promos');
     $response->assertStatus(200);
 
     $data = collect($response->json('data'));

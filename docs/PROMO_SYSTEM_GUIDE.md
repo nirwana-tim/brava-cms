@@ -48,7 +48,7 @@ Tabel `promos` menyimpan seluruh informasi promosi, kupon, dan voucher:
 ### B. Auto-Expired & Auto-Fallback Logic
 - **Auto-Expired**: Kueri API secara otomatis menyaring promo dengan syarat:
   `is_active = true AND (valid_until IS NULL OR valid_until >= NOW())`
-- **Auto-Fallback Highlight**: Jika promo *Highlight* utama masa berlakunya habis (expired) tengah malam, API `GET /api/promos/highlight` tidak akan menghasilkan `null`. Sistem akan otomatis melakukan *fallback* ke **Promo Aktif Terbaru** sehingga banner utama di website dan modal popup tidak pernah kosong/rusak.
+- **Auto-Fallback Highlight**: Jika promo *Highlight* utama masa berlakunya habis (expired) tengah malam, API `GET /api/v1/promos/highlight` tidak akan menghasilkan `null`. Sistem akan otomatis melakukan *fallback* ke **Promo Aktif Terbaru** sehingga banner utama di website dan modal popup tidak pernah kosong/rusak.
 - **Zero Promo State**: Jika tidak ada sama sekali promo yang aktif di database, API mengembalikan `{"data": null}` dan frontend Next.js menyembunyikan tombol mengapung serta menampilkan state *"Belum ada promo aktif saat ini"*.
 
 ### C. WhatsApp Auto-Template Generator
@@ -63,7 +63,7 @@ Tabel `promos` menyimpan seluruh informasi promosi, kupon, dan voucher:
 
 Semua endpoint dilindungi middleware `throttle:60,1` (maksimal 60 request/menit per IP) dan menggunakan sistem **Laravel Flexible Caching** yang otomatis di-reset saat ada perubahan di CMS.
 
-### A. `GET /api/promos/highlight`
+### A. `GET /api/v1/promos/highlight`
 Mengambil 1 promo utama untuk ditampilkan di Modal Popup Voucher & Hero Banner halaman `/promo`.
 ```json
 {
@@ -100,12 +100,12 @@ Mengambil 1 promo utama untuk ditampilkan di Modal Popup Voucher & Hero Banner h
 
 > **SEO note:** Promo menyertakan blok `seo` (komputed di `PromoResource`) untuk meta title/description, OpenGraph, robots, dan canonical URL (berbasis `FRONTEND_URL`).
 
-### B. `GET /api/promos`
+### B. `GET /api/v1/promos`
 Mengambil daftar promo aktif lainnya (selain promo highlight) dalam bentuk paginasi (maksimal 100 item/halaman, default 12).
 - Dukungan parameter query: `?per_page=12&page=1`
 - Promo yang ter-highlight di atas **otomatis dikecualikan (excluded)** dari daftar ini agar tidak muncul ganda di halaman yang sama.
 
-### C. `GET /api/promos/{slug}`
+### C. `GET /api/v1/promos/{slug}`
 Mengambil detail 1 promo berdasarkan slug (jika dibutuhkan halaman detail individual).
 
 ---

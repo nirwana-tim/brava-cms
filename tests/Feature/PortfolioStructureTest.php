@@ -70,7 +70,7 @@ test('portfolio api returns specifications and features instead of content', fun
         'features' => ['Adem dipakai'],
     ]);
 
-    $response = $this->getJson('/api/portfolio/'.$portfolio->slug);
+    $response = $this->getJson('/api/v1/portfolio/'.$portfolio->slug);
 
     $response->assertOk();
     $data = $response->json('data');
@@ -88,7 +88,7 @@ test('portfolio api returns empty arrays when specs and features are null', func
         'features' => null,
     ]);
 
-    $response = $this->getJson('/api/portfolio/'.$portfolio->slug);
+    $response = $this->getJson('/api/v1/portfolio/'.$portfolio->slug);
 
     $response->assertOk();
 

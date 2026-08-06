@@ -22,7 +22,7 @@ test('blog api returns english translation when lang=en query param is provided'
     ]);
 
     // Query in English
-    $responseEn = $this->getJson('/api/blogs/english-slug?lang=en');
+    $responseEn = $this->getJson('/api/v1/blogs/english-slug?lang=en');
     $responseEn->assertStatus(200)
         ->assertJsonPath('data.title', 'English Title')
         ->assertJsonPath('data.slug', 'english-slug')
@@ -30,7 +30,7 @@ test('blog api returns english translation when lang=en query param is provided'
         ->assertJsonPath('data.slugs.en', 'english-slug');
 
     // Query in Indonesian
-    $responseId = $this->getJson('/api/blogs/judul-id?lang=id');
+    $responseId = $this->getJson('/api/v1/blogs/judul-id?lang=id');
     $responseId->assertStatus(200)
         ->assertJsonPath('data.title', 'Judul Bahasa Indonesia')
         ->assertJsonPath('data.slug', 'judul-id');
@@ -47,7 +47,7 @@ test('blog api falls back to Indonesian when English translation is missing', fu
         'status' => PostStatus::Published,
     ]);
 
-    $response = $this->getJson('/api/blogs/judul-hanya-id?lang=en');
+    $response = $this->getJson('/api/v1/blogs/judul-hanya-id?lang=en');
     $response->assertStatus(200)
         ->assertJsonPath('data.title', 'Judul HANYA Indonesia');
 });
@@ -69,11 +69,11 @@ test('service and portfolio api support bilingual content and fallback', functio
         'is_active' => true,
     ]);
 
-    $this->getJson('/api/services?lang=en')
+    $this->getJson('/api/v1/services?lang=en')
         ->assertStatus(200)
         ->assertJsonPath('data.0.title', 'Service EN');
 
-    $this->getJson('/api/portfolio/portfolio-en?lang=en')
+    $this->getJson('/api/v1/portfolio/portfolio-en?lang=en')
         ->assertStatus(200)
         ->assertJsonPath('data.title', 'Portfolio EN')
         ->assertJsonPath('data.client', 'Client EN');
