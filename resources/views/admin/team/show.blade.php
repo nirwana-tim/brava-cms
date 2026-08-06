@@ -22,10 +22,6 @@
         <div class="card-body">
             <div class="grid grid-cols-2 gap-6 mb-6">
                 <div>
-                    <p class="section-title">Position</p>
-                    <p style="color: var(--table-text)">{{ $team->position ?? 'Not set' }}</p>
-                </div>
-                <div>
                     <p class="section-title">Active</p>
                     <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $team->is_active ? 'badge-active' : 'badge-inactive' }}">
                         {{ $team->is_active ? 'Active' : 'Inactive' }}
@@ -45,13 +41,39 @@
                 @endif
             </div>
 
+            <x-admin.language-tabs>
+                <!-- ID Tab -->
+                <div x-show="langTab === 'id'" class="space-y-6">
+                    <div>
+                        <p class="section-title">Name</p>
+                        <p style="color: var(--table-text)">{{ $team->getTranslation('name', 'id', false) }}</p>
+                    </div>
+                    <div>
+                        <p class="section-title">Position</p>
+                        <p style="color: var(--table-text)">{{ $team->getTranslation('position', 'id', false) ?? 'Not set' }}</p>
+                    </div>
+                </div>
+
+                <!-- EN Tab -->
+                <div x-show="langTab === 'en'" class="space-y-6">
+                    <div>
+                        <p class="section-title">Name (EN)</p>
+                        <p style="color: var(--table-text)">{{ $team->getTranslation('name', 'en', false) ?: 'No English translation' }}</p>
+                    </div>
+                    <div>
+                        <p class="section-title">Position (EN)</p>
+                        <p style="color: var(--table-text)">{{ $team->getTranslation('position', 'en', false) ?: 'No English translation' }}</p>
+                    </div>
+                </div>
+            </x-admin.language-tabs>
+
                 <div class="mb-6">
                     <p class="section-title">Avatar</p>
                     @if ($avatar->hasAvatar($team->avatar))
-                        <img src="{{ $team->avatar }}" alt="{{ $team->name }}" class="mt-2 rounded-full" style="width: 100px; height: 100px; object-fit: cover;">
+                        <img src="{{ $team->avatar }}" alt="{{ $team->getTranslation('name', 'id', false) }}" class="mt-2 rounded-full" style="width: 100px; height: 100px; object-fit: cover;">
                     @else
-                        <div class="mt-2 rounded-full flex items-center justify-center text-2xl font-bold" style="width: 100px; height: 100px; background: {{ $avatar->color($team->name) }}; color: #fff;">
-                            {{ $avatar->initials($team->name) }}
+                        <div class="mt-2 rounded-full flex items-center justify-center text-2xl font-bold" style="width: 100px; height: 100px; background: {{ $avatar->color($team->getTranslation('name', 'id', false)) }}; color: #fff;">
+                            {{ $avatar->initials($team->getTranslation('name', 'id', false)) }}
                         </div>
                     @endif
                 </div>

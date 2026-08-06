@@ -12,15 +12,20 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $password = env('ADMIN_PASSWORD', Str::random(24));
-        $this->command->warn('Admin accounts created with password: '.$password);
+        $superAdminEmail = env('SUPERADMIN_EMAIL', 'superadmin@brava.id');
+        $superAdminPassword = env('SUPERADMIN_PASSWORD') ?: Str::random(24);
+        $adminEmail = env('ADMIN_EMAIL', 'admin@brava.id');
+        $adminPassword = env('ADMIN_PASSWORD') ?: Str::random(24);
+
+        $this->command->warn("Super Admin ({$superAdminEmail}) created with password: {$superAdminPassword}");
+        $this->command->warn("Admin ({$adminEmail}) created with password: {$adminPassword}");
 
         $superAdmin = User::factory()->create([
             'name' => 'Super Admin',
-            'email' => 'superadmin@brava.id',
+            'email' => $superAdminEmail,
             'role' => UserRole::SuperAdmin,
             'position' => 'Super Administrator',
-            'password' => $password,
+            'password' => $superAdminPassword,
         ]);
 
         TeamMember::create([
@@ -34,10 +39,10 @@ class DatabaseSeeder extends Seeder
 
         $admin = User::factory()->create([
             'name' => 'Admin User',
-            'email' => 'admin@brava.id',
+            'email' => $adminEmail,
             'role' => UserRole::Admin,
             'position' => 'Administrator',
-            'password' => $password,
+            'password' => $adminPassword,
         ]);
 
         TeamMember::create([

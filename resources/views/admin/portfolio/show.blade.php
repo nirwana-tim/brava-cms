@@ -23,8 +23,12 @@
 
             <div class="grid grid-cols-2 gap-6 mb-6">
                 <div>
-                    <p class="section-title">Slug</p>
-                    <p style="color: var(--table-text)">{{ $portfolio->slug }}</p>
+                    <p class="section-title">Slug (ID)</p>
+                    <p style="color: var(--table-text)">{{ $portfolio->getTranslation('slug', 'id', false) }}</p>
+                </div>
+                <div>
+                    <p class="section-title">Slug (EN)</p>
+                    <p style="color: var(--table-text)">{{ $portfolio->getTranslation('slug', 'en', false) ?: '-' }}</p>
                 </div>
                 <div>
                     <p class="section-title">Active</p>
@@ -48,12 +52,6 @@
                     <p style="color: var(--table-text)">{{ $portfolio->service->title }}</p>
                 </div>
                 @endif
-                @if ($portfolio->client)
-                <div>
-                    <p class="section-title">Client</p>
-                    <p style="color: var(--table-text)">{{ $portfolio->client }}</p>
-                </div>
-                @endif
                 @if ($portfolio->completed_at)
                 <div>
                     <p class="section-title">Completed At</p>
@@ -62,52 +60,94 @@
                 @endif
             </div>
 
-            @if ($portfolio->meta_title || $portfolio->meta_description || $portfolio->og_image)
-                <div class="mb-6">
-                    <p class="section-title mb-2">SEO</p>
-                    <div class="grid grid-cols-2 gap-4 text-sm" style="color: var(--table-text)">
-                        @if ($portfolio->meta_title)
-                            <div><span class="font-medium">Meta Title:</span> {{ $portfolio->meta_title }}</div>
-                        @endif
-                        @if ($portfolio->meta_description)
-                            <div><span class="font-medium">Meta Description:</span> {{ $portfolio->meta_description }}</div>
-                        @endif
-                        @if ($portfolio->og_image)
-                            <div class="col-span-2">
-                                <span class="font-medium">OG Image:</span>
-                                <img src="{{ $portfolio->og_image }}" alt="OG Image" class="mt-1 rounded max-h-32">
-                            </div>
-                        @endif
+            <x-admin.language-tabs>
+                <!-- ID Tab -->
+                <div x-show="langTab === 'id'" class="space-y-6">
+                    @if ($portfolio->getTranslation('description', 'id', false))
                         <div>
-                            <span class="font-medium">Indexing:</span>
-                            <span class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full {{ $portfolio->robots_index ? 'badge-active' : 'badge-inactive' }}">
-                                {{ $portfolio->robots_index ? 'Allowed' : 'Noindex' }}
-                            </span>
+                            <p class="section-title">Description</p>
+                            <p class="mt-2" style="color: var(--table-text)">{{ $portfolio->getTranslation('description', 'id', false) }}</p>
                         </div>
-                        @if ($portfolio->robots_follow !== null)
-                            <div>
-                                <span class="font-medium">Follow Links:</span>
-                                <span class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full {{ $portfolio->robots_follow ? 'badge-active' : 'badge-inactive' }}">
-                                    {{ $portfolio->robots_follow ? 'Follow' : 'Nofollow' }}
-                                </span>
+                    @endif
+                    @if ($portfolio->getTranslation('client', 'id', false))
+                        <div>
+                            <p class="section-title">Client</p>
+                            <p style="color: var(--table-text)">{{ $portfolio->getTranslation('client', 'id', false) }}</p>
+                        </div>
+                    @endif
+                    @if ($portfolio->meta_title || $portfolio->meta_description || $portfolio->og_image)
+                        <div>
+                            <p class="section-title mb-2">SEO</p>
+                            <div class="grid grid-cols-2 gap-4 text-sm" style="color: var(--table-text)">
+                                @if ($portfolio->getTranslation('meta_title', 'id', false))
+                                    <div><span class="font-medium">Meta Title:</span> {{ $portfolio->getTranslation('meta_title', 'id', false) }}</div>
+                                @endif
+                                @if ($portfolio->getTranslation('meta_description', 'id', false))
+                                    <div><span class="font-medium">Meta Description:</span> {{ $portfolio->getTranslation('meta_description', 'id', false) }}</div>
+                                @endif
+                                @if ($portfolio->og_image)
+                                    <div class="col-span-2">
+                                        <span class="font-medium">OG Image:</span>
+                                        <img src="{{ $portfolio->og_image }}" alt="OG Image" class="mt-1 rounded max-h-32">
+                                    </div>
+                                @endif
+                                <div>
+                                    <span class="font-medium">Indexing:</span>
+                                    <span class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full {{ $portfolio->robots_index ? 'badge-active' : 'badge-inactive' }}">
+                                        {{ $portfolio->robots_index ? 'Allowed' : 'Noindex' }}
+                                    </span>
+                                </div>
+                                @if ($portfolio->robots_follow !== null)
+                                    <div>
+                                        <span class="font-medium">Follow Links:</span>
+                                        <span class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full {{ $portfolio->robots_follow ? 'badge-active' : 'badge-inactive' }}">
+                                            {{ $portfolio->robots_follow ? 'Follow' : 'Nofollow' }}
+                                        </span>
+                                    </div>
+                                @endif
+                                @if ($portfolio->schema_type)
+                                    <div>
+                                        <span class="font-medium">Schema Type:</span>
+                                        <span class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full" style="background: var(--card-header-bg); color: var(--table-text)">{{ $portfolio->schema_type }}</span>
+                                    </div>
+                                @endif
                             </div>
-                        @endif
-                        @if ($portfolio->schema_type)
-                            <div>
-                                <span class="font-medium">Schema Type:</span>
-                                <span class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full" style="background: var(--card-header-bg); color: var(--table-text)">{{ $portfolio->schema_type }}</span>
-                            </div>
-                        @endif
-                    </div>
+                        </div>
+                    @endif
                 </div>
-            @endif
 
-            @if ($portfolio->description)
-                <div class="mb-6">
-                    <p class="section-title">Description</p>
-                    <p class="mt-2" style="color: var(--table-text)">{{ $portfolio->description }}</p>
+                <!-- EN Tab -->
+                <div x-show="langTab === 'en'" class="space-y-6">
+                    @if ($portfolio->getTranslation('description', 'en', false))
+                        <div>
+                            <p class="section-title">Description (EN)</p>
+                            <p class="mt-2" style="color: var(--table-text)">{{ $portfolio->getTranslation('description', 'en', false) }}</p>
+                        </div>
+                    @endif
+                    @if ($portfolio->getTranslation('client', 'en', false))
+                        <div>
+                            <p class="section-title">Client (EN)</p>
+                            <p style="color: var(--table-text)">{{ $portfolio->getTranslation('client', 'en', false) }}</p>
+                        </div>
+                    @endif
+                    @if ($portfolio->getTranslation('meta_title', 'en', false) || $portfolio->getTranslation('meta_description', 'en', false))
+                        <div>
+                            <p class="section-title mb-2">SEO (EN)</p>
+                            <div class="grid grid-cols-2 gap-4 text-sm" style="color: var(--table-text)">
+                                @if ($portfolio->getTranslation('meta_title', 'en', false))
+                                    <div><span class="font-medium">Meta Title:</span> {{ $portfolio->getTranslation('meta_title', 'en', false) }}</div>
+                                @endif
+                                @if ($portfolio->getTranslation('meta_description', 'en', false))
+                                    <div><span class="font-medium">Meta Description:</span> {{ $portfolio->getTranslation('meta_description', 'en', false) }}</div>
+                                @endif
+                            </div>
+                        </div>
+                    @endif
+                    @unless ($portfolio->getTranslation('description', 'en', false) || $portfolio->getTranslation('client', 'en', false) || $portfolio->getTranslation('meta_title', 'en', false))
+                        <p style="color: var(--muted-text)">No English translation available.</p>
+                    @endunless
                 </div>
-            @endif
+            </x-admin.language-tabs>
 
             @if (! empty($portfolio->specifications))
                 <div class="mb-6">

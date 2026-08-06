@@ -31,23 +31,42 @@
             @if ($avatar->hasAvatar($testimonial->avatar))
                 <div class="mb-6">
                     <p class="section-title">Avatar</p>
-                    <img src="{{ $testimonial->avatar }}" alt="{{ $testimonial->client_name }}" class="mt-2 rounded-full" style="width: 80px; height: 80px; object-fit: cover;">
+                    <img src="{{ $testimonial->avatar }}" alt="{{ $testimonial->getTranslation('client_name', 'id', false) }}" class="mt-2 rounded-full" style="width: 80px; height: 80px; object-fit: cover;">
                 </div>
             @else
                 <div class="mb-6">
                     <p class="section-title">Avatar</p>
-                    <div class="mt-2 rounded-full flex items-center justify-center text-xl font-bold" style="width: 80px; height: 80px; background: {{ $avatar->color($testimonial->client_name) }}; color: #fff;">
-                        {{ $avatar->initials($testimonial->client_name) }}
+                    <div class="mt-2 rounded-full flex items-center justify-center text-xl font-bold" style="width: 80px; height: 80px; background: {{ $avatar->color($testimonial->getTranslation('client_name', 'id', false)) }}; color: #fff;">
+                        {{ $avatar->initials($testimonial->getTranslation('client_name', 'id', false)) }}
                     </div>
                 </div>
             @endif
 
-            <div>
-                <p class="section-title">Content</p>
-                <div class="mt-2" style="color: var(--table-text); line-height: 1.8; font-style: italic;">
-                    &ldquo;{{ $testimonial->content }}&rdquo;
+            <x-admin.language-tabs>
+                <!-- ID Tab -->
+                <div x-show="langTab === 'id'" class="space-y-6">
+                    <div>
+                        <p class="section-title">Content</p>
+                        <div class="mt-2" style="color: var(--table-text); line-height: 1.8; font-style: italic;">
+                            &ldquo;{{ $testimonial->getTranslation('content', 'id', false) }}&rdquo;
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+                <!-- EN Tab -->
+                <div x-show="langTab === 'en'" class="space-y-6">
+                    <div>
+                        <p class="section-title">Content (EN)</p>
+                        <div class="mt-2" style="color: var(--table-text); line-height: 1.8; font-style: italic;">
+                            @if ($testimonial->getTranslation('content', 'en', false))
+                                &ldquo;{{ $testimonial->getTranslation('content', 'en', false) }}&rdquo;
+                            @else
+                                <span style="color: var(--muted-text)">No English translation available.</span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </x-admin.language-tabs>
         </div>
     </div>
 </x-admin.layouts.app>
