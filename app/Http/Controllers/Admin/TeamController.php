@@ -35,7 +35,6 @@ class TeamController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                     ->orWhere('position', 'like', "%{$search}%")
-                    ->orWhere('bio', 'like', "%{$search}%")
                     ->orWhereHas('user', fn ($uq) => $uq->where('email', 'like', "%{$search}%"));
             });
         }
@@ -52,7 +51,13 @@ class TeamController extends Controller
 
     public function store(StoreTeamRequest $request): RedirectResponse
     {
-        $team = TeamMember::create($request->validated());
+        $validated = $request->validated();
+
+        if (($validated['sort_order'] ?? null) === null) {
+            $validated['sort_order'] = (int) TeamMember::max('sort_order') + 1;
+        }
+
+        $team = TeamMember::create($validated);
 
         if ($team->email) {
             $user = User::create([

@@ -46,7 +46,13 @@ class ServiceController extends Controller
 
     public function store(StoreServiceRequest $request): RedirectResponse
     {
-        Service::create($request->validated());
+        $validated = $request->validated();
+
+        if (($validated['sort_order'] ?? null) === null) {
+            $validated['sort_order'] = (int) Service::max('sort_order') + 1;
+        }
+
+        Service::create($validated);
 
         return redirect()->route('admin.services.index')
             ->with('success', 'Service created successfully.');

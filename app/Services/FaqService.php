@@ -17,6 +17,7 @@ class FaqService
         return Cache::store('api')->flexible('faqs.all.'.$locale, [3600, 7200], function () {
             return $this->model->active()
                 ->orderBy('sort_order')
+                ->orderBy('id')
                 ->get();
         });
     }

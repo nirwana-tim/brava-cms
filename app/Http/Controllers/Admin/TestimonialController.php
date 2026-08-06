@@ -49,7 +49,13 @@ class TestimonialController extends Controller
 
     public function store(StoreTestimonialRequest $request): RedirectResponse
     {
-        Testimonial::create($request->validated());
+        $validated = $request->validated();
+
+        if (($validated['sort_order'] ?? null) === null) {
+            $validated['sort_order'] = (int) Testimonial::max('sort_order') + 1;
+        }
+
+        Testimonial::create($validated);
 
         return redirect()->route('admin.testimonials.index')
             ->with('success', 'Testimonial created successfully.');

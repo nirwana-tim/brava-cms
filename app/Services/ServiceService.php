@@ -26,6 +26,7 @@ class ServiceService
                     });
                 })
                 ->orderBy('sort_order')
+                ->orderBy('id')
                 ->paginate($perPage)
                 ->withQueryString();
         });

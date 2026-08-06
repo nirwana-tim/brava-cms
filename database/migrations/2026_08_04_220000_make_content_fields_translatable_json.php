@@ -40,7 +40,7 @@ return new class extends Migration
         $this->makeColumnsTranslatable('faqs', ['question', 'answer']);
 
         // 7. Team Members
-        $this->makeColumnsTranslatable('team_members', ['name', 'position', 'bio']);
+        $this->makeColumnsTranslatable('team_members', ['name', 'position']);
 
         // 8. Promos
         $this->makeColumnsTranslatable('promos', [

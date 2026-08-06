@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin;
 use App\Http\Requests\Concerns\NormalizesTranslatableInputs;
 use App\Http\Requests\Concerns\ValidatesImageUrl;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateServiceRequest extends FormRequest
 {
@@ -36,7 +37,7 @@ class UpdateServiceRequest extends FormRequest
             'photo_alt' => ['nullable', 'array'],
             'photo_alt.id' => ['nullable', 'string', 'max:255'],
             'photo_alt.en' => ['nullable', 'string', 'max:255'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
+            'sort_order' => ['nullable', 'integer', 'min:0', Rule::unique('services', 'sort_order')->ignore($this->route('service'))],
             'is_active' => ['boolean'],
         ];
     }

@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use App\Http\Requests\Concerns\NormalizesTranslatableInputs;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateFaqRequest extends FormRequest
 {
@@ -28,7 +29,7 @@ class UpdateFaqRequest extends FormRequest
             'answer' => ['required', 'array'],
             'answer.id' => ['required', 'string'],
             'answer.en' => ['nullable', 'string'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
+            'sort_order' => ['nullable', 'integer', 'min:0', Rule::unique('faqs', 'sort_order')->ignore($this->route('faq'))],
             'is_active' => ['boolean'],
         ];
     }

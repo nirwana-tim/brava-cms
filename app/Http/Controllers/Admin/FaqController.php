@@ -44,7 +44,13 @@ class FaqController extends Controller
 
     public function store(StoreFaqRequest $request): RedirectResponse
     {
-        Faq::create($request->validated());
+        $validated = $request->validated();
+
+        if (($validated['sort_order'] ?? null) === null) {
+            $validated['sort_order'] = (int) Faq::max('sort_order') + 1;
+        }
+
+        Faq::create($validated);
 
         return redirect()->route('admin.faqs.index')
             ->with('success', 'FAQ created successfully.');

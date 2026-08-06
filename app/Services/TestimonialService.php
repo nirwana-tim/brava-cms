@@ -15,7 +15,7 @@ class TestimonialService
         $locale = app()->getLocale();
 
         return Cache::store('api')->flexible('testimonials.all.'.$locale, [3600, 7200], function () {
-            return $this->model->active()->orderBy('sort_order')->get();
+            return $this->model->active()->orderBy('sort_order')->orderBy('id')->get();
         });
     }
 }

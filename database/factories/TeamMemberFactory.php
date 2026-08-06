@@ -17,7 +17,6 @@ class TeamMemberFactory extends Factory
         return [
             'name' => fake()->name(),
             'position' => fake()->jobTitle(),
-            'bio' => fake()->paragraphs(2, true),
             'avatar' => 'avatars/'.fake()->uuid().'.jpg',
             'email' => fake()->unique()->companyEmail(),
             'phone' => fake()->phoneNumber(),

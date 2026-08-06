@@ -33,12 +33,6 @@
                             <x-text-input id="position_id" name="position[id]" type="text" class="mt-1 block w-full" :value="old('position.id', $team->getTranslation('position', 'id', false))" required />
                             <x-input-error class="mt-2" :messages="$errors->get('position.id')" />
                         </div>
-
-                        <div>
-                            <x-input-label for="bio_id" :value="__('Bio / Short Description (ID)')" />
-                            <textarea id="bio_id" name="bio[id]" class="form-textarea mt-1 w-full" rows="3">{{ old('bio.id', $team->getTranslation('bio', 'id', false)) }}</textarea>
-                            <x-input-error class="mt-2" :messages="$errors->get('bio.id')" />
-                        </div>
                     </div>
 
                     <!-- EN Tab -->
@@ -53,12 +47,6 @@
                             <x-input-label for="position_en" :value="__('Position (EN - English)')" />
                             <x-text-input id="position_en" name="position[en]" type="text" class="mt-1 block w-full" :value="old('position.en', $team->getTranslation('position', 'en', false))" placeholder="e.g. Head of Production" />
                             <x-input-error class="mt-2" :messages="$errors->get('position.en')" />
-                        </div>
-
-                        <div>
-                            <x-input-label for="bio_en" :value="__('Bio / Short Description (EN - English)')" />
-                            <textarea id="bio_en" name="bio[en]" class="form-textarea mt-1 w-full" rows="3">{{ old('bio.en', $team->getTranslation('bio', 'en', false)) }}</textarea>
-                            <x-input-error class="mt-2" :messages="$errors->get('bio.en')" />
                         </div>
                     </div>
                 </x-admin.language-tabs>

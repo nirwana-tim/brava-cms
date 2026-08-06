@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin;
 use App\Http\Requests\Concerns\NormalizesTranslatableInputs;
 use App\Http\Requests\Concerns\ValidatesImageUrl;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateTeamRequest extends FormRequest
 {
@@ -17,7 +18,7 @@ class UpdateTeamRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        $this->normalizeTranslatableFields(['name', 'position', 'bio']);
+        $this->normalizeTranslatableFields(['name', 'position']);
     }
 
     public function rules(): array
@@ -32,10 +33,7 @@ class UpdateTeamRequest extends FormRequest
             'avatar' => $this->imageUrlRule(),
             'email' => ['nullable', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
-            'bio' => ['nullable', 'array'],
-            'bio.id' => ['nullable', 'string'],
-            'bio.en' => ['nullable', 'string'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
+            'sort_order' => ['nullable', 'integer', 'min:0', Rule::unique('team_members', 'sort_order')->ignore($this->route('team'))],
             'is_active' => ['boolean'],
             'create_user_account' => ['nullable', 'boolean'],
             'user_role' => ['nullable', 'string', 'in:staff,admin'],

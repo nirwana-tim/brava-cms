@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin;
 use App\Http\Requests\Concerns\NormalizesTranslatableInputs;
 use App\Http\Requests\Concerns\ValidatesImageUrl;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreTestimonialRequest extends FormRequest
 {
@@ -34,7 +35,7 @@ class StoreTestimonialRequest extends FormRequest
             'avatar_alt' => ['nullable', 'array'],
             'avatar_alt.id' => ['nullable', 'string', 'max:255'],
             'avatar_alt.en' => ['nullable', 'string', 'max:255'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
+            'sort_order' => ['nullable', 'integer', 'min:0', Rule::unique('testimonials', 'sort_order')],
             'is_active' => ['boolean'],
         ];
     }

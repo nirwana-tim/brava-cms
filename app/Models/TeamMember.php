@@ -17,10 +17,10 @@ class TeamMember extends Model
     /** @use HasFactory<TeamMemberFactory> */
     use ClearsApiCache, HasFactory, HasTranslations, SoftDeletes;
 
-    public array $translatable = ['name', 'position', 'bio'];
+    public array $translatable = ['name', 'position'];
 
     protected $fillable = [
-        'user_id', 'name', 'position', 'avatar', 'email', 'phone', 'bio',
+        'user_id', 'name', 'position', 'avatar', 'email', 'phone',
         'sort_order', 'is_active',
     ];
 
