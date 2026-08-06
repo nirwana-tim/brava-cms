@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin;
 use App\Http\Requests\Concerns\NormalizesTranslatableInputs;
 use App\Http\Requests\Concerns\ValidatesImageUrl;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreBlogRequest extends FormRequest
 {
@@ -32,7 +33,7 @@ class StoreBlogRequest extends FormRequest
             'title.en' => ['nullable', 'string', 'max:255'],
 
             'slug' => ['required', 'array'],
-            'slug.id' => ['required', 'string', 'max:255'],
+            'slug.id' => ['required', 'string', 'max:255', Rule::unique('blogs', 'slug->id')],
             'slug.en' => ['nullable', 'string', 'max:255'],
 
             'excerpt' => ['nullable', 'array'],

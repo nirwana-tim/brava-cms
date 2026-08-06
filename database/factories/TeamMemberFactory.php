@@ -20,7 +20,7 @@ class TeamMemberFactory extends Factory
             'avatar' => 'avatars/'.fake()->uuid().'.jpg',
             'email' => fake()->unique()->companyEmail(),
             'phone' => fake()->phoneNumber(),
-            'sort_order' => fake()->numberBetween(0, 100),
+            'sort_order' => fake()->unique()->numberBetween(0, 100),
             'is_active' => true,
         ];
     }

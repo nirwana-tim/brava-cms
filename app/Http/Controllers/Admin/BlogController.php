@@ -36,21 +36,27 @@ class BlogController extends Controller
 
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('slug', 'like', "%{$search}%")
-                    ->orWhere('excerpt', 'like', "%{$search}%");
+                $q->where('title->id', 'like', "%{$search}%")
+                    ->orWhere('title->en', 'like', "%{$search}%")
+                    ->orWhere('slug->id', 'like', "%{$search}%")
+                    ->orWhere('slug->en', 'like', "%{$search}%")
+                    ->orWhere('excerpt->id', 'like', "%{$search}%")
+                    ->orWhere('excerpt->en', 'like', "%{$search}%");
             });
         }
 
         $blogs = $query->latest()->paginate(15)->withQueryString();
-        $categories = Category::byType('blog')->orderBy('name')->get();
+        $categories = Category::byType('blog')->get()
+            ->sortBy(fn (Category $category) => (string) $category->name, SORT_NATURAL | SORT_FLAG_CASE);
 
         return view('admin.blogs.index', compact('blogs', 'categories'));
     }
 
     public function create(): View
     {
-        $categories = Category::byType('blog')->pluck('name', 'id');
+        $categories = Category::byType('blog')->get()
+            ->sortBy(fn (Category $category) => (string) $category->name, SORT_NATURAL | SORT_FLAG_CASE)
+            ->pluck('name', 'id');
 
         return view('admin.blogs.create', compact('categories'));
     }
@@ -64,6 +70,7 @@ class BlogController extends Controller
 
         if ($request->filled('category_ids')) {
             $blog->categories()->sync($request->category_ids);
+            cache()->store('api')->flush();
         }
 
         return redirect()->route('admin.blogs.index')
@@ -80,7 +87,9 @@ class BlogController extends Controller
     public function edit(Blog $blog): View
     {
         $blog->load(['categories']);
-        $categories = Category::byType('blog')->pluck('name', 'id');
+        $categories = Category::byType('blog')->get()
+            ->sortBy(fn (Category $category) => (string) $category->name, SORT_NATURAL | SORT_FLAG_CASE)
+            ->pluck('name', 'id');
 
         return view('admin.blogs.edit', compact('blog', 'categories'));
     }
@@ -103,6 +112,8 @@ class BlogController extends Controller
         } else {
             $blog->categories()->sync([]);
         }
+
+        cache()->store('api')->flush();
 
         return redirect()->route('admin.blogs.index')
             ->with('success', 'Blog post updated successfully.');

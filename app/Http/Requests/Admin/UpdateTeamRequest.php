@@ -35,9 +35,7 @@ class UpdateTeamRequest extends FormRequest
             'phone' => ['nullable', 'string', 'max:50'],
             'sort_order' => ['nullable', 'integer', 'min:0', Rule::unique('team_members', 'sort_order')->ignore($this->route('team'))],
             'is_active' => ['boolean'],
-            'create_user_account' => ['nullable', 'boolean'],
-            'user_role' => ['nullable', 'string', 'in:staff,admin'],
-            'user_password' => ['nullable', 'string', 'min:8'],
+            'role' => ['nullable', 'string', 'in:staff,admin'],
         ];
     }
 }

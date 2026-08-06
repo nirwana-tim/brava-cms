@@ -46,21 +46,21 @@ Contoh input admin per tab:
 ## 4. Perubahan Backend (Laravel)
 
 ### 4.1 Fondasi
-- Install `spatie/laravel-translatable` (+ `spatie/laravel-sluggable` untuk slug translatable).
+- Sudah terpasang `spatie/laravel-translatable`. **Tidak memakai `spatie/laravel-sluggable`** — slug translatable dihandle manual via atribut `slug` berisi JSON `{"id","en"}`.
 - Supported locales `['id', 'en']`, default `id`.
 - Middleware/controller API membaca `?lang=en` → `App::setLocale()`. Locale tidak valid → default `id`.
 
 ### 4.2 Migrasi Database
 - Ubah kolom teks + SEO menjadi JSON di tabel: `services`, `blogs`, `categories`, `portfolio_items`, `testimonials`, `faqs`, `team_members`, `promos`.
-- Field translatable per tipe (contoh umum): `title`, `slug`, `excerpt`, `content`, `description`, `question`, `answer`, `client`, `position`, `bio`, `badge_text`, `discount_info`, `wa_template`, `client_name`, `name` (kategori/team), `meta_title`, `meta_description`, `meta_keywords`, `photo_alt`/`image_alt`. **Khusus `portfolio_items`: kolom `content` sudah dihapus — yang ditranslasi adalah `specifications` (array {key, value}) dan `features` (array string).**
-- Kolom `slug`: ubah ke JSON + **drop unique constraint** (validasi unik dipindah ke app layer).
+- Field translatable per tipe (contoh umum): `title`, `slug`, `excerpt`, `content`, `description`, `question`, `answer`, `client`, `position`, `badge_text`, `discount_info`, `wa_template`, `client_name`, `name` (kategori/team), `meta_title`, `meta_description`, `meta_keywords`, `photo_alt`/`image_alt`. **Khusus `portfolio_items`: kolom `content` sudah dihapus — yang ditranslasi adalah `specifications` (array {key, value}) dan `features` (array string).**
+- Kolom `slug`: ubah ke JSON + **drop unique constraint** (validasi unik dipindah ke app layer via `Rule::unique(..., 'slug->id')` / `slug->en`).
 - **Backfill**: data lama dibungkus jadi `{"id": "<value>", "en": null}` → konten Indonesia yang sudah ada tetap tampil via fallback.
 - **WAJIB backup database sebelum migrasi** (jangan di production tanpa testing).
 
 ### 4.3 Model
 - Tambah trait `HasTranslations` + array `$translatable` di 8 model.
 - Adaptasi accessor khusus (contoh: `Blog::getContentAttribute` + HtmlSanitizer) agar tetap jalan untuk JSON.
-- Slug: `HasTranslatableSlug` per-bahasa.
+- Slug: validasi unik per-bahasa di FormRequest (`Store`/`Update`), dengan `->ignore($this->route('...'))` saat update.
 
 ### 4.4 API / Service Layer
 - API Resources output konten sesuai locale aktif + fallback ke `id`.

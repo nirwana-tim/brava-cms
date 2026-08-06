@@ -46,9 +46,7 @@ class StoreTeamRequest extends FormRequest
             'is_active' => ['boolean'],
             'create_user_account' => ['nullable', 'boolean'],
             'role' => $roleRule,
-            'user_role' => $roleRule,
-            'password' => ['nullable', 'string', 'min:8'],
-            'user_password' => ['nullable', 'string', 'min:8'],
+            'password' => ['nullable', 'required_if:create_user_account,1', 'string', 'min:8', 'confirmed'],
         ];
     }
 }

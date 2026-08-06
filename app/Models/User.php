@@ -15,7 +15,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Validation\ValidationException;
 
-#[Fillable(['name', 'email', 'password', 'role', 'position', 'avatar', 'is_active'])]
+#[Fillable(['name', 'email', 'password', 'role', 'position', 'avatar', 'is_active', 'email_verified_at'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {

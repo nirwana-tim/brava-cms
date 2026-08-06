@@ -55,8 +55,9 @@ test('admin can create team member with staff role', function () {
         'position' => 'Content Editor',
         'email' => 'newstaff@brava.id',
         'create_user_account' => '1',
-        'user_role' => UserRole::Staff->value,
-        'user_password' => 'password123',
+        'role' => UserRole::Staff->value,
+        'password' => 'password123',
+        'password_confirmation' => 'password123',
     ]);
 
     $response->assertRedirect(route('admin.team.index'));
@@ -100,7 +101,7 @@ test('admin cannot change their own role to staff', function () {
     $response = $this->actingAs($admin)->put(route('admin.team.update', $team), [
         'name' => $admin->name,
         'position' => 'Administrator',
-        'user_role' => UserRole::Staff->value,
+        'role' => UserRole::Staff->value,
     ]);
 
     $response->assertRedirect(route('admin.team.index'));

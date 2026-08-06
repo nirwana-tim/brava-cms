@@ -119,9 +119,10 @@ test('admin cannot assign another admin role when creating team member', functio
         'position' => 'Staff Position',
         'email' => 'newstaff@brava.id',
         'create_user_account' => '1',
-        'user_role' => UserRole::Admin->value,
-        'user_password' => 'password123',
-    ])->assertSessionHasErrors('user_role');
+        'role' => UserRole::Admin->value,
+        'password' => 'password123',
+        'password_confirmation' => 'password123',
+    ])->assertSessionHasErrors('role');
 
     expect(User::where('email', 'newstaff@brava.id')->exists())->toBeFalse();
 });
@@ -134,8 +135,9 @@ test('admin can create staff member with staff role', function () {
         'position' => 'Staff Position',
         'email' => 'newstaff@brava.id',
         'create_user_account' => '1',
-        'user_role' => UserRole::Staff->value,
-        'user_password' => 'password123',
+        'role' => UserRole::Staff->value,
+        'password' => 'password123',
+        'password_confirmation' => 'password123',
     ])->assertRedirect();
 
     expect(User::where('email', 'newstaff@brava.id')->value('role'))->toBe(UserRole::Staff);
@@ -149,8 +151,9 @@ test('superadmin can assign admin role when creating team member', function () {
         'position' => 'Admin Position',
         'email' => 'newadmin@brava.id',
         'create_user_account' => '1',
-        'user_role' => UserRole::Admin->value,
-        'user_password' => 'password123',
+        'role' => UserRole::Admin->value,
+        'password' => 'password123',
+        'password_confirmation' => 'password123',
     ])->assertRedirect();
 
     expect(User::where('email', 'newadmin@brava.id')->value('role'))->toBe(UserRole::Admin);

@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use App\Http\Requests\Concerns\NormalizesTranslatableInputs;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreCategoryRequest extends FormRequest
 {
@@ -26,7 +27,7 @@ class StoreCategoryRequest extends FormRequest
             'name.id' => ['required', 'string', 'max:255'],
             'name.en' => ['nullable', 'string', 'max:255'],
             'slug' => ['required', 'array'],
-            'slug.id' => ['required', 'string', 'max:255'],
+            'slug.id' => ['required', 'string', 'max:255', Rule::unique('categories', 'slug->id')],
             'slug.en' => ['nullable', 'string', 'max:255'],
             'type' => ['nullable', 'string', 'in:blog,portfolio'],
             'description' => ['nullable', 'array'],

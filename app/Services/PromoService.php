@@ -94,9 +94,12 @@ class PromoService
             ->when(! empty($filters['search']), function ($query) use ($filters) {
                 $search = $filters['search'];
                 $query->where(function ($q) use ($search) {
-                    $q->where('title', 'like', "%{$search}%")
-                        ->orWhere('description', 'like', "%{$search}%")
-                        ->orWhere('badge_text', 'like', "%{$search}%");
+                    $q->where('title->id', 'like', "%{$search}%")
+                        ->orWhere('title->en', 'like', "%{$search}%")
+                        ->orWhere('description->id', 'like', "%{$search}%")
+                        ->orWhere('description->en', 'like', "%{$search}%")
+                        ->orWhere('badge_text->id', 'like', "%{$search}%")
+                        ->orWhere('badge_text->en', 'like', "%{$search}%");
                 });
             })
             ->orderByDesc('is_highlighted')

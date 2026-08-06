@@ -21,7 +21,11 @@ class PortfolioController extends ApiController
         $filters = $request->only(['search', 'per_page']);
         $items = $this->service->list($filters);
 
-        $this->mediaUsageService->resolveAlts($items->getCollection()->pluck('photo'));
+        $photos = $items->getCollection()->pluck('photo');
+        $servicePhotos = $items->getCollection()
+            ->map(fn ($item) => $item->relationLoaded('service') ? $item->service?->photo : null);
+
+        $this->mediaUsageService->resolveAlts([...$photos, ...$servicePhotos]);
 
         return $this->paginatedSuccess(
             PortfolioListResource::collection($items),

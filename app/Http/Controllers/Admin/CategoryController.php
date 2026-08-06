@@ -27,9 +27,12 @@ class CategoryController extends Controller
 
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('slug', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
+                $q->where('name->id', 'like', "%{$search}%")
+                    ->orWhere('name->en', 'like', "%{$search}%")
+                    ->orWhere('slug->id', 'like', "%{$search}%")
+                    ->orWhere('slug->en', 'like', "%{$search}%")
+                    ->orWhere('description->id', 'like', "%{$search}%")
+                    ->orWhere('description->en', 'like', "%{$search}%");
             });
         }
 

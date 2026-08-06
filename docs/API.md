@@ -158,8 +158,7 @@ Response:
             "id": 1,
             "name": "Technology",
             "slug": "technology",
-            "description": "Tech industry insights",
-            "sort_order": 1
+            "description": "Tech industry insights"
         }
     ]
 }
@@ -381,9 +380,9 @@ Response (no pagination — returns all active, sorted by `sort_order`):
 
 #### `GET /api/faqs`
 
-| Param        | Type   | Description            |
-| ------------ | ------ | ---------------------- |
-| `category` | string | Filter by FAQ category |
+| Param | Type | Description |
+|-------|------|-------------|
+| `lang` | string | Optional locale: `id` (default) or `en` |
 
 Response:
 
@@ -394,8 +393,7 @@ Response:
         {
             "id": 1,
             "question": "What services do you offer?",
-            "answer": "<p>We offer...</p>",
-            "category": "General"
+            "answer": "<p>We offer...</p>"
         }
     ]
 }
@@ -641,9 +639,10 @@ Cache is automatically flushed via the `App\Traits\ClearsApiCache` trait on mode
 ### N+1 Prevention
 
 - Always use `with()` for relationships in controllers
-- Enable `Model::preventLazyLoading()` in dev
+- `Model::preventLazyLoading()` is enabled in non-production environments (via `AppServiceProvider::boot`)
 - API Resources use `whenLoaded()` for optional relations
+- Portfolio index pre-warms `resolveAlts()` for `photos` and `servicePhotos` collections
 
 ### Database Indexes
 
-Every `slug`, `is_active`, `status`, `sort_order` column is indexed. See `docs/SCHEMA.md`.
+Every `slug` is unique per-locale (enforced in app layer via `Rule::unique`), and `is_active`, `status`, `type`, `valid_until`, `is_highlighted` columns are indexed. See `docs/SCHEMA.md`.

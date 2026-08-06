@@ -28,9 +28,12 @@ class ServiceController extends Controller
 
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('slug', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
+                $q->where('title->id', 'like', "%{$search}%")
+                    ->orWhere('title->en', 'like', "%{$search}%")
+                    ->orWhere('slug->id', 'like', "%{$search}%")
+                    ->orWhere('slug->en', 'like', "%{$search}%")
+                    ->orWhere('description->id', 'like', "%{$search}%")
+                    ->orWhere('description->en', 'like', "%{$search}%");
             });
         }
 

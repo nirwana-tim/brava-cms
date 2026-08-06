@@ -40,23 +40,32 @@ class PortfolioController extends Controller
 
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('slug', 'like', "%{$search}%")
-                    ->orWhere('client', 'like', "%{$search}%");
+                $q->where('title->id', 'like', "%{$search}%")
+                    ->orWhere('title->en', 'like', "%{$search}%")
+                    ->orWhere('slug->id', 'like', "%{$search}%")
+                    ->orWhere('slug->en', 'like', "%{$search}%")
+                    ->orWhere('client->id', 'like', "%{$search}%")
+                    ->orWhere('client->en', 'like', "%{$search}%");
             });
         }
 
         $items = $query->latest()->paginate(15)->withQueryString();
-        $categories = Category::byType('portfolio')->orderBy('name')->get();
-        $services = Service::orderBy('title')->get();
+        $categories = Category::byType('portfolio')->get()
+            ->sortBy(fn (Category $category) => (string) $category->name, SORT_NATURAL | SORT_FLAG_CASE);
+        $services = Service::orderBy('id')->get()
+            ->sortBy(fn (Service $service) => (string) $service->title, SORT_NATURAL | SORT_FLAG_CASE);
 
         return view('admin.portfolio.index', compact('items', 'categories', 'services'));
     }
 
     public function create(): View
     {
-        $services = Service::pluck('title', 'id');
-        $categories = Category::byType('portfolio')->pluck('name', 'id');
+        $services = Service::orderBy('id')->get()
+            ->sortBy(fn (Service $service) => (string) $service->title, SORT_NATURAL | SORT_FLAG_CASE)
+            ->pluck('title', 'id');
+        $categories = Category::byType('portfolio')->get()
+            ->sortBy(fn (Category $category) => (string) $category->name, SORT_NATURAL | SORT_FLAG_CASE)
+            ->pluck('name', 'id');
 
         return view('admin.portfolio.create', compact('services', 'categories'));
     }
@@ -68,6 +77,7 @@ class PortfolioController extends Controller
 
         if ($request->has('categories')) {
             $portfolio->categories()->sync($request->categories);
+            cache()->store('api')->flush();
         }
 
         if ($galleryIds = $request->input('gallery_media_ids')) {
@@ -102,8 +112,12 @@ class PortfolioController extends Controller
     public function edit(PortfolioItem $portfolio): View
     {
         $portfolio->load('service', 'categories', 'media');
-        $services = Service::pluck('title', 'id');
-        $categories = Category::byType('portfolio')->pluck('name', 'id');
+        $services = Service::orderBy('id')->get()
+            ->sortBy(fn (Service $service) => (string) $service->title, SORT_NATURAL | SORT_FLAG_CASE)
+            ->pluck('title', 'id');
+        $categories = Category::byType('portfolio')->get()
+            ->sortBy(fn (Category $category) => (string) $category->name, SORT_NATURAL | SORT_FLAG_CASE)
+            ->pluck('name', 'id');
 
         return view('admin.portfolio.edit', compact('portfolio', 'services', 'categories'));
     }
@@ -126,6 +140,8 @@ class PortfolioController extends Controller
         } else {
             $portfolio->categories()->sync([]);
         }
+
+        cache()->store('api')->flush();
 
         return redirect()->route('admin.portfolio.index')
             ->with('success', 'Portfolio item updated successfully.');

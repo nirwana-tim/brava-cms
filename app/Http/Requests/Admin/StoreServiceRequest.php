@@ -28,7 +28,7 @@ class StoreServiceRequest extends FormRequest
             'title.id' => ['required', 'string', 'max:255'],
             'title.en' => ['nullable', 'string', 'max:255'],
             'slug' => ['required', 'array'],
-            'slug.id' => ['required', 'string', 'max:255'],
+            'slug.id' => ['required', 'string', 'max:255', Rule::unique('services', 'slug->id')],
             'slug.en' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'array'],
             'description.id' => ['nullable', 'string'],

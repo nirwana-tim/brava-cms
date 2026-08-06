@@ -27,8 +27,10 @@ class FaqController extends Controller
 
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
-                $q->where('question', 'like', "%{$search}%")
-                    ->orWhere('answer', 'like', "%{$search}%");
+                $q->where('question->id', 'like', "%{$search}%")
+                    ->orWhere('question->en', 'like', "%{$search}%")
+                    ->orWhere('answer->id', 'like', "%{$search}%")
+                    ->orWhere('answer->en', 'like', "%{$search}%");
             });
         }
 

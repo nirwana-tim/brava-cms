@@ -276,8 +276,9 @@ Current roles:
 
 - Super Admin
 - Admin
+- Staff
 
-Do not implement complex permission systems.
+`staff` can manage content (create/update/delete) but cannot manage users, settings, or system configuration. Do not implement complex permission systems.
 
 Role expansion may happen in future versions.
 

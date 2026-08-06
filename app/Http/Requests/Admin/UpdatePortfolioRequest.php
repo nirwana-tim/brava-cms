@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin;
 use App\Http\Requests\Concerns\NormalizesTranslatableInputs;
 use App\Http\Requests\Concerns\ValidatesImageUrl;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdatePortfolioRequest extends FormRequest
 {
@@ -31,7 +32,7 @@ class UpdatePortfolioRequest extends FormRequest
             'title.id' => ['required', 'string', 'max:255'],
             'title.en' => ['nullable', 'string', 'max:255'],
             'slug' => ['required', 'array'],
-            'slug.id' => ['required', 'string', 'max:255'],
+            'slug.id' => ['required', 'string', 'max:255', Rule::unique('portfolio_items', 'slug->id')->ignore($this->route('portfolio'))],
             'slug.en' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'array'],
             'description.id' => ['nullable', 'string'],

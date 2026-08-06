@@ -33,8 +33,10 @@ class TeamController extends Controller
 
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('position', 'like', "%{$search}%")
+                $q->where('name->id', 'like', "%{$search}%")
+                    ->orWhere('name->en', 'like', "%{$search}%")
+                    ->orWhere('position->id', 'like', "%{$search}%")
+                    ->orWhere('position->en', 'like', "%{$search}%")
                     ->orWhereHas('user', fn ($uq) => $uq->where('email', 'like', "%{$search}%"));
             });
         }
@@ -59,13 +61,13 @@ class TeamController extends Controller
 
         $team = TeamMember::create($validated);
 
-        if ($team->email) {
+        if (($validated['create_user_account'] ?? false) && $team->email) {
             $user = User::create([
-                'name' => $team->name,
+                'name' => $validated['name']['id'] ?? $team->email,
                 'email' => $team->email,
-                'password' => Hash::make($request->input('user_password') ?? $request->input('password') ?? 'password123'),
-                'role' => $request->enum('user_role', UserRole::class) ?? $request->enum('role', UserRole::class) ?? (auth()->user()->isSuperAdmin() ? UserRole::Admin : UserRole::Staff),
-                'position' => $team->position,
+                'password' => Hash::make($validated['password']),
+                'role' => $validated['role'] ?? (auth()->user()->isSuperAdmin() ? UserRole::Admin : UserRole::Staff),
+                'position' => $validated['position']['id'] ?? null,
                 'avatar' => $team->avatar,
                 'email_verified_at' => now(),
             ]);

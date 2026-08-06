@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Setting;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class SettingSeeder extends Seeder
 {
@@ -32,7 +32,10 @@ class SettingSeeder extends Seeder
         ];
 
         foreach ($settings as $setting) {
-            Setting::create($setting);
+            DB::table('settings')->updateOrInsert(
+                ['key' => $setting['key']],
+                $setting
+            );
         }
     }
 }
