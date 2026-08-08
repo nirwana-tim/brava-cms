@@ -311,6 +311,19 @@
     background-color: var(--btn-show-hover-bg);
 }
 
+.btn-media {
+    background-color: var(--btn-secondary-bg);
+    border: 1px solid var(--btn-secondary-border);
+    color: var(--btn-secondary-text);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.btn-media:hover {
+    border-color: var(--input-focus-border);
+    color: var(--btn-primary-bg);
+    background-color: var(--btn-secondary-hover-bg);
+}
+
 .alert-error {
     background-color: var(--alert-error-bg);
     border-color: var(--alert-error-border);

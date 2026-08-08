@@ -39,4 +39,11 @@ class StoreTestimonialRequest extends FormRequest
             'is_active' => ['boolean'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'sort_order.unique' => 'Urutan (Sort Order) :input sudah dipakai oleh testimoni lain. Pilih angka lain yang belum digunakan.',
+        ];
+    }
 }

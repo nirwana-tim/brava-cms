@@ -46,6 +46,9 @@ foreach (sortOrderCases() as $case) {
             ->post(route($storeRoute), [...$payload(), 'sort_order' => 7])
             ->assertSessionHasErrors('sort_order');
 
+        expect(session('errors')->first('sort_order'))
+            ->toContain('Urutan (Sort Order) 7 sudah dipakai');
+
         expect($modelClass::count())->toBe(1);
     });
 
