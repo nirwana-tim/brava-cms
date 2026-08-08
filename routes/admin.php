@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -22,6 +23,7 @@ Route::middleware(['auth', 'verified', 'staff_or_admin'])->prefix('admin')->name
     Route::post('trash/{type}/{id}/restore', [TrashController::class, 'restore'])->name('trash.restore');
     Route::delete('trash/{type}/{id}/force-delete', [TrashController::class, 'forceDelete'])->name('trash.force-delete');
     Route::delete('trash/{type}/empty', [TrashController::class, 'emptyTrash'])->name('trash.empty');
+    Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
 
     Route::resource('categories', CategoryController::class);
     Route::resource('services', ServiceController::class);

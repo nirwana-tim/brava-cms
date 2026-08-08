@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\ClearsApiCache;
+use App\Traits\LogsActivity;
 use Database\Factories\PortfolioItemFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +16,7 @@ use Spatie\Translatable\HasTranslations;
 class PortfolioItem extends Model
 {
     /** @use HasFactory<PortfolioItemFactory> */
-    use ClearsApiCache, HasFactory, HasTranslations, SoftDeletes;
+    use ClearsApiCache, HasFactory, HasTranslations, LogsActivity, SoftDeletes;
 
     public array $translatable = [
         'title', 'slug', 'description', 'client',

@@ -12,7 +12,8 @@
 
 Berikut adalah daftar peningkatan teknis yang dapat dipertimbangkan setelah fase Sprint utama selesai atau saat lalu lintas website mulai berkembang pesat:
 
-### 1. [ ] Composite Indexing pada Database
+### 1. [x] Composite Indexing pada Database
+> ✅ **SUDAH DITERAPKAN**: Migration `2026_08_08_020658_add_composite_indexes_to_blogs_and_promos_tables` menambahkan indeks gabungan pada `blogs(status, published_at)` dan `promos(is_active, is_highlighted, valid_until)`. Diuji melalui `tests/Feature/ActivityLogTest.php`.
 - **Tujuan**: Meningkatkan kecepatan query pada kombinasi kondisi filter ketika volume data sudah mencapai ribuan hingga puluhan ribu baris.
 - **Waktu yang Tepat untuk Eksekusi**: Ketika tabel `blogs`, `portfolio_items`, atau `promos` memiliki > 5.000 data.
 - **Berkas yang Akan Terpengaruh**:
@@ -33,7 +34,8 @@ Berikut adalah daftar peningkatan teknis yang dapat dipertimbangkan setelah fase
 
 ---
 
-### 3. [ ] Audit Trail / Log Jejak Aktivitas Admin
+### 3. [x] Audit Trail / Log Jejak Aktivitas Admin
+> ✅ **SUDAH DITERAPKAN**: Tabel `activity_logs` (migration `2026_08_08_020657`), Trait `App\Traits\LogsActivity` pada `Promo`, `Blog`, `PortfolioItem`, dan `User`, serta halaman UI Admin `GET /admin/activity-logs` (khusus Super Admin) dengan filter event & pencarian. Diuji di `tests/Feature/ActivityLogTest.php`.
 - **Tujuan**: Mencatat riwayat siapa (*user ID* & nama), kapan, dan apa yang diubah pada modul sensitif (misalnya mengganti status Hero Banner Promo, menghapus artikel blog, atau memodifikasi peran tim).
 - **Waktu yang Tepat untuk Eksekusi**: Ketika tim pengelola konten (Admin & Staff) berjumlah > 3 orang dan dibutuhkan akuntabilitas perubahan data.
 - **Berkas yang Akan Terpengaruh**:

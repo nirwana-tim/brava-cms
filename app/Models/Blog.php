@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\PostStatus;
 use App\Services\HtmlSanitizer;
 use App\Traits\ClearsApiCache;
+use App\Traits\LogsActivity;
 use Database\Factories\BlogFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,7 +18,7 @@ use Spatie\Translatable\HasTranslations;
 class Blog extends Model
 {
     /** @use HasFactory<BlogFactory> */
-    use ClearsApiCache, HasFactory, HasTranslations, SoftDeletes;
+    use ClearsApiCache, HasFactory, HasTranslations, LogsActivity, SoftDeletes;
 
     public array $translatable = [
         'title', 'slug', 'excerpt', 'content',

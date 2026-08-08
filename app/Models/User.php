@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\UserRole;
 use App\Traits\ClearsApiCache;
+use App\Traits\LogsActivity;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -20,7 +21,7 @@ use Illuminate\Validation\ValidationException;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use ClearsApiCache, HasFactory, Notifiable;
+    use ClearsApiCache, HasFactory, LogsActivity, Notifiable;
 
     protected function casts(): array
     {

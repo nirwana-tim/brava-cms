@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\ClearsApiCache;
+use App\Traits\LogsActivity;
 use Database\Factories\PromoFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +14,7 @@ use Spatie\Translatable\HasTranslations;
 class Promo extends Model
 {
     /** @use HasFactory<PromoFactory> */
-    use ClearsApiCache, HasFactory, HasTranslations, SoftDeletes;
+    use ClearsApiCache, HasFactory, HasTranslations, LogsActivity, SoftDeletes;
 
     public array $translatable = [
         'title', 'slug', 'badge_text', 'discount_info', 'description',
