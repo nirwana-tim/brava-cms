@@ -101,7 +101,7 @@
                     </div>
 
                     <div>
-                        <x-admin.toggle name="is_active" :checked="old('is_active', true)" label="Active" hint="Show this team member on the website" />
+                        <x-admin.toggle name="is_active" :checked="old('is_active', true)" label="Active" hint="Show this team member on the website. Turning this off also disables their login account." />
                     </div>
                 </div>
 
