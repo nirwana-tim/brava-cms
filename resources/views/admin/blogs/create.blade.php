@@ -21,16 +21,18 @@
                 <x-admin.language-tabs>
                     <!-- ID Tab -->
                     <div x-show="langTab === 'id'" class="space-y-6">
-                        <div>
-                            <x-input-label for="title_id" :value="__('Title (ID)')" :required="true" />
-                            <x-text-input id="title_id" name="title[id]" type="text" class="mt-1 block w-full" :value="old('title.id')" required />
-                            <x-input-error class="mt-2" :messages="$errors->get('title.id')" />
-                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <x-input-label for="title_id" :value="__('Title (ID)')" :required="true" />
+                                <x-text-input id="title_id" name="title[id]" type="text" class="mt-1 block w-full" :value="old('title.id')" required />
+                                <x-input-error class="mt-2" :messages="$errors->get('title.id')" />
+                            </div>
 
-                        <div>
-                            <x-input-label for="slug_id" :value="__('Slug (ID)')" :required="true" />
-                            <x-text-input id="slug_id" name="slug[id]" type="text" class="mt-1 block w-full" :value="old('slug.id')" required />
-                            <x-input-error class="mt-2" :messages="$errors->get('slug.id')" />
+                            <div>
+                                <x-input-label for="slug_id" :value="__('Slug (ID)')" :required="true" />
+                                <x-text-input id="slug_id" name="slug[id]" type="text" class="mt-1 block w-full" :value="old('slug.id')" required />
+                                <x-input-error class="mt-2" :messages="$errors->get('slug.id')" />
+                            </div>
                         </div>
 
                         <div>
@@ -46,16 +48,18 @@
 
                     <!-- EN Tab -->
                     <div x-show="langTab === 'en'" class="space-y-6">
-                        <div>
-                            <x-input-label for="title_en" :value="__('Title (EN - English)')" />
-                            <x-text-input id="title_en" name="title[en]" type="text" class="mt-1 block w-full" :value="old('title.en')" placeholder="Biarkan kosong jika ingin fallback ke Indonesia" />
-                            <x-input-error class="mt-2" :messages="$errors->get('title.en')" />
-                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <x-input-label for="title_en" :value="__('Title (EN - English)')" />
+                                <x-text-input id="title_en" name="title[en]" type="text" class="mt-1 block w-full" :value="old('title.en')" placeholder="Biarkan kosong jika ingin fallback ke Indonesia" />
+                                <x-input-error class="mt-2" :messages="$errors->get('title.en')" />
+                            </div>
 
-                        <div>
-                            <x-input-label for="slug_en" :value="__('Slug (EN - English)')" />
-                            <x-text-input id="slug_en" name="slug[en]" type="text" class="mt-1 block w-full" :value="old('slug.en')" placeholder="e.g. convection-tips" />
-                            <x-input-error class="mt-2" :messages="$errors->get('slug.en')" />
+                            <div>
+                                <x-input-label for="slug_en" :value="__('Slug (EN - English)')" />
+                                <x-text-input id="slug_en" name="slug[en]" type="text" class="mt-1 block w-full" :value="old('slug.en')" placeholder="e.g. convection-tips" />
+                                <x-input-error class="mt-2" :messages="$errors->get('slug.en')" />
+                            </div>
                         </div>
 
                         <div>
@@ -71,48 +75,60 @@
                 </x-admin.language-tabs>
 
                 <div class="mt-6 space-y-6 border-t pt-6">
-                    <div x-data="{ featured_image: @js(old('featured_image')), featured_image_alt: @js(old('featured_image_alt.id')) }">
-                        <x-input-label for="featured_image" :value="__('Featured Image')" />
-                        <input type="hidden" name="featured_image" id="featured_image" value="{{ old('featured_image') }}" />
-                        <template x-if="featured_image">
-                            <div class="mb-2">
-                                <img :src="featured_image" :alt="featured_image_alt" class="rounded-lg" style="max-width:240px;max-height:160px;object-fit:cover">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                        <div class="rounded-lg border p-5" style="border-color: var(--card-border);">
+                            <div x-data="{ featured_image: @js(old('featured_image')), featured_image_alt: @js(old('featured_image_alt.id')) }">
+                                <x-input-label for="featured_image" :value="__('Featured Image')" />
+                                <input type="hidden" name="featured_image" id="featured_image" value="{{ old('featured_image') }}" />
+                                <template x-if="featured_image">
+                                    <div class="mb-4">
+                                        <img :src="featured_image" :alt="featured_image_alt" class="w-full rounded-lg object-cover" style="max-height: 280px;">
+                                    </div>
+                                </template>
+                                <x-admin.media-picker target="featured_image" collection="blogs" button-class="px-6 py-10 text-base" />
+                                <x-input-error class="mt-2" :messages="$errors->get('featured_image')" />
                             </div>
-                        </template>
-                        <x-admin.media-picker target="featured_image" collection="blogs" />
-                        <x-input-error class="mt-2" :messages="$errors->get('featured_image')" />
-                    </div>
-
-                    <div>
-                        <x-input-label for="status" :value="__('Status')" :required="true" />
-                        <select id="status" name="status" class="form-select mt-1">
-                            <option value="draft" {{ old('status', 'draft') === 'draft' ? 'selected' : '' }}>Draft</option>
-                            <option value="published" {{ old('status') === 'published' ? 'selected' : '' }}>Published</option>
-                            <option value="archived" {{ old('status') === 'archived' ? 'selected' : '' }}>Archived</option>
-                        </select>
-                        <x-input-error class="mt-2" :messages="$errors->get('status')" />
-                    </div>
-
-                    <div>
-                        <x-input-label :value="__('Categories')" />
-                        <div class="flex flex-wrap gap-2 mt-2">
-                            @forelse ($categories as $id => $name)
-                                <label class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm border cursor-pointer transition-colors"
-                                       x-data="{ checked: {{ in_array($id, old('category_ids', [])) ? 'true' : 'false' }} }"
-                                       :class="checked && 'bg-blue-600 text-white border-blue-600'"
-                                       style="border-color: var(--table-border); background-color: var(--card-bg)">
-                                    <input type="checkbox" name="category_ids[]" value="{{ $id }}" x-model="checked" class="form-checkbox">
-                                    <span :class="checked && 'text-white'" style="color: var(--label-text)">{{ $name }}</span>
-                                </label>
-                            @empty
-                                <p class="text-sm" style="color: var(--muted-text)">No categories available.</p>
-                            @endforelse
                         </div>
-                        <x-input-error class="mt-2" :messages="$errors->get('category_ids')" />
-                    </div>
 
-                    <div>
-                        <x-admin.toggle name="is_featured" :checked="old('is_featured')" label="Featured" />
+                        <div class="space-y-6">
+                            <div class="rounded-lg border p-6" style="border-color: var(--card-border);">
+                                <x-input-label for="status" :value="__('Status')" :required="true" />
+                                <select id="status" name="status" class="form-select mt-1">
+                                    <option value="draft" {{ old('status', 'draft') === 'draft' ? 'selected' : '' }}>Draft</option>
+                                    <option value="published" {{ old('status') === 'published' ? 'selected' : '' }}>Published</option>
+                                    <option value="archived" {{ old('status') === 'archived' ? 'selected' : '' }}>Archived</option>
+                                </select>
+                                <x-input-error class="mt-2" :messages="$errors->get('status')" />
+                            </div>
+
+                            <div class="rounded-lg border p-6" style="border-color: var(--card-border);">
+                                <x-input-label :value="__('Categories')" />
+                                <div class="flex flex-wrap gap-2 mt-2">
+                                    @forelse ($categories as $id => $name)
+                                        <label class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm border cursor-pointer transition-colors"
+                                               x-data="{ checked: {{ in_array($id, old('category_ids', [])) ? 'true' : 'false' }} }"
+                                               :class="checked && 'bg-blue-600 text-white border-blue-600'"
+                                               style="border-color: var(--table-border); background-color: var(--card-bg)">
+                                            <input type="checkbox" name="category_ids[]" value="{{ $id }}" x-model="checked" class="form-checkbox">
+                                            <span :class="checked && 'text-white'" style="color: var(--label-text)">{{ $name }}</span>
+                                        </label>
+                                    @empty
+                                        <p class="text-sm" style="color: var(--muted-text)">No categories available.</p>
+                                    @endforelse
+                                </div>
+                                <x-input-error class="mt-2" :messages="$errors->get('category_ids')" />
+                            </div>
+
+                            <div class="rounded-lg border p-6" style="border-color: var(--card-border);">
+                                <div class="flex items-center justify-between gap-4">
+                                    <div>
+                                        <x-input-label :value="__('Featured Post')" />
+                                        <p class="text-xs mt-1.5" style="color: var(--muted-text)">Display this post in the featured hero section</p>
+                                    </div>
+                                    <x-admin.toggle name="is_featured" :checked="old('is_featured')" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="border-t pt-6">
