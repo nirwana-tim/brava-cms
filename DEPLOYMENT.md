@@ -10,10 +10,9 @@ Backend produksi: `https://cms.brava.id` · Frontend publik: `https://brava.id` 
 ```
 brava-compro (Next.js 16, Vercel)  --HTTP-->  brava-cms (Laravel 13, cPanel)
     SSR/ISR reads (server-side)                     GET  /api/v1/*
-    browser POST (form kontak)                      POST /api/v1/contact
 ```
 
-- API publik seluruhnya **GET tanpa auth** + `POST /contact` (rate-limited).
+- API publik seluruhnya **GET tanpa auth**.
 - Admin panel = Blade, di **domain sama** dengan API (`cms.brava.id/admin`) → tidak kena CORS.
 - Tidak ada queue job aktif dan tidak ada email aktif → worker queue & SMTP **belum wajib**.
 
@@ -127,7 +126,7 @@ Lalu edit `.env` dan isi sesuai tabel di bawah (**jangan** pakai nilai `.env` da
 | `CACHE_STORE` | `database` | Store `api` → tabel `api_cache` |
 | `LOG_CHANNEL` | `daily` | Rotasi log harian |
 | `LOG_LEVEL` | `warning` | |
-| `CORS_ALLOWED_ORIGINS` | `https://brava.id,https://brava-compro-git-dev-nirwana-tims-projects.vercel.app` | Origin browser (POST contact) |
+| `CORS_ALLOWED_ORIGINS` | `https://brava.id,https://brava-compro-git-dev-nirwana-tims-projects.vercel.app` | Origin frontend (wajib hanya jika ada request browser) |
 | `CORS_ALLOWED_ORIGINS_PATTERNS` | *(opsional)* `/^https:\/\/.*\.vercel\.app$/` | Wildcard preview Vercel |
 | `SUPERADMIN_EMAIL/SUPERADMIN_PASSWORD` | *(isi)* | Dibuat saat `db:seed` |
 | `ADMIN_EMAIL/ADMIN_PASSWORD` | *(isi)* | Dibuat saat `db:seed` |
@@ -254,7 +253,7 @@ cPanel → **Cron Jobs**, tambah:
 - [ ] `SESSION_SECURE_COOKIE=true` + HTTPS-only (`SESSION_COOKIE` default).
 - [ ] DB user tidak memakai password lemah; user DB hanya punya akses ke DB-nya.
 - [ ] `CORS_ALLOWED_ORIGINS` daftar ketat (jangan `*`).
-- [ ] Rate limit API aktif (throttle 60/menit; POST contact di-limit terpisah).
+- [ ] Rate limit API aktif (throttle 60/menit per IP).
 - [ ] Log `daily`; review `storage/logs/laravel-*.log`.
 - [ ] Update patch: `composer update --no-dev` terjadwal; jalankan `php artisan migrate --force` setelahnya.
 

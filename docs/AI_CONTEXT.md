@@ -208,8 +208,6 @@ Example:
 
 GET /api/v1/services
 
-POST /api/v1/contact
-
 GET /api/v1/blogs
 
 GET /api/v1/blogs/{slug}

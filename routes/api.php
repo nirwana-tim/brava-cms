@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\CategoryController;
-use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\FaqController;
 use App\Http\Controllers\Api\PortfolioController;
 use App\Http\Controllers\Api\PromoController;
@@ -28,7 +27,4 @@ Route::prefix('v1')->group(function () {
         Route::get('/promos/{slug}', [PromoController::class, 'show']);
         Route::get('/sitemap', [SitemapController::class, 'index']);
     });
-
-    Route::post('/contact', [ContactController::class, 'store'])
-        ->middleware(['throttle:contact', 'throttle:contact-hourly']);
 });

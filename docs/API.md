@@ -403,33 +403,6 @@ Response:
 
 ---
 
-### Contact Form
-
-#### `POST /api/v1/contact`
-
-Request:
-
-```json
-{
-    "name": "John Doe",
-    "email": "john@example.com",
-    "phone": "+62 812 3456 7890",
-    "subject": "Inquiry",
-    "message": "I would like to know more about your services."
-}
-```
-
-Response:
-
-```json
-{
-    "success": true,
-    "message": "Thank you for your message. We will get back to you soon."
-}
-```
-
----
-
 ### Sitemap
 
 #### `GET /api/v1/sitemap`
@@ -512,11 +485,9 @@ If `meta_title` is empty on an entity, fallback to `default_meta_title` from `/a
 
 All public API routes are protected by rate limiting in `RouteServiceProvider` or via route middleware:
 
-| Endpoint              | Limit       | Window   | Notes               |
-| --------------------- | ----------- | -------- | ------------------- |
-| `GET /api/v1/*`        | 60 requests | 1 minute | Read-only endpoints |
-| `POST /api/v1/contact` | 5 requests  | 1 minute | Prevent spam        |
-| `POST /api/v1/contact` | 20 requests | 1 hour   | Hard ceiling per IP |
+| Endpoint       | Limit       | Window   | Notes               |
+| -------------- | ----------- | -------- | ------------------- |
+| `GET /api/v1/*` | 60 requests | 1 minute | Read-only endpoints |
 
 ### Implementation
 
@@ -525,22 +496,14 @@ All public API routes are protected by rate limiting in `RouteServiceProvider` o
 Route::middleware('throttle:60,1')->group(function () {
     // all GET endpoints
 });
-
-Route::post('/contact', [ContactController::class, 'store'])
-    ->middleware('throttle:5,1');
 ```
-
-### Contact Form Protection
-
-- Rate limit: 5/minute per IP
-- Optional: Honeypot hidden field (implement in Form Request)
-- No CAPTCHA for MVP — add later if spam becomes an issue
 
 ### CORS
 
-Data reads berjalan server-side di frontend (Next.js Server Components/ISR), jadi CORS hanya
-relevan untuk request dari browser — saat ini satu-satunya adalah `POST /api/v1/contact`.
-Batasi `allowed_origins` ke daftar domain frontend yang dipakai (`config/cors.php`):
+Data reads berjalan server-side di frontend (Next.js Server Components/ISR) dan API publik
+tidak memiliki endpoint POST dari browser, jadi CORS hampir tidak relevan. Batasi
+`allowed_origins` ke daftar domain frontend jika ada request browser di masa depan
+(`config/cors.php`):
 
 ```php
 // config/cors.php

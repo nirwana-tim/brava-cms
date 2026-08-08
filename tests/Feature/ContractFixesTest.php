@@ -69,35 +69,6 @@ test('api settings grouped payload is flushed from cache on model save', functio
     expect($this->getJson('/api/v1/settings')->json('data.general.site_name'))->toBe('Renamed');
 });
 
-test('contact endpoint accepts valid payload with 200 contract shape', function () {
-    $this->postJson('/api/v1/contact', [
-        'name' => 'John Doe',
-        'email' => 'john@example.com',
-        'phone' => '+6281234567890',
-        'subject' => 'Question',
-        'message' => 'Hello world',
-    ])->assertOk()
-        ->assertJsonPath('success', true)
-        ->assertJsonPath('message', 'Thank you for your message. We will get back to you soon.');
-});
-
-test('contact endpoint returns 422 contract shape on invalid payload', function () {
-    $this->postJson('/api/v1/contact', ['name' => ''])
-        ->assertStatus(422)
-        ->assertJsonPath('success', false)
-        ->assertJsonStructure(['message', 'errors']);
-});
-
-test('contact endpoint is rate limited to 5 requests per minute', function () {
-    $payload = ['name' => 'A', 'email' => 'a@example.com', 'message' => 'x'];
-
-    for ($i = 0; $i < 5; $i++) {
-        $this->postJson('/api/v1/contact', $payload)->assertOk();
-    }
-
-    $this->postJson('/api/v1/contact', $payload)->assertStatus(429);
-});
-
 test('inactive user cannot log in', function () {
     $user = User::factory()->create(['is_active' => false, 'password' => 'password']);
 

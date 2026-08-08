@@ -217,12 +217,9 @@ test('successful get api responses include cache control header', function () {
 });
 
 test('post api requests are not publicly cached', function () {
-    $response = $this->postJson('/api/v1/contact', [
-        'name' => 'John',
-        'email' => 'john@example.com',
-        'message' => 'Hello',
-    ]);
+    $response = $this->postJson('/api/v1/nonexistent');
 
+    $response->assertStatus(404);
     expect($response->headers->get('Cache-Control'))->not->toContain('public');
 });
 
