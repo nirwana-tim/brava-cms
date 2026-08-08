@@ -83,17 +83,17 @@ test('settings referencing media counts as in use', function () {
     Storage::disk('public')->put($media->path, 'content');
 
     Setting::updateOrCreate(
-        ['key' => 'logo'],
+        ['key' => 'default_og_image'],
         [
             'value' => $media->url,
-            'group' => 'general',
+            'group' => 'seo',
             'type' => 'text',
         ]
     );
 
     $usage = app(MediaUsageService::class)->usageSummary($media);
 
-    expect($usage)->toContain('Setting "logo"');
+    expect($usage)->toContain('Setting "default_og_image"');
 });
 
 test('profile deletion removes the avatar upload file', function () {

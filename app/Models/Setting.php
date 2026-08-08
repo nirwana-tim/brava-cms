@@ -94,6 +94,14 @@ class Setting extends Model
         'adsense_slot_2' => 'AdSlot 2 ID',
         'whatsapp_number' => 'WhatsApp Number',
         'phone' => 'Phone',
+        'facebook_url' => 'Facebook URL',
+        'instagram_url' => 'Instagram URL',
+        'youtube_url' => 'YouTube URL',
+        'tiktok_url' => 'TikTok URL',
+        'x_url' => 'X (Twitter) URL',
+        'linkedin_url' => 'LinkedIn URL',
+        'ga4_property_id' => 'GA4 Property ID (dashboard)',
+        'ga4_service_account_key' => 'GA4 Service Account Key',
     ];
 
     private const HINTS = [
@@ -108,6 +116,14 @@ class Setting extends Model
         'adsense_slot_2' => 'Slot ID ad unit kedua (mis. sidebar blog). Harus berbeda dari slot pertama.',
         'phone' => 'Nomor telepon yang ditampilkan di website. Format: +62 812 3456 7890.',
         'whatsapp_number' => 'Nomor WhatsApp untuk tombol chat. Format: 6281234567890 (tanpa + dan spasi).',
+        'facebook_url' => 'URL profil/halaman Facebook. Kosongkan untuk menyembunyikan tombolnya.',
+        'instagram_url' => 'URL profil Instagram. Kosongkan untuk menyembunyikan tombolnya.',
+        'youtube_url' => 'URL channel YouTube. Kosongkan untuk menyembunyikan tombolnya.',
+        'tiktok_url' => 'URL profil TikTok. Kosongkan untuk menyembunyikan tombolnya.',
+        'x_url' => 'URL profil X (Twitter). Kosongkan untuk menyembunyikan tombolnya.',
+        'linkedin_url' => 'URL profil LinkedIn. Kosongkan untuk menyembunyikan tombolnya.',
+        'ga4_property_id' => 'ID numerik properti GA4 (angka, bukan G-XXXXXX) untuk laporan dashboard. Ambil dari Admin → Property Settings.',
+        'ga4_service_account_key' => 'Tempel isi file JSON service account (dari Google Cloud). Hanya superadmin yang melihat; tidak pernah di-expose ke API publik.',
     ];
 
     public function getLabelAttribute(): string

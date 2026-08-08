@@ -48,15 +48,65 @@
         @if ($isDummy)
             <p class="text-sm mb-4" style="color: var(--muted-text)">
                 <span class="text-amber-600 dark:text-amber-400">Data dummy</span> —
-                atur <code class="px-1 py-0.5 rounded text-xs font-mono" style="background-color: var(--table-header-bg); color: var(--table-text)">GA4_PROPERTY_ID</code>
-                di <code class="px-1 py-0.5 rounded text-xs font-mono" style="background-color: var(--table-header-bg); color: var(--table-text)">.env</code>
-                untuk data sungguhan.
+                atur <code class="px-1 py-0.5 rounded text-xs font-mono" style="background-color: var(--table-header-bg); color: var(--table-text)">GA4 Property ID</code>
+                &amp; <code class="px-1 py-0.5 rounded text-xs font-mono" style="background-color: var(--table-header-bg); color: var(--table-text)">Service Account Key</code>
+                di <strong>Settings → Technical Settings</strong> untuk data sungguhan.
             </p>
         @else
             <p class="text-sm mb-4" style="color: var(--muted-text)">
                 Data diperbarui setiap {{ config('analytics.cache_ttl.fresh', 120) }} menit.
             </p>
         @endif
+
+        @if ($realtime)
+        <div class="card mb-6">
+            <div class="card-header flex flex-wrap items-center justify-between gap-3">
+                <h3 class="text-sm font-semibold" style="color: var(--heading-text)">Pengunjung Aktif Sekarang</h3>
+                <span class="inline-flex items-center gap-1.5 text-xs font-semibold" style="color: var(--flash-success-text)">
+                    <span class="w-2 h-2 rounded-full inline-block" style="background-color: var(--flash-success-text); animation: pulse 1.5s infinite"></span>
+                    LIVE
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div>
+                        <p class="text-3xl font-bold" style="color: var(--heading-text)">{{ number_format($realtime['activeUsers']) }}</p>
+                        <p class="text-xs mt-1" style="color: var(--muted-text)">pengunjung aktif dalam 30 menit terakhir</p>
+                    </div>
+                    <div class="lg:col-span-2">
+                        @if (! empty($realtime['topPages']))
+                            <table class="w-full">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid var(--table-border)">
+                                        <th class="text-left py-2 text-xs font-semibold uppercase tracking-wider" style="color: var(--muted-text)">Halaman Aktif</th>
+                                        <th class="text-right py-2 text-xs font-semibold uppercase tracking-wider" style="color: var(--muted-text)">Pengguna</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($realtime['topPages'] as $page)
+                                        <tr style="border-bottom: 1px solid var(--table-border)">
+                                            <td class="py-2 text-sm font-mono" style="color: var(--table-text)">{{ $page['pagePath'] }}</td>
+                                            <td class="py-2 text-sm text-right" style="color: var(--muted-text)">{{ number_format($page['activeUsers']) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @else
+                            <p class="text-sm" style="color: var(--muted-text)">Belum ada aktivitas terdeteksi.</p>
+                        @endif
+                        <p class="text-xs mt-2" style="color: var(--muted-text)">Diperbarui setiap menit.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        <style>
+            @keyframes pulse {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.3; }
+            }
+        </style>
     </div>
 
     {{-- Stat Cards --}}

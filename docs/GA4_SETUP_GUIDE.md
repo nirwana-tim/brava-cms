@@ -9,8 +9,8 @@ Dokumen ini berisi panduan langkah-demi-langkah (*step-by-step*) dari A sampai Z
 2. [Langkah 2: Mengaktifkan Google Analytics Data API di Google Cloud](#langkah-2-mengaktifkan-google-analytics-data-api-di-google-cloud)
 3. [Langkah 3: Membuat Service Account & Mengunduh File Key JSON](#langkah-3-membuat-service-account--mengunduh-file-key-json)
 4. [Langkah 4: Memberikan Akses Viewer kepada Service Account di GA4](#langkah-4-memberikan-akses-viewer-kepada-service-account-di-ga4)
-5. [Langkah 5: Memasang File JSON Key di Brava CMS](#langkah-5-memasang-file-json-key-di-brava-cms)
-6. [Langkah 6: Konfigurasi File `.env`](#langkah-6-konfigurasi-file-env)
+5. [Langkah 5: Mengisi Pengaturan GA4 di Panel Admin CMS](#langkah-5-mengisi-pengaturan-ga4-di-panel-admin-cms)
+6. [Langkah 6 (Opsional): Konfigurasi File `.env`](#langkah-6-opsional-konfigurasi-file-env)
 7. [Tanya Jawab & Troubleshooting](#tanya-jawab--troubleshooting)
 
 ---
@@ -81,19 +81,25 @@ Sekarang kita perlu memberi izin kepada email Service Account tadi agar bisa mem
 
 ---
 
-## Langkah 5: Memasang File JSON Key di Brava CMS
+## Langkah 5: Mengisi Pengaturan GA4 di Panel Admin CMS
 
-1. Ubah nama file `.json` yang kamu unduh pada Langkah 3 menjadi:
-   `service-account-key.json`
-2. Simpan atau pindahkan file tersebut ke dalam folder penyimpanan project Brava CMS pada direktori berikut:
-   ```text
-   storage/app/analytics/service-account-key.json
-   ```
-   *(Jika folder `analytics/` belum ada di dalam `storage/app/`, silakan buat folder tersebut terlebih dahulu).*
+Setelah memiliki **Property ID** (Langkah 1) dan **isi file JSON service account** (Langkah 3), masukkan keduanya langsung dari panel admin — tanpa perlu menyentuh server atau file `.env`:
+
+1. Login ke CMS sebagai **Super Admin** (pengaturan ini hanya bisa diubah oleh superadmin).
+2. Buka menu **Settings** → gulir ke kartu **Technical Settings** (grup `system`).
+3. Isi dua field berikut:
+   - **GA4 Property ID (dashboard)**: tempel angka Property ID dari Langkah 1 (contoh: `123456789`).
+   - **GA4 Service Account Key**: buka file `.json` yang kamu unduh di Langkah 3 dengan editor teks (Notepad/VS Code), **salin seluruh isinya**, lalu tempel ke field (textarea).
+4. Klik **Save**.
+5. Buka **Dashboard** — tanda "Data dummy" akan hilang dan laporan langsung menampilkan data riil GA4.
+
+> **Catatan keamanan**: Field Service Account Key hanya dapat dilihat/diubah oleh superadmin dan **tidak pernah** dikirim ke API publik (`/api/v1/settings`). Jika ingin menghapus akses, kosongkan kedua field ini.
 
 ---
 
-## Langkah 6: Konfigurasi File `.env`
+## Langkah 6 (Opsional): Konfigurasi File `.env`
+
+Metode di Langkah 5 sudah cukup untuk memakai dashboard GA4. Cara `.env` berikut hanya **fallback** bila kamu lebih suka menyimpan konfigurasi di sisi server (misal deployment otomatis):
 
 1. Buka file `.env` di direktori utama project Brava CMS kamu.
 2. Tambahkan atau perbarui konfigurasi berikut di bagian bawah file:
@@ -110,6 +116,7 @@ GA4_CACHE_STALE=60
 
 - Ganti `123456789` dengan **Property ID** asli kamu dari Langkah 1.
 - Path `app/analytics/service-account-key.json` akan otomatis dibaca di dalam folder `storage/` oleh sistem (*Smart Path Resolution*).
+- Prioritas pembacaan: **Setting admin CMS (Langkah 5) didahulukan**; jika kosong, sistem baru memakai nilai `.env`/file ini.
 
 ---
 
@@ -117,17 +124,23 @@ GA4_CACHE_STALE=60
 
 ### **1. Bagaimana cara menguji apakah dasbor sudah terkoneksi dengan GA4 asli?**
 Buka halaman admin (`http://localhost:8000/admin` atau domain production kamu).
-- **Jika sudah terkoneksi**: Tanda kuning `"Data dummy — atur GA4_PROPERTY_ID..."` akan hilang dan digantikan oleh teks `"Data diperbarui setiap 30 menit."`
+- **Jika sudah terkoneksi**: Tanda kuning `"Data dummy..."` akan hilang dan digantikan oleh teks `"Data diperbarui setiap 30 menit."`
 - Semua kartu statistik dan grafik akan menampilkan data riil pengunjung website kamu.
 
 ### **2. Mengapa grafik saya masih nol (0) setelah dipasang?**
 - Jika properti GA4 kamu baru dibuat hari ini, Google biasanya membutuhkan waktu **12 hingga 24 jam** pertama untuk memproses dan mengagregasi data laporan reguler.
 - Pastikan kode pelacak GA4 (*Google Tag* / `G-XXXXXX`) sudah terpasang di HTML website *compro* kamu.
 
-### **3. Apa yang terjadi jika saya mengosongkan `GA4_PROPERTY_ID` di `.env`?**
+### **3. Apa yang terjadi jika saya mengosongkan **GA4 Property ID** dan **Service Account Key** di pengaturan admin?**
 - Sistem akan otomatis masuk ke **Mode Dummy Dinamis**.
 - Dasbor tetap tampil menarik dengan data simulasi yang mengikuti rute halaman asli website *compro* (`/`, `/services`, `/portfolio`, `/blog`, `/about`, `/contact`) dan mengambil judul artikel/layanan dari database kamu. Mode ini sangat cocok untuk tahap demo/presentasi ke klien sebelum website naik ke production.
+- Data dummy **tidak pernah di-cache** — begitu kedua field diisi kembali, dashboard langsung menampilkan data asli pada request berikutnya.
 
 ### **4. Apakah kuota API Google aman dan tidak akan kena limit?**
 - **Sangat aman!** Google memberikan kuota gratis **25.000 request per hari**.
 - Berkat sistem *caching* Laravel selama 30 menit, dasbor Brava CMS hanya akan memanggil API Google maksimal **48 kali dalam sehari** (sekitar ~1% dari total kuota gratis harianmu).
+
+### **5. Bagaimana widget "Pengunjung Aktif Sekarang" bekerja?**
+- Saat GA4 sudah terkoneksi, dasbor menampilkan kartu **Pengunjung Aktif Sekarang** dengan jumlah pengunjung aktif dan daftar halaman yang sedang dikunjungi.
+- Data ini memakai **GA4 Realtime API** (klien & kuota gratis yang sama, terpisah dari laporan harian — tidak saling menghabiskan kuota) dan hanya mencakup **±30 menit terakhir**.
+- Widget di-refresh setiap ~1 menit (bukan realtime per detik), dan otomatis **hilang** saat mode dummy / GA4 belum terkoneksi.

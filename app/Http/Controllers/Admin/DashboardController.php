@@ -41,12 +41,14 @@ class DashboardController extends Controller
 
         $data = null;
         $isDummy = false;
+        $realtime = null;
 
         if ($canViewAnalytics) {
             $data = $analytics->getOverview($days);
             $isDummy = ! $analytics->isReady();
+            $realtime = $analytics->getRealtime();
         }
 
-        return view('admin.dashboard', compact('stats', 'data', 'isDummy', 'days', 'canViewAnalytics'));
+        return view('admin.dashboard', compact('stats', 'data', 'isDummy', 'realtime', 'days', 'canViewAnalytics'));
     }
 }

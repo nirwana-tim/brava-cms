@@ -22,10 +22,12 @@ class SettingService
     /**
      * Groups exposed through the public `/api/settings` endpoint.
      *
-     * AdSense and system groups are excluded because they are not needed by
-     * the public frontend and reveal monetization/operational configuration.
+     * The `adsense` group only contains public identifiers (`ca-pub-...`,
+     * slot IDs) plus an enable flag — all needed by the frontend to load
+     * AdSense scripts. It is safe to expose; editing stays superadmin-only.
+     * `system` remains excluded because it may hold credentials/secrets.
      */
-    private const PUBLIC_GROUPS = ['general', 'contact', 'social', 'seo'];
+    private const PUBLIC_GROUPS = ['general', 'contact', 'social', 'seo', 'adsense'];
 
     /**
      * Settings grouped by group key for the public API, e.g.

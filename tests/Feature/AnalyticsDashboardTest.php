@@ -1,8 +1,12 @@
 <?php
 
 use App\Enums\UserRole;
+use App\Models\Setting;
 use App\Models\User;
 use App\Services\AnalyticsService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
 
 test('analytics service returns valid structure in dummy mode', function () {
     config(['analytics.property_id' => null]);
@@ -30,6 +34,34 @@ test('analytics service returns valid structure in dummy mode', function () {
         ->and($overview['visitorTrend'])->not->toBeEmpty();
 });
 
+test('analytics service becomes ready from system settings without env config', function () {
+    config(['analytics.property_id' => null]);
+    config(['analytics.service_account_key' => null]);
+
+    Setting::updateOrCreate(['key' => 'ga4_property_id'], ['value' => '123456789', 'group' => 'system', 'type' => 'text']);
+    Setting::updateOrCreate(
+        ['key' => 'ga4_service_account_key'],
+        [
+            'value' => json_encode(['type' => 'service_account', 'client_email' => 'ga4@test.iam.gserviceaccount.com']),
+            'group' => 'system',
+            'type' => 'textarea',
+        ],
+    );
+
+    $service = new AnalyticsService;
+
+    expect($service->isReady())->toBeTrue();
+});
+
+test('analytics realtime returns null when reporting is not configured', function () {
+    config(['analytics.property_id' => null]);
+    config(['analytics.service_account_key' => null]);
+
+    $service = new AnalyticsService;
+
+    expect($service->getRealtime())->toBeNull();
+});
+
 test('admin dashboard renders analytics section successfully', function () {
     $admin = User::factory()->create(['role' => UserRole::Admin]);
 
@@ -40,6 +72,8 @@ test('admin dashboard renders analytics section successfully', function () {
     $response->assertSee('Visitors Today');
     $response->assertViewHas('data');
     $response->assertViewHas('isDummy');
+    $response->assertViewHas('realtime', null);
+    $response->assertDontSee('Pengunjung Aktif Sekarang');
 });
 
 test('admin dashboard accepts days preset from query string', function () {

@@ -432,10 +432,6 @@ bing_verification
 
 organization_schema
 
-favicon
-
-logo
-
 ---
 
 # Media Library
@@ -478,10 +474,6 @@ Settings module stores:
 
 Company Name
 
-Logo
-
-Favicon
-
 Address
 
 Email
@@ -490,7 +482,7 @@ Phone
 
 Google Maps
 
-Social Links
+Social Links (Facebook, Instagram, YouTube, TikTok, X, LinkedIn — optional, frontend hanya menampilkan URL yang terisi)
 
 Footer
 

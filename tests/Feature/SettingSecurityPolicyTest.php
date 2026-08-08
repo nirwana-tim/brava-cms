@@ -27,6 +27,32 @@ test('adsense settings exist with correct group and type', function () {
     expect($settings->has('adsense_slot_2'))->toBeTrue();
 });
 
+test('social settings include optional platform urls and public api exposes them', function () {
+    Setting::updateOrCreate(['key' => 'facebook_url'], ['value' => 'https://facebook.com/brava', 'group' => 'social', 'type' => 'text']);
+    Setting::updateOrCreate(['key' => 'instagram_url'], ['value' => 'https://instagram.com/brava', 'group' => 'social', 'type' => 'text']);
+    Setting::updateOrCreate(['key' => 'youtube_url'], ['value' => 'https://youtube.com/@brava', 'group' => 'social', 'type' => 'text']);
+    Setting::updateOrCreate(['key' => 'tiktok_url'], ['value' => '', 'group' => 'social', 'type' => 'text']);
+    Setting::updateOrCreate(['key' => 'x_url'], ['value' => 'https://x.com/brava', 'group' => 'social', 'type' => 'text']);
+    Setting::updateOrCreate(['key' => 'linkedin_url'], ['value' => 'https://linkedin.com/company/brava', 'group' => 'social', 'type' => 'text']);
+
+    $settings = Setting::where('group', 'social')->get()->keyBy('key');
+
+    expect($settings->has('facebook_url'))->toBeTrue()
+        ->and($settings->has('instagram_url'))->toBeTrue()
+        ->and($settings->has('youtube_url'))->toBeTrue()
+        ->and($settings->has('tiktok_url'))->toBeTrue()
+        ->and($settings->has('x_url'))->toBeTrue()
+        ->and($settings->has('linkedin_url'))->toBeTrue();
+
+    $data = $this->getJson('/api/v1/settings')->json('data');
+
+    expect($data['social']['youtube_url'])->toBe('https://youtube.com/@brava')
+        ->and($data['social']['x_url'])->toBe('https://x.com/brava')
+        ->and($data['social']['tiktok_url'])->toBe('')
+        ->and($data['general'])->not->toHaveKey('logo')
+        ->and($data['general'])->not->toHaveKey('favicon');
+});
+
 test('normal admin sees seo or general branding settings in technical settings card with developer notice', function () {
     $admin = User::factory()->create(['role' => UserRole::Admin]);
 
@@ -91,10 +117,37 @@ test('superadmin can update adsense settings via put request', function () {
     expect(Setting::where('key', 'adsense_client_id')->value('value'))->toBe('ca-pub-1234567890123456');
 });
 
-test('public settings endpoint never exposes adsense or system groups', function () {
+test('superadmin can update ga4 reporting settings via put request', function () {
+    $superadmin = User::factory()->create(['role' => UserRole::SuperAdmin]);
+
+    $this->actingAs($superadmin)->put('/admin/settings', [
+        'ga4_property_id' => '987654321',
+        'ga4_service_account_key' => '{"type":"service_account","client_email":"ga4@test.iam.gserviceaccount.com"}',
+    ])->assertRedirect('/admin/settings');
+
+    expect(Setting::where('key', 'ga4_property_id')->value('value'))->toBe('987654321')
+        ->and(Setting::where('key', 'ga4_service_account_key')->value('value'))->toBe('{"type":"service_account","client_email":"ga4@test.iam.gserviceaccount.com"}');
+});
+
+test('normal admin cannot modify ga4 reporting settings via put request', function () {
+    Setting::updateOrCreate(['key' => 'ga4_property_id'], ['value' => 'ORIGINAL-ID', 'group' => 'system', 'type' => 'text']);
+
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+
+    $this->actingAs($admin)->put('/admin/settings', [
+        'ga4_property_id' => 'HACKED-ID',
+        'ga4_service_account_key' => '{"private_key":"hacked"}',
+    ])->assertRedirect('/admin/settings');
+
+    expect(Setting::where('key', 'ga4_property_id')->value('value'))->toBe('ORIGINAL-ID');
+});
+
+test('public settings endpoint exposes adsense identifiers but never system groups', function () {
     Setting::updateOrCreate(['key' => 'adsense_enabled'], ['value' => '1', 'group' => 'adsense', 'type' => 'boolean']);
-    Setting::updateOrCreate(['key' => 'adsense_client_id'], ['value' => 'ca-pub-HIDDEN', 'group' => 'adsense', 'type' => 'text']);
+    Setting::updateOrCreate(['key' => 'adsense_client_id'], ['value' => 'ca-pub-1234567890123456', 'group' => 'adsense', 'type' => 'text']);
     Setting::updateOrCreate(['key' => 'mail_password'], ['value' => 'smtp-secret', 'group' => 'system', 'type' => 'text']);
+    Setting::updateOrCreate(['key' => 'ga4_property_id'], ['value' => '123456789', 'group' => 'system', 'type' => 'text']);
+    Setting::updateOrCreate(['key' => 'ga4_service_account_key'], ['value' => '{"private_key":"secret-key","client_email":"ga4@test.iam.gserviceaccount.com"}', 'group' => 'system', 'type' => 'textarea']);
 
     $response = $this->getJson('/api/v1/settings');
 
@@ -102,7 +155,10 @@ test('public settings endpoint never exposes adsense or system groups', function
 
     $data = $response->json('data');
 
-    expect($data)->not->toHaveKeys(['adsense', 'system'])
-        ->and(collect($data)->flatten()->all())->not->toContain('ca-pub-HIDDEN')
-        ->and(collect($data)->flatten()->all())->not->toContain('smtp-secret');
+    expect($data)->toHaveKey('adsense')
+        ->and($data['adsense']['adsense_enabled'])->toBeTrue()
+        ->and($data['adsense']['adsense_client_id'])->toBe('ca-pub-1234567890123456')
+        ->and($data)->not->toHaveKey('system')
+        ->and(collect($data)->flatten()->all())->not->toContain('smtp-secret')
+        ->and(collect($data)->flatten()->all())->not->toContain('secret-key');
 });

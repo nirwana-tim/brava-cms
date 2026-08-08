@@ -107,9 +107,7 @@ Response:
     "data": {
         "general": {
             "site_name": "Brava CMS",
-            "site_description": "A reusable Headless CMS",
-            "logo": "/storage/logo.png",
-            "favicon": "/storage/favicon.ico"
+            "site_description": "A reusable Headless CMS"
         },
         "seo": {
             "default_meta_title": "Brava CMS",
@@ -121,18 +119,31 @@ Response:
         },
         "social": {
             "instagram_url": "https://instagram.com/...",
-            "facebook_url": "https://facebook.com/..."
+            "facebook_url": "https://facebook.com/...",
+            "youtube_url": "https://youtube.com/...",
+            "tiktok_url": "https://tiktok.com/...",
+            "x_url": "https://x.com/...",
+            "linkedin_url": "https://linkedin.com/..."
         },
         "contact": {
             "address": "Jl. Contoh No. 123",
             "email": "info@example.com",
             "phone": "+62 812 3456 7890"
+        },
+        "adsense": {
+            "adsense_enabled": false,
+            "adsense_client_id": "ca-pub-XXXXXXXXXXXXXXXX",
+            "adsense_slot_1": "",
+            "adsense_slot_2": ""
         }
     }
 }
 ```
 
 > **SEO note:** Next.js should use `seo` group for global meta defaults.
+> **AdSense note:** Group `adsense` berisi identitas publik (Publisher ID, slot ID) + flag enable,
+> dibutuhkan frontend untuk memuat script iklan. Edit tetap superadmin-only di CMS; grup `system`
+> (berisi kredensial) tidak pernah di-expose.
 
 ---
 

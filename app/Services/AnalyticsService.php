@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Blog;
 use App\Models\PortfolioItem;
 use App\Models\Service;
+use App\Models\Setting;
 use Google\Analytics\Data\V1beta\Client\BetaAnalyticsDataClient;
 use Google\Analytics\Data\V1beta\DateRange;
 use Google\Analytics\Data\V1beta\Dimension;
@@ -12,6 +13,7 @@ use Google\Analytics\Data\V1beta\Metric;
 use Google\Analytics\Data\V1beta\OrderBy;
 use Google\Analytics\Data\V1beta\OrderByDimension;
 use Google\Analytics\Data\V1beta\OrderByMetric;
+use Google\Analytics\Data\V1beta\RunRealtimeReportRequest;
 use Google\Analytics\Data\V1beta\RunReportRequest;
 use Google\Auth\Credentials\ServiceAccountCredentials;
 use Illuminate\Support\Carbon;
@@ -82,16 +84,19 @@ class AnalyticsService
 
     public function getOverview(int $days = 30): array
     {
+        if (! $this->isReady()) {
+            return $this->normalize($this->dummyOverview($days));
+        }
+
         $cacheKey = "analytics.overview.{$days}";
 
-        $result = Cache::flexible($cacheKey, $this->ttl(), function () use ($days) {
-            if (! $this->isReady()) {
-                return $this->dummyOverview($days);
-            }
+        $result = Cache::store('api')->flexible($cacheKey, $this->ttl(), fn () => $this->fetchFromGA($days));
 
-            return $this->fetchFromGA($days);
-        });
+        return $this->normalize($result);
+    }
 
+    private function normalize(array $result): array
+    {
         $result['visitorTrend'] = collect($result['visitorTrend'] ?? []);
         $result['sources'] = collect($result['sources'] ?? []);
         $result['devices'] = collect($result['devices'] ?? []);
@@ -103,10 +108,47 @@ class AnalyticsService
 
     public function isReady(): bool
     {
-        $propertyId = config('analytics.property_id');
+        return ! empty($this->propertyId()) && ! empty($this->serviceAccountKeyData());
+    }
+
+    /**
+     * GA4 property ID. Prefers the CMS `system` setting (plug-and-play via the
+     * admin panel); falls back to the `GA4_PROPERTY_ID` env / config value.
+     */
+    private function propertyId(): string
+    {
+        $fromSettings = Setting::query()->where('key', 'ga4_property_id')->value('value');
+
+        return is_string($fromSettings) && $fromSettings !== ''
+            ? $fromSettings
+            : (string) config('analytics.property_id', '');
+    }
+
+    /**
+     * Decoded service-account key. Prefers the CMS `system` setting (full JSON
+     * pasted in the admin panel); falls back to the key file path from config.
+     */
+    private function serviceAccountKeyData(): ?array
+    {
+        $fromSettings = Setting::query()->where('key', 'ga4_service_account_key')->value('value');
+
+        if (is_string($fromSettings) && $fromSettings !== '') {
+            $decoded = json_decode($fromSettings, true);
+
+            if (is_array($decoded) && ! empty($decoded)) {
+                return $decoded;
+            }
+        }
+
         $keyPath = config('analytics.service_account_key');
 
-        return ! empty($propertyId) && ! empty($keyPath) && is_string($keyPath) && file_exists($keyPath);
+        if (is_string($keyPath) && $keyPath !== '' && file_exists($keyPath)) {
+            $decoded = json_decode((string) file_get_contents($keyPath), true);
+
+            return is_array($decoded) && ! empty($decoded) ? $decoded : null;
+        }
+
+        return null;
     }
 
     private function ttl(): array
@@ -123,8 +165,7 @@ class AnalyticsService
             return $this->client;
         }
 
-        $keyPath = config('analytics.service_account_key');
-        $keyData = json_decode((string) file_get_contents($keyPath), true);
+        $keyData = $this->serviceAccountKeyData();
 
         $credentials = new ServiceAccountCredentials(
             ['https://www.googleapis.com/auth/analytics.readonly'],
@@ -140,7 +181,65 @@ class AnalyticsService
 
     private function property(): string
     {
-        return 'properties/'.config('analytics.property_id');
+        return 'properties/'.$this->propertyId();
+    }
+
+    /**
+     * Near-real-time snapshot of active visitors (last ~30 minutes).
+     * Returns null when GA4 reporting is not configured or the API call fails,
+     * so the dashboard widget simply hides instead of erroring.
+     */
+    public function getRealtime(): ?array
+    {
+        if (! $this->isReady()) {
+            return null;
+        }
+
+        return Cache::store('api')->flexible('analytics.realtime', [60, 180], function () {
+            try {
+                return $this->fetchRealtime();
+            } catch (\Throwable $e) {
+                report($e);
+                Cache::store('api')->forget('analytics.realtime');
+
+                return null;
+            }
+        });
+    }
+
+    private function fetchRealtime(): array
+    {
+        $totalRequest = (new RunRealtimeReportRequest)
+            ->setProperty($this->property())
+            ->setMetrics([new Metric(['name' => 'activeUsers'])]);
+
+        $activeUsers = 0;
+        $totalRows = $this->client()->runRealtimeReport($totalRequest)->getRows();
+
+        if (! empty($totalRows)) {
+            $activeUsers = (int) $totalRows[0]->getMetricValues()[0]->getValue();
+        }
+
+        $pagesRequest = (new RunRealtimeReportRequest)
+            ->setProperty($this->property())
+            ->setDimensions([new Dimension(['name' => 'unregisteredPagePath'])])
+            ->setMetrics([new Metric(['name' => 'activeUsers'])])
+            ->setLimit(10);
+
+        $topPages = [];
+
+        foreach ($this->client()->runRealtimeReport($pagesRequest)->getRows() as $row) {
+            $topPages[] = [
+                'pagePath' => $row->getDimensionValues()[0]->getValue(),
+                'activeUsers' => (int) $row->getMetricValues()[0]->getValue(),
+            ];
+        }
+
+        return [
+            'activeUsers' => $activeUsers,
+            'topPages' => $topPages,
+            'updatedAt' => Carbon::now()->timestamp,
+        ];
     }
 
     private function runReport(array $dimensions, array $metrics, string $startDate, string $endDate, ?array $orderBy = null, ?int $limit = null): array
