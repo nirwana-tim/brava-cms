@@ -1,8 +1,8 @@
 # Brava CMS — Dashboard Date Filter
 
-> Rencana fitur filter rentang tanggal pada dashboard admin (`/admin`). Dashboard saat ini hanya menampilkan data **30 hari terakhir** — bukan fitur berbayar, tapi karena hardcoded di `DashboardController.php:25` (`$analytics->getOverview(30)`).
+> Fitur filter rentang tanggal pada dashboard admin (`/admin`).
 >
-> Status: **Planned** (belum diimplementasikan)
+> Status: **Phase 1 — DONE (preset 7H / 30H / 90H / 1Y)** · **Phase 2 — Planned (custom date range `?from=&to=`, period comparison)**.
 
 ---
 
@@ -16,37 +16,36 @@ Data analytics di dashboard di-generate oleh `App\Services\AnalyticsService` dan
 - Akses `/admin` hanya dibatasi `['auth', 'verified']` + role (`SuperAdmin` / `Admin` / `Staff`).
 - Angka "30 hari" murni hardcoded — bukan batasan GA4 maupun lisensi.
 
-### Alur Data Saat Ini
+### Alur Data Saat Ini (Phase 1 — implemented)
 
 | Layer | File | Catatan |
 |-------|------|---------|
-| Controller | `app/Http/Controllers/Admin/DashboardController.php:25` | `getOverview(30)` — hardcoded |
-| Service | `app/Services/AnalyticsService.php:83` | `getOverview(int $days = 30)` |
-| Cache key | `AnalyticsService.php:85` | `analytics.overview.{$days}` — sudah per-days |
-| GA4 range | `AnalyticsService.php:191-192` | `today()->subDays($days)` → `yesterday()` |
-| Dummy range | `AnalyticsService.php:367-370` | `range($days - 1, 0)` |
-| View label | `dashboard.blade.php:68,75,82,89,99` | "30H" hardcoded |
-| Chart | Chart.js v4 (`resources/js/app.js:3-6`) | 3 chart inline di Blade |
+| Controller | `app/Http/Controllers/Admin/DashboardController.php:37-39` | `$days = request()->query('days', 30)` + whitelist `[7, 30, 90, 365]` |
+| Service | `app/Services/AnalyticsService.php` | `getOverview(int $days = 30)` |
+| Cache key | `AnalyticsService.php` | `analytics.overview.{$days}` — sudah per-days |
+| GA4 range | `AnalyticsService.php` | `today()->subDays($days)` → `yesterday()` |
+| Dummy range | `AnalyticsService.php` | `range($days - 1, 0)` |
+| View | `dashboard.blade.php:38-42` | Tombol preset 7H / 30H / 90H / 1Y |
+| Chart | Chart.js v4 (`resources/js/app.js`) | 3 chart inline di Blade |
 
 ---
 
-## Phase 1 — Preset (7H / 30H / 90H / 1Y)
+## Phase 1 — Preset (7H / 30H / 90H / 1Y) ✅ DONE
 
-Rekomendasi: kerjakan **dulu**, near-zero risk (service & cache tidak disentuh).
+> **Status: SUDAH DITERAPKAN.** Implementasi aktual bisa dilihat di `DashboardController.php:37-39` (whitelist `[7,30,90,365]`, fallback 30) dan tombol preset di `dashboard.blade.php:38-42`. Bagian di bawah ini disimpan sebagai catatan implementasi.
 
-### File & Perubahan
+### Implementasi yang Ada
 
 1. **`app/Http/Controllers/Admin/DashboardController.php`**
-   - Baca `days` dari query string: `$days = (int) request()->query('days', 30);`
+   - Membaca `days` dari query string: `$days = (int) request()->query('days', 30);`
    - Validasi whitelist preset: `in:7,30,90,365`; nilai tidak valid → fallback ke `30`.
-   - Panggil `$analytics->getOverview($days)`.
+   - Memanggil `$analytics->getOverview($days)`.
 
 2. **`resources/views/admin/dashboard.blade.php`**
-   - Tambah baris tombol preset (link ke `route('admin.dashboard', ['days' => 90])`) di atas section "Analytics Ringkasan" (baris 33-47); tombol aktif diberi highlight.
-   - Ganti label "30H" hardcoded (baris 68, 75, 82, 89) → `{{ $data['period'] }}H`.
-   - Ganti judul "Visitor Trend (30H)" (baris 99) → `Visitor Trend ({{ $data['period'] }}H)`.
+   - Baris tombol preset (link ke `route('admin.dashboard', ['days' => 90])`) di atas section "Analytics Ringkasan"; tombol aktif diberi highlight.
+   - Label periode mengikuti nilai `$days`.
 
-3. **`app/Services/AnalyticsService.php`** — tidak perlu diubah.
+3. **`app/Services/AnalyticsService.php`** — tidak perlu diubah (cache key sudah per-days).
 
 4. **Test — `tests/Feature/AnalyticsDashboardTest.php`**
    - `GET /admin?days=7` → `$data['period']` bernilai `7`.
@@ -59,9 +58,9 @@ Rekomendasi: kerjakan **dulu**, near-zero risk (service & cache tidak disentuh).
 
 ---
 
-## Phase 2 — Custom Date Range (`?from=YYYY-MM-DD&to=YYYY-MM-DD`)
+## Phase 2 — Custom Date Range (`?from=YYYY-MM-DD&to=YYYY-MM-DD`) 🕒 Planned
 
-Refactor service dari model `$days` → date range eksplisit.
+Belum diimplementasikan. Refactor service dari model `$days` → date range eksplisit.
 
 ### File & Perubahan
 

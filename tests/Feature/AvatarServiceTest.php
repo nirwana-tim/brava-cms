@@ -55,12 +55,21 @@ it('detects an existing relative avatar', function () {
     expect($service->hasAvatar('/storage/uploads/avatar.png'))->toBeTrue();
 });
 
-it('detects an existing absolute avatar url', function () {
+it('detects an existing absolute avatar url on the app host', function () {
     Storage::disk('public')->put('uploads/avatar.png', 'content');
 
     $service = app(AvatarService::class);
 
-    expect($service->hasAvatar('http://localhost:8000/storage/uploads/avatar.png'))->toBeTrue();
+    expect($service->hasAvatar(config('app.url').'/storage/uploads/avatar.png'))->toBeTrue();
+});
+
+it('treats an absolute avatar url on a foreign host as missing', function () {
+    Storage::disk('public')->put('uploads/avatar.png', 'content');
+
+    $service = app(AvatarService::class);
+
+    expect($service->hasAvatar('http://localhost:8000/storage/uploads/avatar.png'))->toBeFalse();
+    expect($service->hasAvatar('https://example.com/storage/uploads/avatar.png'))->toBeFalse();
 });
 
 it('detects an existing bare storage path avatar', function () {

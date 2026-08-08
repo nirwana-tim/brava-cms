@@ -18,6 +18,11 @@ class AvatarService
             return true;
         }
 
+        if (preg_match('#^https?://([^/]+)/storage/#', $url, $matches)
+            && $matches[1] !== parse_url(config('app.url'), PHP_URL_HOST)) {
+            return false;
+        }
+
         $path = $this->storagePath($url);
 
         if ($path === null) {

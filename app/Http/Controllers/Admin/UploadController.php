@@ -25,7 +25,7 @@ class UploadController extends Controller
             $file = $request->file('file');
             $path = $this->mediaService->storeWithCompression($file, 'uploads', 'public');
 
-            $url = Storage::disk('public')->url($path);
+            $url = '/storage/'.$path;
 
             return response()->json([
                 'url' => $url,

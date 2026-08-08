@@ -22,13 +22,14 @@ Berikut adalah daftar peningkatan teknis yang dapat dipertimbangkan setelah fase
 
 ---
 
-### 2. [ ] Konversi Gambar Otomatis ke WebP / AVIF
-- **Tujuan**: Mengurangi ukuran payload API dan mempercepat waktu muat halaman (*PageSpeed score*) di frontend, khususnya pada gambar spanduk dan portofolio beresolusi tinggi.
-- **Waktu yang Tepat untuk Eksekusi**: Ketika sistem pengunggahan gambar membutuhkan optimasi *bandwidth* / penyimpanan server.
-- **Berkas yang Akan Terpengaruh**:
+### 2. [x] Konversi Gambar Otomatis ke WebP / AVIF
+> ✅ **SUDAH DITERAPKAN**: `App\Services\MediaService::storeWithCompression()` mengompresi & meng-encode gambar menjadi **WebP (quality 85)** melalui `intervention/image` (lihat kode untuk filter MIME). **AVIF belum dikerjakan** sehingga tetap ada di backlog — item di bawah hanya menyisakan *enhancement* ke AVIF / responsive sizes.
+- **Tujuan**: Mengurangi ukuran payload API dan mempercepat waktu halaman di frontend.
+- **Status**: WebP ✓ (implemented) · AVIF & responsive sizes — backlog.
+- **Berkas Terkait**:
+  - `app/Services/MediaService.php` (konversi WebP)
   - `app/Http/Controllers/Admin/UploadController.php`
   - `app/Http/Controllers/Admin/MediaController.php`
-  - (Opsional) Integrasi *package* manipulasi gambar seperti `intervention/image` v3 atau dependensi pemrosesan GD/Imagick.
 
 ---
 
@@ -42,7 +43,8 @@ Berikut adalah daftar peningkatan teknis yang dapat dipertimbangkan setelah fase
 
 ---
 
-### 4. [ ] Pengaturan Ketat CORS & Otorisasi Token (Laravel Sanctum)
+### 4. [~] Pengaturan Ketat CORS & Otorisasi Token (Laravel Sanctum)
+> 🟡 **SEBAGIAN DITERAPKAN**: `config/cors.php` sudah memakai `allowed_origins` via `CORS_ALLOWED_ORIGINS` (+ `allowed_origins_patterns` via `CORS_ALLOWED_ORIGINS_PATTERNS`) pada route `api/*`. Yang **belum**: otorisasi `auth:sanctum` untuk endpoint non-publik (API saat ini publik, hanya di-rate-limit).
 - **Tujuan**: Membatasi domain luar yang dapat mengonsumsi API publik Brava CMS serta mengamankan endpoint non-publik untuk kebutuhan aplikasi seluler atau portal eksternal.
 - **Waktu yang Tepat untuk Eksekusi**: Sebelum integrasi dengan aplikasi seluler (*Mobile App*) atau antarmuka klien eksternal di luar domain utama website Brava.
 - **Berkas yang Akan Terpengaruh**:

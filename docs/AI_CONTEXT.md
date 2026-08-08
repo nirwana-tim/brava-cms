@@ -38,7 +38,7 @@ Framework
 
 PHP
 
-- PHP 8.3+
+- PHP 8.5 (dev runtime; minimum `^8.3` per `composer.json` — cukup deploy di PHP 8.3+)
 
 Authentication
 
@@ -52,8 +52,8 @@ Frontend (Admin)
 
 Database
 
-- MySQL (production)
-- SQLite (development, current .env)
+- MySQL (production & development, `.env` saat ini `brava_master`)
+- SQLite (digunakan di test suite `phpunit.xml`)
 
 Storage
 
@@ -530,13 +530,9 @@ Career
 
 Newsletter
 
-Analytics
-
 Backup
 
 Audit Log
-
-Multi Language
 
 ---
 
@@ -660,7 +656,7 @@ Avoid premature optimization.
 |------|---------|
 | `docs/SCHEMA.md` | Complete database schema for all modules |
 | `docs/API.md` | API endpoint specifications, request/response, SEO strategy |
-| `docs/ANALYTICS.md` | Google Analytics dashboard plan (post-MVP) |
+| `docs/ANALYTICS.md` | Google Analytics dashboard (implemented — GA4 di dashboard `/admin`) |
 | `docs/AI_BEHAVIOUR.md` | AI coding behavior guidelines |
 
 # Code Generation Rules

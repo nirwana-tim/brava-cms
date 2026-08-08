@@ -167,7 +167,9 @@ storage/app/analytics/                   ← taruh service-account-key.json di s
 
 ## Phase 2 — Enhancement
 
-- Export to CSV
-- Date range picker custom
-- Period comparison (vs previous period)
-- Email report mingguan otomatis
+Status:
+- [x] **Date range preset** (7H / 30H / 90H / 1Y) — selesai, lihat `docs/DASHBOARD_DATE_FILTER.md` (Phase 1).
+- [ ] Export to CSV — belum
+- [ ] Date range picker custom (`?from=&to=`) — belum (Phase 2 di `docs/DASHBOARD_DATE_FILTER.md`)
+- [ ] Period comparison (vs previous period) — belum
+- [ ] Email report mingguan otomatis — belum
