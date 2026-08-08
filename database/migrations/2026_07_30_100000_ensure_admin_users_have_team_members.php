@@ -20,7 +20,6 @@ return new class extends Migration
                 'position' => $position,
                 'email' => $user->email,
                 'avatar' => $user->avatar,
-                'sort_order' => $user->role === UserRole::SuperAdmin ? 0 : 1,
                 'is_active' => true,
             ]);
         }

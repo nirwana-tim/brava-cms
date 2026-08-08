@@ -163,7 +163,6 @@
 | avatar | string(255) | nullable |
 | email | string(255) | nullable |
 | phone | string(50) | nullable |
-| sort_order | integer | default 0, unique enforced in app layer |
 | is_active | boolean | default true |
 | timestamps | | |
 | softDeletes | | |

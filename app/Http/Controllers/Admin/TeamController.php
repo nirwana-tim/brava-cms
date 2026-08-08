@@ -23,7 +23,7 @@ class TeamController extends Controller
 
     public function index(Request $request): View
     {
-        $query = TeamMember::with('user')->orderBy('sort_order')->latest();
+        $query = TeamMember::with('user')->latest();
 
         if (! auth()->user()->isSuperAdmin()) {
             $query->whereDoesntHave('user', fn ($q) => $q->where('role', UserRole::SuperAdmin));
@@ -54,10 +54,6 @@ class TeamController extends Controller
     public function store(StoreTeamRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-
-        if (empty($validated['sort_order'] ?? null)) {
-            $validated['sort_order'] = (int) TeamMember::max('sort_order') + 1;
-        }
 
         $team = TeamMember::create($validated);
 

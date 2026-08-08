@@ -20,8 +20,7 @@ class TeamMember extends Model
     public array $translatable = ['name', 'position'];
 
     protected $fillable = [
-        'user_id', 'name', 'position', 'avatar', 'email', 'phone',
-        'sort_order', 'is_active',
+        'user_id', 'name', 'position', 'avatar', 'email', 'phone', 'is_active',
     ];
 
     protected function casts(): array

@@ -3,7 +3,6 @@
 use App\Enums\UserRole;
 use App\Models\Faq;
 use App\Models\Service;
-use App\Models\TeamMember;
 use App\Models\Testimonial;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
@@ -30,11 +29,6 @@ function sortOrderCases(): array
             'route' => 'admin.testimonials.store',
             'model' => Testimonial::class,
             'payload' => fn () => ['client_name' => ['id' => fake()->company()], 'content' => ['id' => fake()->paragraph()], 'rating' => 5],
-        ],
-        [
-            'route' => 'admin.team.store',
-            'model' => TeamMember::class,
-            'payload' => fn () => ['name' => ['id' => fake()->name()], 'position' => ['id' => fake()->jobTitle()]],
         ],
     ];
 }

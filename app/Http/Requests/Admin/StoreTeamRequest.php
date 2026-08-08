@@ -5,7 +5,6 @@ namespace App\Http\Requests\Admin;
 use App\Http\Requests\Concerns\NormalizesTranslatableInputs;
 use App\Http\Requests\Concerns\ValidatesImageUrl;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreTeamRequest extends FormRequest
 {
@@ -42,7 +41,6 @@ class StoreTeamRequest extends FormRequest
             'avatar' => $this->imageUrlRule(),
             'email' => ['nullable', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
-            'sort_order' => ['nullable', 'integer', 'min:0', Rule::unique('team_members', 'sort_order')],
             'is_active' => ['boolean'],
             'create_user_account' => ['nullable', 'boolean'],
             'role' => $roleRule,

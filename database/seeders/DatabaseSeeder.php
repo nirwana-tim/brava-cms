@@ -33,7 +33,6 @@ class DatabaseSeeder extends Seeder
             'name' => $superAdmin->name,
             'position' => 'Super Administrator',
             'email' => $superAdmin->email,
-            'sort_order' => 0,
             'is_active' => true,
         ]);
 
@@ -50,7 +49,6 @@ class DatabaseSeeder extends Seeder
             'name' => $admin->name,
             'position' => 'Administrator',
             'email' => $admin->email,
-            'sort_order' => 1,
             'is_active' => true,
         ]);
 
