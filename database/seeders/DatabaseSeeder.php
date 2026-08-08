@@ -20,37 +20,45 @@ class DatabaseSeeder extends Seeder
         $this->command->warn("Super Admin ({$superAdminEmail}) created with password: {$superAdminPassword}");
         $this->command->warn("Admin ({$adminEmail}) created with password: {$adminPassword}");
 
-        $superAdmin = User::factory()->create([
-            'name' => 'Super Admin',
-            'email' => $superAdminEmail,
-            'role' => UserRole::SuperAdmin,
-            'position' => 'Super Administrator',
-            'password' => $superAdminPassword,
-        ]);
+        $superAdmin = User::firstOrCreate(
+            ['email' => $superAdminEmail],
+            [
+                'name' => 'Super Admin',
+                'role' => UserRole::SuperAdmin,
+                'position' => 'Super Administrator',
+                'password' => $superAdminPassword,
+            ]
+        );
 
-        TeamMember::create([
-            'user_id' => $superAdmin->id,
-            'name' => $superAdmin->name,
-            'position' => 'Super Administrator',
-            'email' => $superAdmin->email,
-            'is_active' => true,
-        ]);
+        if ($superAdmin->wasRecentlyCreated) {
+            TeamMember::create([
+                'user_id' => $superAdmin->id,
+                'name' => $superAdmin->name,
+                'position' => 'Super Administrator',
+                'email' => $superAdmin->email,
+                'is_active' => true,
+            ]);
+        }
 
-        $admin = User::factory()->create([
-            'name' => 'Admin User',
-            'email' => $adminEmail,
-            'role' => UserRole::Admin,
-            'position' => 'Administrator',
-            'password' => $adminPassword,
-        ]);
+        $admin = User::firstOrCreate(
+            ['email' => $adminEmail],
+            [
+                'name' => 'Admin User',
+                'role' => UserRole::Admin,
+                'position' => 'Administrator',
+                'password' => $adminPassword,
+            ]
+        );
 
-        TeamMember::create([
-            'user_id' => $admin->id,
-            'name' => $admin->name,
-            'position' => 'Administrator',
-            'email' => $admin->email,
-            'is_active' => true,
-        ]);
+        if ($admin->wasRecentlyCreated) {
+            TeamMember::create([
+                'user_id' => $admin->id,
+                'name' => $admin->name,
+                'position' => 'Administrator',
+                'email' => $admin->email,
+                'is_active' => true,
+            ]);
+        }
 
         $this->call([
             SettingSeeder::class,

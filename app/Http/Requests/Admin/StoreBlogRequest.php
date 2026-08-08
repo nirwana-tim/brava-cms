@@ -33,7 +33,7 @@ class StoreBlogRequest extends FormRequest
             'title.en' => ['nullable', 'string', 'max:255'],
 
             'slug' => ['required', 'array'],
-            'slug.id' => ['required', 'string', 'max:255', Rule::unique('blogs', 'slug->id')],
+            'slug.id' => ['required', 'string', 'max:255', Rule::unique('blogs', 'slug->id')->whereNull('deleted_at')],
             'slug.en' => ['nullable', 'string', 'max:255'],
 
             'excerpt' => ['nullable', 'array'],

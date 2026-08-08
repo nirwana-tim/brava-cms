@@ -22,14 +22,7 @@ class UpdateTeamRequest extends FormRequest
 
     public function rules(): array
     {
-        $roleRule = ['nullable', 'string', 'in:staff,admin,super_admin'];
-        if ($this->user()?->isAdmin() && ! $this->user()?->isSuperAdmin()) {
-            $roleRule[] = function ($attribute, $value, $fail) {
-                if ($value === 'admin') {
-                    $fail('Admin biasa tidak dapat mengubah role menjadi Admin.');
-                }
-            };
-        }
+        $roleRule = ['nullable', 'string', 'in:'.implode(',', $this->user()?->isSuperAdmin() ? ['staff', 'admin', 'super_admin'] : ['staff'])];
 
         return [
             'name' => ['required', 'array'],

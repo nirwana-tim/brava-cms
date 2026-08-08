@@ -143,6 +143,10 @@ class PromoService
             throw new \InvalidArgumentException('Promo yang non-aktif atau sudah kedaluwarsa tidak dapat dijadikan Highlight.');
         }
 
+        if ($promo->is_coming_soon) {
+            throw new \InvalidArgumentException('Promo yang belum mulai berlaku tidak dapat dijadikan Highlight.');
+        }
+
         $promo->update(['is_highlighted' => true]);
     }
 }

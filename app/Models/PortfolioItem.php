@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\MediaService;
 use App\Traits\ClearsApiCache;
 use App\Traits\LogsActivity;
 use Database\Factories\PortfolioItemFactory;
@@ -41,6 +42,21 @@ class PortfolioItem extends Model
             'robots_index' => 'boolean',
             'robots_follow' => 'boolean',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (PortfolioItem $portfolio) {
+            if ($portfolio->isForceDeleting()) {
+                app(MediaService::class)
+                    ->deleteStoredUpload($portfolio->photo);
+
+                app(MediaService::class)
+                    ->deleteStoredUpload($portfolio->og_image);
+
+                $portfolio->media()->forceDelete();
+            }
+        });
     }
 
     public function service(): BelongsTo

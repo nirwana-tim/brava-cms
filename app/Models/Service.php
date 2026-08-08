@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\MediaService;
 use App\Traits\ClearsApiCache;
 use Database\Factories\ServiceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -28,6 +29,18 @@ class Service extends Model
         return [
             'is_active' => 'boolean',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (Service $service) {
+            if ($service->isForceDeleting()) {
+                app(MediaService::class)
+                    ->deleteStoredUpload($service->photo);
+
+                $service->media()->forceDelete();
+            }
+        });
     }
 
     public function portfolioItems(): HasMany

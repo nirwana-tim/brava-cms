@@ -122,3 +122,27 @@ test('staff cannot manage team members', function () {
 
     $this->actingAs($staff)->put(route('admin.team.update', $team), ['name' => 'Hacked'])->assertForbidden();
 });
+
+test('admin cannot escalate a staff member to super_admin', function () {
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+    $staff = User::factory()->staff()->create();
+
+    $team = TeamMember::create([
+        'user_id' => $staff->id,
+        'name' => $staff->name,
+        'position' => 'Content Editor',
+        'email' => $staff->email,
+        'is_active' => true,
+    ]);
+
+    foreach ([UserRole::SuperAdmin->value, UserRole::Admin->value] as $role) {
+        $this->actingAs($admin)->put(route('admin.team.update', $team), [
+            'name' => $staff->name,
+            'position' => 'Content Editor',
+            'email' => $staff->email,
+            'role' => $role,
+        ])->assertSessionHasErrors('role');
+
+        expect($staff->fresh()->role)->toBe(UserRole::Staff);
+    }
+});

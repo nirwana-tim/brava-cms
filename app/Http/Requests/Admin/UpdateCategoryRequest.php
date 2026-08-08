@@ -27,7 +27,7 @@ class UpdateCategoryRequest extends FormRequest
             'name.id' => ['required', 'string', 'max:255'],
             'name.en' => ['nullable', 'string', 'max:255'],
             'slug' => ['required', 'array'],
-            'slug.id' => ['required', 'string', 'max:255', Rule::unique('categories', 'slug->id')->ignore($this->route('category'))],
+            'slug.id' => ['required', 'string', 'max:255', Rule::unique('categories', 'slug->id')->ignore($this->route('category'))->whereNull('deleted_at')],
             'slug.en' => ['nullable', 'string', 'max:255'],
             'type' => ['nullable', 'string', 'in:blog,portfolio'],
             'description' => ['nullable', 'array'],

@@ -378,10 +378,10 @@ Response (no pagination — returns all active, sorted by `sort_order`):
         {
             "id": 1,
             "client_name": "TechCorp Indonesia",
-            "company": "TechCorp Indonesia",
             "content": "Great service! Highly recommended.",
             "rating": 5,
-            "avatar": "/storage/testimonials/avatar.jpg"
+            "avatar": "http://localhost:8000/storage/testimonials/avatar.jpg",
+            "avatar_alt": "TechCorp Indonesia"
         }
     ]
 }
@@ -559,7 +559,6 @@ GET /api/v1/blogs?fields=id,title,slug,excerpt,published_at,author
 | `/api/v1/settings`         | 1 hour | Cache::flexible([3600, 7200], ...) |
 | `/api/v1/categories`       | 1 hour | Cache::flexible                    |
 | `/api/v1/services`         | 15 min | Cache::flexible([900, 1800], ...)  |
-| `/api/v1/services`       | 15 min | Cache::flexible                    |
 | `/api/v1/blogs`            | 15 min | Cache::flexible                    |
 | `/api/v1/blogs/{slug}`     | 30 min | Cache::flexible                    |
 | `/api/v1/testimonials`     | 1 hour | Cache::flexible                    |

@@ -28,7 +28,7 @@ class StoreServiceRequest extends FormRequest
             'title.id' => ['required', 'string', 'max:255'],
             'title.en' => ['nullable', 'string', 'max:255'],
             'slug' => ['required', 'array'],
-            'slug.id' => ['required', 'string', 'max:255', Rule::unique('services', 'slug->id')],
+            'slug.id' => ['required', 'string', 'max:255', Rule::unique('services', 'slug->id')->whereNull('deleted_at')],
             'slug.en' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'array'],
             'description.id' => ['nullable', 'string'],
@@ -37,7 +37,7 @@ class StoreServiceRequest extends FormRequest
             'photo_alt' => ['nullable', 'array'],
             'photo_alt.id' => ['nullable', 'string', 'max:255'],
             'photo_alt.en' => ['nullable', 'string', 'max:255'],
-            'sort_order' => ['nullable', 'integer', 'min:0', Rule::unique('services', 'sort_order')],
+            'sort_order' => ['nullable', 'integer', 'min:0', Rule::unique('services', 'sort_order')->whereNull('deleted_at')],
             'is_active' => ['boolean'],
         ];
     }

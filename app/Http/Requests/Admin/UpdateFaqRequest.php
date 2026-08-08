@@ -29,7 +29,7 @@ class UpdateFaqRequest extends FormRequest
             'answer' => ['required', 'array'],
             'answer.id' => ['required', 'string'],
             'answer.en' => ['nullable', 'string'],
-            'sort_order' => ['nullable', 'integer', 'min:0', Rule::unique('faqs', 'sort_order')->ignore($this->route('faq'))],
+            'sort_order' => ['nullable', 'integer', 'min:0', Rule::unique('faqs', 'sort_order')->ignore($this->route('faq'))->whereNull('deleted_at')],
             'is_active' => ['boolean'],
         ];
     }

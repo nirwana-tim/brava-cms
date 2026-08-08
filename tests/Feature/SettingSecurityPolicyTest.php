@@ -17,7 +17,7 @@ test('adsense settings exist with correct group and type', function () {
     $settings = Setting::where('group', 'adsense')->get()->keyBy('key');
 
     expect($settings->has('adsense_enabled'))->toBeTrue();
-    expect($settings->get('adsense_enabled'))->TobeInstanceOf(Setting::class)
+    expect($settings->get('adsense_enabled'))->toBeInstanceOf(Setting::class)
         ->type->toBe('boolean');
 
     expect($settings->has('adsense_client_id'))->toBeTrue();

@@ -18,6 +18,30 @@ beforeEach(function () {
     $this->service = app(MediaUsageService::class);
 });
 
+test('upload file not referenced anywhere can be deleted', function () {
+    Storage::disk('public')->put('uploads/free.png', 'content');
+
+    $response = $this->actingAs($this->admin)->deleteJson('/admin/upload', ['path' => 'uploads/free.png']);
+
+    $response->assertOk();
+    Storage::disk('public')->assertMissing('uploads/free.png');
+});
+
+test('upload file referenced inside blog content cannot be deleted', function () {
+    Storage::disk('public')->put('uploads/in-content.png', 'content');
+
+    Blog::factory()->create([
+        'title' => 'Cara Merawat Seragam',
+        'content' => '<p>Gambar <img src="/storage/uploads/in-content.png" alt="x"></p>',
+    ]);
+
+    $response = $this->actingAs($this->admin)->deleteJson('/admin/upload', ['path' => 'uploads/in-content.png']);
+
+    $response->assertStatus(422);
+    $response->assertJsonPath('error', fn (string $error) => str_contains($error, 'Cara Merawat Seragam'));
+    Storage::disk('public')->assertExists('uploads/in-content.png');
+});
+
 test('media not referenced anywhere can be deleted', function () {
     $media = Media::factory()->create(['path' => 'media/unused.png']);
     Storage::disk('public')->put($media->path, 'content');

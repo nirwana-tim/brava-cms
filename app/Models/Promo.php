@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\MediaService;
 use App\Traits\ClearsApiCache;
 use App\Traits\LogsActivity;
 use Database\Factories\PromoFactory;
@@ -64,6 +65,18 @@ class Promo extends Model
                 static::where('id', '!=', $promo->id)
                     ->where('is_highlighted', true)
                     ->update(['is_highlighted' => false]);
+            }
+
+            if (! $promo->is_active || ($promo->valid_until && $promo->valid_until->isPast())) {
+                static::where('id', $promo->id)
+                    ->where('is_highlighted', true)
+                    ->update(['is_highlighted' => false]);
+            }
+        });
+
+        static::deleting(function (Promo $promo) {
+            if ($promo->isForceDeleting()) {
+                app(MediaService::class)->deleteStoredUpload($promo->image);
             }
         });
     }

@@ -29,7 +29,7 @@ class StoreFaqRequest extends FormRequest
             'answer' => ['required', 'array'],
             'answer.id' => ['required', 'string'],
             'answer.en' => ['nullable', 'string'],
-            'sort_order' => ['nullable', 'integer', 'min:0', Rule::unique('faqs', 'sort_order')],
+            'sort_order' => ['nullable', 'integer', 'min:0', Rule::unique('faqs', 'sort_order')->whereNull('deleted_at')],
             'is_active' => ['boolean'],
         ];
     }

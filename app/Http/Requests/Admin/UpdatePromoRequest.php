@@ -31,7 +31,7 @@ class UpdatePromoRequest extends FormRequest
             'title.id' => ['required', 'string', 'max:255'],
             'title.en' => ['nullable', 'string', 'max:255'],
             'slug' => ['required', 'array'],
-            'slug.id' => ['required', 'string', 'max:255', Rule::unique('promos', 'slug->id')->ignore($this->route('promo'))],
+            'slug.id' => ['required', 'string', 'max:255', Rule::unique('promos', 'slug->id')->ignore($this->route('promo'))->whereNull('deleted_at')],
             'slug.en' => ['nullable', 'string', 'max:255'],
             'badge_text' => ['nullable', 'array'],
             'badge_text.id' => ['nullable', 'string', 'max:50'],

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\PostStatus;
 use App\Services\HtmlSanitizer;
+use App\Services\MediaService;
 use App\Traits\ClearsApiCache;
 use App\Traits\LogsActivity;
 use Database\Factories\BlogFactory;
@@ -51,9 +52,17 @@ class Blog extends Model
             if ($blog->status === PostStatus::Published && empty($blog->published_at)) {
                 $blog->published_at = now();
             }
+        });
 
-            if ($blog->status === PostStatus::Draft) {
-                $blog->published_at = null;
+        static::deleting(function (Blog $blog) {
+            if ($blog->isForceDeleting()) {
+                app(MediaService::class)
+                    ->deleteStoredUpload($blog->featured_image);
+
+                app(MediaService::class)
+                    ->deleteStoredUpload($blog->og_image);
+
+                $blog->media()->forceDelete();
             }
         });
     }
@@ -80,7 +89,8 @@ class Blog extends Model
 
     public function scopePublished($query)
     {
-        return $query->where('status', PostStatus::Published);
+        return $query->where('status', PostStatus::Published)
+            ->where('published_at', '<=', now());
     }
 
     public function scopeFeatured($query)

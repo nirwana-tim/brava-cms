@@ -95,3 +95,20 @@ test('DatabaseSeeder seeds only users and base settings, no demo content', funct
         ->and(User::count())->toBe(2)
         ->and(Setting::where('key', 'site_name')->exists())->toBeTrue();
 });
+
+test('DatabaseSeeder is idempotent and can be re-run safely', function () {
+    $_ENV['SUPERADMIN_EMAIL'] = 'sa@env.test';
+    $_SERVER['SUPERADMIN_EMAIL'] = 'sa@env.test';
+    $_ENV['SUPERADMIN_PASSWORD'] = 'pass';
+    $_SERVER['SUPERADMIN_PASSWORD'] = 'pass';
+    $_ENV['ADMIN_EMAIL'] = 'ad@env.test';
+    $_SERVER['ADMIN_EMAIL'] = 'ad@env.test';
+    $_ENV['ADMIN_PASSWORD'] = 'pass';
+    $_SERVER['ADMIN_PASSWORD'] = 'pass';
+
+    $this->seed(DatabaseSeeder::class);
+    $this->seed(DatabaseSeeder::class);
+
+    expect(User::count())->toBe(2)
+        ->and(TeamMember::count())->toBe(2);
+});

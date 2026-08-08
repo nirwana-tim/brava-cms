@@ -31,12 +31,12 @@ class StorePortfolioRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'service_id' => ['required', 'exists:services,id'],
+            'service_id' => ['required', 'integer', Rule::exists('services', 'id')->whereNull('deleted_at')],
             'title' => ['required', 'array'],
             'title.id' => ['required', 'string', 'max:255'],
             'title.en' => ['nullable', 'string', 'max:255'],
             'slug' => ['required', 'array'],
-            'slug.id' => ['required', 'string', 'max:255', Rule::unique('portfolio_items', 'slug->id')],
+            'slug.id' => ['required', 'string', 'max:255', Rule::unique('portfolio_items', 'slug->id')->whereNull('deleted_at')],
             'slug.en' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'array'],
             'description.id' => ['nullable', 'string'],
