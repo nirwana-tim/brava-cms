@@ -3,7 +3,10 @@
 
     <div class="card">
         <div class="card-header flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <h2 class="text-lg font-semibold" style="color: var(--heading-text)">Media</h2>
+            <div>
+                <h2 class="text-2xl font-semibold" style="color: var(--heading-text)">Media Management</h2>
+                <p class="text-xs" style="color: var(--muted-text)">Manage all uploaded media files (images & videos) for use in website content.</p>
+            </div>
             <a href="{{ route('admin.media.create') }}">
                 <x-primary-button>{{ __('Upload Media') }}</x-primary-button>
             </a>

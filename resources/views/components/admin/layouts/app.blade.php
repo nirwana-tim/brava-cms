@@ -42,7 +42,8 @@
                 style="border-color: var(--sidebar-border)">
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2">
                     <img src="/favicon.svg" alt="BRAVA CMS" class="w-8 h-8">
-                    <span class="font-bold italic" style="font-size: 40px; color: var(--btn-primary-bg); line-height: 1.2">BRAVA</span>
+                    <span class="font-bold italic"
+                        style="font-size: 40px; color: var(--btn-primary-bg); line-height: 1.2">BRAVA</span>
                 </a>
                 <button @click="sidebarOpen = false" class="lg:hidden" style="color: var(--muted-text)">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -118,7 +119,7 @@
                                 d="M9 15L15 9M9.5 9.5H9.51M14.5 14.5H14.51" />
                         </svg>
                     </x-slot>
-                    Promo
+                    Promos
                 </x-admin.sidebar-link>
                 <x-admin.sidebar-link :href="route('admin.testimonials.index')" :active="request()->routeIs('admin.testimonials.*')">
                     <x-slot:icon>
@@ -146,7 +147,7 @@
                                     d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
                         </x-slot>
-                        Team
+                        Teams
                     </x-admin.sidebar-link>
                 @endif
 
@@ -203,12 +204,16 @@
                 <div class="relative pt-7 pb-4 px-4 rounded-xl text-center shadow-md"
                     style="background-color: var(--btn-primary-bg);">
                     {{-- Floating Avatar Circle --}}
-                    <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full p-0.5 bg-white shadow-md flex items-center justify-center">
-                        <div class="w-full h-full rounded-full flex items-center justify-center overflow-hidden" style="background-color: #13247d;">
+                    <div
+                        class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full p-0.5 bg-white shadow-md flex items-center justify-center">
+                        <div class="w-full h-full rounded-full flex items-center justify-center overflow-hidden"
+                            style="background-color: #13247d;">
                             @if ($avatar->hasAvatar(Auth::user()->avatar))
-                                <img src="{{ Auth::user()->avatar }}" alt="{{ Auth::user()->name }}" class="w-full h-full object-cover">
+                                <img src="{{ Auth::user()->avatar }}" alt="{{ Auth::user()->name }}"
+                                    class="w-full h-full object-cover">
                             @else
-                                <span class="text-base font-bold text-white">{{ $avatar->initials(Auth::user()->name) }}</span>
+                                <span
+                                    class="text-base font-bold text-white">{{ $avatar->initials(Auth::user()->name) }}</span>
                             @endif
                         </div>
                     </div>
@@ -226,7 +231,8 @@
                     {{-- Logout Button --}}
                     <button type="button" @click="$dispatch('logout-confirm')"
                         class="w-full py-2 px-3 bg-white hover:bg-gray-100 text-red-600 text-xs font-semibold rounded-md shadow-sm transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
-                        <svg class="w-4 h-4 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 text-red-500 shrink-0" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
@@ -236,11 +242,8 @@
             </div>
         </aside>
 
-        <x-admin.confirm-dialog :action="route('logout')" method="POST"
-            trigger-event="logout-confirm"
-            title="Log Out"
-            message="Are you sure you want to log out of your dashboard?"
-            confirm-label="Log Out"
+        <x-admin.confirm-dialog :action="route('logout')" method="POST" trigger-event="logout-confirm" title="Log Out"
+            message="Are you sure you want to log out of your dashboard?" confirm-label="Log Out"
             confirm-icon="logout" />
 
         {{-- Main Content Area --}}
@@ -260,7 +263,7 @@
                 {{-- Breadcrumb / Page title --}}
                 <div class="flex-1">
                     @isset($title)
-                        <h1 class="text-lg font-semibold" style="color: var(--btn-primary-bg)">{{ $title }}</h1>
+                        <h1 class="text-2xl font-semibold" style="color: var(--btn-primary-bg)">{{ $title }}</h1>
                     @endisset
                 </div>
 
@@ -290,10 +293,12 @@
                                     <img src="{{ Auth::user()->avatar }}" alt="{{ Auth::user()->name }}"
                                         class="w-full h-full object-cover">
                                 @else
-                                    <span class="text-xs font-bold text-white">{{ $avatar->initials(Auth::user()->name) }}</span>
+                                    <span
+                                        class="text-xs font-bold text-white">{{ $avatar->initials(Auth::user()->name) }}</span>
                                 @endif
                             </div>
-                            <svg class="w-4 h-4 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 text-gray-500 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 9l-7 7-7-7" />
                             </svg>
@@ -306,10 +311,11 @@
                                 style="color: var(--sidebar-link-text)">
                                 Profile
                             </a>
-                            <button type="button" @click="$dispatch('logout-confirm')" class="w-full text-left px-4 py-2 text-sm cursor-pointer"
-                                    style="color: var(--sidebar-link-text)">
-                                    Log Out
-                                </button>
+                            <button type="button" @click="$dispatch('logout-confirm')"
+                                class="w-full text-left px-4 py-2 text-sm cursor-pointer"
+                                style="color: var(--sidebar-link-text)">
+                                Log Out
+                            </button>
                         </div>
                     </div>
                 </div>

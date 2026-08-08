@@ -11,15 +11,6 @@
         </div>
     @endif
 
-    <div>
-        <x-input-label for="type" :value="__('Type')" :required="true" />
-        <select id="type" name="type" class="form-select mt-1">
-            <option value="blog" {{ old('type', $category->type ?? '') === 'blog' ? 'selected' : '' }}>Blog</option>
-            <option value="portfolio" {{ old('type', $category->type ?? '') === 'portfolio' ? 'selected' : '' }}>Portfolio</option>
-        </select>
-        <x-input-error class="mt-2" :messages="$errors->get('type')" />
-    </div>
-
     <x-admin.language-tabs>
         <!-- ID Tab -->
         <div x-show="langTab === 'id'" class="space-y-6">
@@ -63,6 +54,17 @@
             </div>
         </div>
     </x-admin.language-tabs>
+
+    <div class="mt-6 space-y-6 border-t pt-6">
+        <div>
+            <x-input-label for="type" :value="__('Type')" :required="true" />
+            <select id="type" name="type" class="form-select mt-1">
+                <option value="blog" {{ old('type', $category->type ?? '') === 'blog' ? 'selected' : '' }}>Blog</option>
+                <option value="portfolio" {{ old('type', $category->type ?? '') === 'portfolio' ? 'selected' : '' }}>Portfolio</option>
+            </select>
+            <x-input-error class="mt-2" :messages="$errors->get('type')" />
+        </div>
+    </div>
 </div>
 
 @push('scripts')

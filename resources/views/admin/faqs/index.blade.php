@@ -3,7 +3,10 @@
 
     <div class="card">
         <div class="card-header flex items-center justify-between gap-4">
-            <h2 class="text-lg font-semibold" style="color: var(--heading-text)">FAQs</h2>
+            <div>
+                <h2 class="text-2xl font-semibold" style="color: var(--heading-text)">FAQ Management</h2>
+                <p class="text-xs" style="color: var(--muted-text)">Manage the list of frequently asked questions (FAQ) to help customers find answers quickly.</p>
+            </div>
             <a href="{{ route('admin.faqs.create') }}">
                 <x-primary-button>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
