@@ -72,12 +72,12 @@
                 </x-admin.language-tabs>
 
                 <div class="mt-6 space-y-6 border-t pt-6">
-                    <div x-data="{ imageUrl: @js(old('featured_image', $blog->featured_image)), imageAlt: @js(old('featured_image_alt.id', $blog->getTranslation('featured_image_alt', 'id', false))) }">
+                    <div x-data="{ featured_image: @js(old('featured_image', $blog->featured_image)), featured_image_alt: @js(old('featured_image_alt.id', $blog->getTranslation('featured_image_alt', 'id', false))) }">
                         <x-input-label for="featured_image" :value="__('Featured Image')" />
                         <input type="hidden" name="featured_image" id="featured_image" value="{{ old('featured_image', $blog->featured_image) }}" />
-                        <template x-if="imageUrl">
+                        <template x-if="featured_image">
                             <div class="mb-2">
-                                <img :src="imageUrl" :alt="imageAlt" class="rounded-lg" style="max-width:240px;max-height:160px;object-fit:cover">
+                                <img :src="featured_image" :alt="featured_image_alt" class="rounded-lg" style="max-width:240px;max-height:160px;object-fit:cover">
                             </div>
                         </template>
                         <x-admin.media-picker target="featured_image" collection="blogs" />

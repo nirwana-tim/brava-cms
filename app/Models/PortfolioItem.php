@@ -62,4 +62,45 @@ class PortfolioItem extends Model
     {
         return $query->where('is_active', true);
     }
+
+    /**
+     * Resolve the specifications list for a locale, falling back to the Indonesian
+     * (default) list when the requested locale has no content. Legacy records that
+     * stored a plain flat array are returned as-is.
+     *
+     * @return array<int, array{key: string, value: string}>
+     */
+    public function specificationsFor(?string $locale = null): array
+    {
+        return $this->localizedList('specifications', $locale);
+    }
+
+    /**
+     * Resolve the features list for a locale, falling back to the Indonesian
+     * (default) list when the requested locale has no content. Legacy records that
+     * stored a plain flat array are returned as-is.
+     *
+     * @return array<int, string>
+     */
+    public function featuresFor(?string $locale = null): array
+    {
+        return $this->localizedList('features', $locale);
+    }
+
+    private function localizedList(string $field, ?string $locale): array
+    {
+        $value = $this->getAttribute($field);
+
+        if (! is_array($value) || ! array_key_exists('id', $value)) {
+            return $value ?: [];
+        }
+
+        $locale = $locale ?: app()->getLocale();
+
+        if ($locale === 'id') {
+            return $value['id'] ?? [];
+        }
+
+        return ($value['en'] ?? []) ?: ($value['id'] ?? []);
+    }
 }

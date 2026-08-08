@@ -723,3 +723,23 @@
     font-size: 1em;
 }
 
+.upload-dropzone {
+    border: 2px dashed var(--table-border);
+    border-radius: 0.75rem;
+    background-color: color-mix(in srgb, var(--btn-primary-bg) 3%, transparent);
+    transition: border-color .15s ease, background-color .15s ease;
+}
+
+.upload-dropzone:hover,
+.upload-dropzone.is-dragging {
+    border-color: var(--btn-primary-bg);
+    background-color: color-mix(in srgb, var(--btn-primary-bg) 7%, transparent);
+}
+
+.upload-dropzone[disabled],
+.upload-dropzone.is-busy {
+    opacity: .5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+

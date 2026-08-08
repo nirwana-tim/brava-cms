@@ -71,6 +71,12 @@
                             <textarea id="description_id" name="description[id]" class="form-textarea mt-1" rows="3">{{ old('description.id', $portfolio->getTranslation('description', 'id', false)) }}</textarea>
                             <x-input-error class="mt-2" :messages="$errors->get('description.id')" />
                         </div>
+
+                        <x-admin.portfolio-fields
+                            locale="id"
+                            :specifications="old('specifications.id', $portfolio->specificationsFor('id') ?? [])"
+                            :features="old('features.id', $portfolio->featuresFor('id') ?? [])"
+                        />
                     </div>
 
                     <!-- EN Tab -->
@@ -98,15 +104,16 @@
                             <textarea id="description_en" name="description[en]" class="form-textarea mt-1" rows="3">{{ old('description.en', $portfolio->getTranslation('description', 'en', false)) }}</textarea>
                             <x-input-error class="mt-2" :messages="$errors->get('description.en')" />
                         </div>
+
+                        <x-admin.portfolio-fields
+                            locale="en"
+                            :specifications="old('specifications.en', $portfolio->specificationsFor('en') ?? [])"
+                            :features="old('features.en', $portfolio->featuresFor('en') ?? [])"
+                        />
                     </div>
                 </x-admin.language-tabs>
 
                 <div class="mt-6 space-y-6 border-t pt-6">
-                    <x-admin.portfolio-fields
-                        :specifications="old('specifications', $portfolio->specifications ?? [])"
-                        :features="old('features', $portfolio->features ?? [])"
-                    />
-
                     <div id="portfolio-form" x-data="{
                         photoUrl: @js(old('photo', $portfolio->photo)),
                         photoAlt: @js(old('photo_alt.id', $portfolio->getTranslation('photo_alt', 'id', false))),

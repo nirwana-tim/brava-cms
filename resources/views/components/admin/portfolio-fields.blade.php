@@ -1,4 +1,5 @@
 @props([
+    'locale' => 'id',
     'specifications' => [],
     'features' => [],
 ])
@@ -14,7 +15,7 @@
     <div class="border-t pt-4" style="border-color: var(--card-header-border)">
         <x-input-label :value="__('Spesifikasi Produk')" />
         <p class="text-xs mb-3" style="color: var(--muted-text)">
-            Tabel spesifikasi key/value produk. Klik "+ Tambah Spesifikasi" untuk menambah baris.
+            Tabel spesifikasi key/value produk ({{ $locale === 'id' ? 'Bahasa Indonesia' : 'English' }}). Klik "+ Tambah Spesifikasi" untuk menambah baris.
         </p>
 
         <div class="space-y-2">
@@ -22,14 +23,14 @@
                 <div class="flex items-start gap-2">
                     <x-text-input
                         type="text"
-                        name="specifications[][key]"
+                        name="specifications[{{ $locale }}][][key]"
                         x-model="spec.key"
                         placeholder="Key (contoh: Material)"
                         class="flex-1"
                     />
                     <x-text-input
                         type="text"
-                        name="specifications[][value]"
+                        name="specifications[{{ $locale }}][][value]"
                         x-model="spec.value"
                         placeholder="Value (contoh: Lacoste CVC)"
                         class="flex-1"
@@ -57,7 +58,7 @@
     <div class="border-t pt-4 mt-4" style="border-color: var(--card-header-border)">
         <x-input-label :value="__('Fitur Produk')" />
         <p class="text-xs mb-3" style="color: var(--muted-text)">
-            Daftar fitur produk. Klik "+ Tambah Fitur" untuk menambah item.
+            Daftar fitur produk ({{ $locale === 'id' ? 'Bahasa Indonesia' : 'English' }}). Klik "+ Tambah Fitur" untuk menambah item.
         </p>
 
         <div class="space-y-2">
@@ -65,7 +66,7 @@
                 <div class="flex items-start gap-2">
                     <x-text-input
                         type="text"
-                        name="features[]"
+                        name="features[{{ $locale }}][]"
                         x-model="features[index]"
                         placeholder="contoh: Nyaman digunakan"
                         class="flex-1"

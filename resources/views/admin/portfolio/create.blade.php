@@ -70,6 +70,12 @@
                             <textarea id="description_id" name="description[id]" class="form-textarea mt-1" rows="3">{{ old('description.id') }}</textarea>
                             <x-input-error class="mt-2" :messages="$errors->get('description.id')" />
                         </div>
+
+                        <x-admin.portfolio-fields
+                            locale="id"
+                            :specifications="old('specifications.id', [])"
+                            :features="old('features.id', [])"
+                        />
                     </div>
 
                     <!-- EN Tab -->
@@ -97,15 +103,16 @@
                             <textarea id="description_en" name="description[en]" class="form-textarea mt-1" rows="3">{{ old('description.en') }}</textarea>
                             <x-input-error class="mt-2" :messages="$errors->get('description.en')" />
                         </div>
+
+                        <x-admin.portfolio-fields
+                            locale="en"
+                            :specifications="old('specifications.en', [])"
+                            :features="old('features.en', [])"
+                        />
                     </div>
                 </x-admin.language-tabs>
 
                 <div class="mt-6 space-y-6 border-t pt-6">
-                    <x-admin.portfolio-fields
-                        :specifications="old('specifications', [])"
-                        :features="old('features', [])"
-                    />
-
                     <div id="portfolio-form" x-data="{
                         photoUrl: @js(old('photo')),
                         photoAlt: @js(old('photo_alt.id')),

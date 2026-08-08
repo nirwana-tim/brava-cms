@@ -208,7 +208,7 @@
                             @if ($avatar->hasAvatar(Auth::user()->avatar))
                                 <img src="{{ Auth::user()->avatar }}" alt="{{ Auth::user()->name }}" class="w-full h-full object-cover">
                             @else
-                                <img src="/favicon.svg" alt="BRAVA" class="w-6 h-6 object-contain">
+                                <span class="text-base font-bold text-white">{{ $avatar->initials(Auth::user()->name) }}</span>
                             @endif
                         </div>
                     </div>
@@ -224,20 +224,24 @@
                     </div>
 
                     {{-- Logout Button --}}
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit"
-                            class="w-full py-2 px-3 bg-white hover:bg-gray-100 text-red-600 text-xs font-semibold rounded-md shadow-sm transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
-                            <svg class="w-4 h-4 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                            </svg>
-                            <span>Log Out</span>
-                        </button>
-                    </form>
+                    <button type="button" @click="$dispatch('logout-confirm')"
+                        class="w-full py-2 px-3 bg-white hover:bg-gray-100 text-red-600 text-xs font-semibold rounded-md shadow-sm transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                        <svg class="w-4 h-4 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        <span>Log Out</span>
+                    </button>
                 </div>
             </div>
         </aside>
+
+        <x-admin.confirm-dialog :action="route('logout')" method="POST"
+            trigger-event="logout-confirm"
+            title="Log Out"
+            message="Are you sure you want to log out of your dashboard?"
+            confirm-label="Log Out"
+            confirm-icon="logout" />
 
         {{-- Main Content Area --}}
         <div class="flex-1 flex flex-col min-w-0">
@@ -286,7 +290,7 @@
                                     <img src="{{ Auth::user()->avatar }}" alt="{{ Auth::user()->name }}"
                                         class="w-full h-full object-cover">
                                 @else
-                                    <img src="/favicon.svg" alt="BRAVA" class="w-5 h-5 object-contain">
+                                    <span class="text-xs font-bold text-white">{{ $avatar->initials(Auth::user()->name) }}</span>
                                 @endif
                             </div>
                             <svg class="w-4 h-4 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -302,13 +306,10 @@
                                 style="color: var(--sidebar-link-text)">
                                 Profile
                             </a>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="w-full text-left px-4 py-2 text-sm"
+                            <button type="button" @click="$dispatch('logout-confirm')" class="w-full text-left px-4 py-2 text-sm cursor-pointer"
                                     style="color: var(--sidebar-link-text)">
                                     Log Out
                                 </button>
-                            </form>
                         </div>
                     </div>
                 </div>

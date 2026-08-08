@@ -1,5 +1,5 @@
 <x-admin.layouts.app>
-    <x-slot name="title">{{ __('Admin Dashboard') }}</x-slot>
+    <x-slot name="title">{{ __('Dashboard') }}</x-slot>
 
     {{-- CMS Stats --}}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -9,8 +9,10 @@
                     <p class="text-3xl font-bold" style="color: #ffffff">{{ $stats['services'] }}</p>
                     <p class="text-sm mt-1" style="color: rgba(255, 255, 255, 0.85)">Services</p>
                 </div>
-                <svg class="w-10 h-10 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: rgba(255, 255, 255, 0.85)">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                <svg class="w-10 h-10 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    style="color: rgba(255, 255, 255, 0.85)">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
             </div>
         </div>
@@ -20,8 +22,10 @@
                     <p class="text-3xl font-bold" style="color: #ffffff">{{ $stats['blogs'] }}</p>
                     <p class="text-sm mt-1" style="color: rgba(255, 255, 255, 0.85)">Blog Posts</p>
                 </div>
-                <svg class="w-10 h-10 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: rgba(255, 255, 255, 0.85)">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+                <svg class="w-10 h-10 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    style="color: rgba(255, 255, 255, 0.85)">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
                 </svg>
             </div>
         </div>
@@ -31,9 +35,12 @@
                     <p class="text-3xl font-bold" style="color: #ffffff">{{ $stats['promos'] }}</p>
                     <p class="text-sm mt-1" style="color: rgba(255, 255, 255, 0.85)">Promo</p>
                 </div>
-                <svg class="w-10 h-10 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: rgba(255, 255, 255, 0.85)">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 15L15 9M9.5 9.5H9.51M14.5 14.5H14.51" />
+                <svg class="w-10 h-10 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    style="color: rgba(255, 255, 255, 0.85)">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 15L15 9M9.5 9.5H9.51M14.5 14.5H14.51" />
                 </svg>
             </div>
         </div>
@@ -43,8 +50,10 @@
                     <p class="text-3xl font-bold" style="color: #ffffff">{{ $stats['users'] }}</p>
                     <p class="text-sm mt-1" style="color: rgba(255, 255, 255, 0.85)">Users</p>
                 </div>
-                <svg class="w-10 h-10 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: rgba(255, 255, 255, 0.85)">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                <svg class="w-10 h-10 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    style="color: rgba(255, 255, 255, 0.85)">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
             </div>
         </div>
@@ -117,7 +126,8 @@
                                         <tbody>
                                             @foreach ($realtime['topPages'] as $page)
                                                 <tr style="border-bottom: 1px solid var(--table-border)">
-                                                    <td class="py-2 text-sm font-mono" style="color: var(--table-text)">
+                                                    <td class="py-2 text-sm font-mono"
+                                                        style="color: var(--table-text)">
                                                         {{ $page['pagePath'] }}</td>
                                                     <td class="py-2 text-sm text-right"
                                                         style="color: var(--muted-text)">
@@ -127,7 +137,8 @@
                                         </tbody>
                                     </table>
                                 @else
-                                    <p class="text-sm" style="color: var(--muted-text)">Belum ada aktivitas terdeteksi.
+                                    <p class="text-sm" style="color: var(--muted-text)">Belum ada aktivitas
+                                        terdeteksi.
                                     </p>
                                 @endif
                                 <p class="text-xs mt-2" style="color: var(--muted-text)">Diperbarui setiap menit.</p>
@@ -156,7 +167,8 @@
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
             <div class="card">
                 <div class="card-body">
-                    <p class="text-xs font-semibold uppercase tracking-wider" style="color: var(--muted-text)">Visitors
+                    <p class="text-xs font-semibold uppercase tracking-wider" style="color: var(--muted-text)">
+                        Visitors
                         Today</p>
                     <p class="text-2xl font-bold mt-1" style="color: var(--heading-text)">
                         {{ number_format($data['today']['visitors']) }}</p>
@@ -172,7 +184,8 @@
             </div>
             <div class="card">
                 <div class="card-body">
-                    <p class="text-xs font-semibold uppercase tracking-wider" style="color: var(--muted-text)">Pageviews
+                    <p class="text-xs font-semibold uppercase tracking-wider" style="color: var(--muted-text)">
+                        Pageviews
                         Today</p>
                     <p class="text-2xl font-bold mt-1" style="color: var(--heading-text)">
                         {{ number_format($data['today']['pageviews']) }}</p>
@@ -182,7 +195,8 @@
             </div>
             <div class="card">
                 <div class="card-body">
-                    <p class="text-xs font-semibold uppercase tracking-wider" style="color: var(--muted-text)">Sessions
+                    <p class="text-xs font-semibold uppercase tracking-wider" style="color: var(--muted-text)">
+                        Sessions
                         Today</p>
                     <p class="text-2xl font-bold mt-1" style="color: var(--heading-text)">
                         {{ number_format($data['today']['sessions']) }}</p>
@@ -288,21 +302,24 @@
                         </p>
                         <p class="text-lg font-bold mt-1" style="color: var(--brand-neutral-black)">
                             {{ $topSource['source'] ?? '-' }}</p>
-                        <p class="text-xs" style="color: var(--brand-neutral-black-400)">{{ $topSource['percentage'] ?? 0 }}% dari
+                        <p class="text-xs" style="color: var(--brand-neutral-black-400)">
+                            {{ $topSource['percentage'] ?? 0 }}% dari
                             total traffic</p>
                     </div>
                     <div class="p-4 rounded-lg" style="background-color: var(--brand-secondary-300)">
                         <p class="text-sm font-semibold" style="color: var(--brand-neutral-black)">Dominan Device</p>
                         <p class="text-lg font-bold mt-1" style="color: var(--brand-neutral-black)">
                             {{ $topDevice['device'] ?? '-' }}</p>
-                        <p class="text-xs" style="color: var(--brand-neutral-black-400)">{{ $topDevice['percentage'] ?? 0 }}%
+                        <p class="text-xs" style="color: var(--brand-neutral-black-400)">
+                            {{ $topDevice['percentage'] ?? 0 }}%
                             pengguna via {{ $topDevice['device'] ?? '-' }}</p>
                     </div>
                     <div class="p-4 rounded-lg" style="background-color: var(--brand-neutral-600)">
                         <p class="text-sm font-semibold" style="color: var(--brand-neutral-black)">Kota Teraktif</p>
                         <p class="text-lg font-bold mt-1" style="color: var(--brand-neutral-black)">
                             {{ $topCity['city'] ?? '-' }}</p>
-                        <p class="text-xs" style="color: var(--brand-neutral-black-400)">{{ $topCity['percentage'] ?? 0 }}%
+                        <p class="text-xs" style="color: var(--brand-neutral-black-400)">
+                            {{ $topCity['percentage'] ?? 0 }}%
                             traffic dari {{ $topCity['city'] ?? '-' }}</p>
                     </div>
                 </div>
@@ -357,7 +374,8 @@
                                 <div class="flex justify-between text-sm mb-1">
                                     <span style="color: var(--table-text)">{{ $geo['city'] }}</span>
                                     <span style="color: var(--muted-text)">{{ $geo['percentage'] }}%
-                                        ({{ $geo['sessions'] }})</span>
+                                        ({{ $geo['sessions'] }})
+                                    </span>
                                 </div>
                                 <div class="w-full rounded-full h-2" style="background-color: var(--table-header-bg)">
                                     <div class="h-2 rounded-full"

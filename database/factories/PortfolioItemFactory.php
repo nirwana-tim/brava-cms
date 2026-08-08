@@ -17,14 +17,18 @@ class PortfolioItemFactory extends Factory
             'slug' => fake()->unique()->slug(),
             'description' => fake()->paragraph(),
             'specifications' => [
-                ['key' => 'Material', 'value' => fake()->randomElement(['Lacoste CVC', 'Drill', 'Taslan', 'Balotelli'])],
-                ['key' => 'Teknik Logo', 'value' => fake()->randomElement(['Bordir', 'Sablon', 'Polyflex'])],
-                ['key' => 'Warna', 'value' => fake()->colorName()],
+                'id' => [
+                    ['key' => 'Material', 'value' => fake()->randomElement(['Lacoste CVC', 'Drill', 'Taslan', 'Balotelli'])],
+                    ['key' => 'Teknik Logo', 'value' => fake()->randomElement(['Bordir', 'Sablon', 'Polyflex'])],
+                    ['key' => 'Warna', 'value' => fake()->colorName()],
+                ],
             ],
             'features' => [
-                'Nyaman digunakan seharian',
-                'Warna tahan lama',
-                'Ukuran presisi sesuai request',
+                'id' => [
+                    'Nyaman digunakan seharian',
+                    'Warna tahan lama',
+                    'Ukuran presisi sesuai request',
+                ],
             ],
             'client' => fake()->company(),
             'completed_at' => fake()->date(),

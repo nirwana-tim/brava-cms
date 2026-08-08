@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Http\Requests\Concerns\NormalizesLocalizedListInputs;
 use App\Http\Requests\Concerns\NormalizesTranslatableInputs;
 use App\Http\Requests\Concerns\ValidatesImageUrl;
 use Illuminate\Foundation\Http\FormRequest;
@@ -9,7 +10,7 @@ use Illuminate\Validation\Rule;
 
 class StorePortfolioRequest extends FormRequest
 {
-    use NormalizesTranslatableInputs, ValidatesImageUrl;
+    use NormalizesLocalizedListInputs, NormalizesTranslatableInputs, ValidatesImageUrl;
 
     public function authorize(): bool
     {
@@ -22,6 +23,8 @@ class StorePortfolioRequest extends FormRequest
             'title', 'slug', 'description', 'client', 'photo_alt',
             'meta_title', 'meta_description', 'meta_keywords', 'og_image_alt',
         ]);
+
+        $this->normalizeLocalizedListFields(['specifications', 'features']);
     }
 
     public function rules(): array
@@ -38,9 +41,17 @@ class StorePortfolioRequest extends FormRequest
             'description.id' => ['nullable', 'string'],
             'description.en' => ['nullable', 'string'],
             'specifications' => ['nullable', 'array'],
-            'specifications.*.key' => ['required', 'string'],
-            'specifications.*.value' => ['required', 'string'],
+            'specifications.id' => ['nullable', 'array'],
+            'specifications.id.*.key' => ['required', 'string', 'max:255'],
+            'specifications.id.*.value' => ['required', 'string'],
+            'specifications.en' => ['nullable', 'array'],
+            'specifications.en.*.key' => ['required', 'string', 'max:255'],
+            'specifications.en.*.value' => ['required', 'string'],
             'features' => ['nullable', 'array'],
+            'features.id' => ['nullable', 'array'],
+            'features.id.*' => ['nullable', 'string', 'max:255'],
+            'features.en' => ['nullable', 'array'],
+            'features.en.*' => ['nullable', 'string', 'max:255'],
             'gallery_media_ids' => [
                 'nullable',
                 function ($attribute, $value, $fail) {

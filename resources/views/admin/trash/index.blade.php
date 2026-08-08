@@ -11,17 +11,13 @@
             </div>
 
             @if ($items->total() > 0)
-                <form action="{{ route('admin.trash.empty', ['type' => $currentType]) }}" method="POST"
-                    onsubmit="return confirm('WARNING: This will permanently delete ALL trashed {{ $modules[$currentType]['label'] }} from the database. This action cannot be undone. Are you sure?');">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-red-600 hover:bg-red-700 text-white shadow-sm transition">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                        Empty {{ $modules[$currentType]['label'] }} Trash
-                    </button>
-                </form>
+                <x-admin.confirm-dialog :action="route('admin.trash.empty', ['type' => $currentType])"
+                    title="Empty {{ $modules[$currentType]['label'] }} Trash"
+                    :message="'WARNING: This will permanently delete ALL trashed ' . $modules[$currentType]['label'] . ' from the database. This action cannot be undone. Are you sure?'"
+                    confirm-label="Empty Trash"
+                    icon="trash"
+                    confirm-icon="alert"
+                    button-class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-red-600 hover:bg-red-700 text-white shadow-sm transition cursor-pointer" />
             @endif
         </div>
 
@@ -96,17 +92,12 @@
                                         </form>
 
                                         {{-- Permanent Delete Button --}}
-                                        <form action="{{ route('admin.trash.force-delete', ['type' => $currentType, 'id' => $item->id]) }}" method="POST" class="inline-block"
-                                            onsubmit="return confirm('PERMANENT DELETE: Are you sure you want to permanently destroy this item?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-semibold bg-red-600 hover:bg-red-700 text-white transition">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                                Delete Permanently
-                                            </button>
-                                        </form>
+                                        <x-admin.confirm-dialog :action="route('admin.trash.force-delete', ['type' => $currentType, 'id' => $item->id])"
+                                            title="Delete Permanently"
+                                            message="PERMANENT DELETE: Are you sure you want to permanently destroy this item?"
+                                            confirm-label="Delete Permanently"
+                                            confirm-icon="alert"
+                                            button-class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-semibold bg-red-600 hover:bg-red-700 text-white transition cursor-pointer" />
                                     </td>
                                 </tr>
                             @endforeach
