@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
-use App\Models\Category;
+use App\Models\Promo;
 use App\Models\Service;
 use App\Models\TeamMember;
 use App\Models\User;
@@ -25,7 +25,7 @@ class DashboardController extends Controller
         $stats = [
             'services' => Service::count(),
             'blogs' => Blog::count(),
-            'categories' => Category::count(),
+            'promos' => Promo::count(),
             'users' => User::query()
                 ->where('role', '!=', UserRole::SuperAdmin)
                 ->whereIn('id', TeamMember::query()->whereNotNull('user_id')->pluck('user_id'))

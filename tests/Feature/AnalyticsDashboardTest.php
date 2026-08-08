@@ -68,8 +68,8 @@ test('admin dashboard renders analytics section successfully', function () {
     $response = $this->actingAs($admin)->get(route('admin.dashboard'));
 
     $response->assertOk();
-    $response->assertSee('Analytics Ringkasan');
-    $response->assertSee('Visitors Today');
+    $response->assertSee('Summary Analytics');
+    $response->assertSeeText('Visitors Today');
     $response->assertViewHas('data');
     $response->assertViewHas('isDummy');
     $response->assertViewHas('realtime', null);

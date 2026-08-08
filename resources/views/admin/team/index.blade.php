@@ -6,7 +6,12 @@
         <div class="card-header flex items-center justify-between gap-4">
             <h2 class="text-lg font-semibold" style="color: var(--heading-text)">Team</h2>
             <a href="{{ route('admin.team.create') }}">
-                <x-primary-button>{{ __('New Team Member') }}</x-primary-button>
+                <x-primary-button>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    {{ __('New Team Member') }}
+                </x-primary-button>
             </a>
         </div>
 
@@ -72,16 +77,12 @@
                                 </td>
                                 <td>
                                     <div class="flex items-center gap-2">
-                                        <a href="{{ route('admin.team.show', $member) }}" class="inline-flex items-center px-3 py-1.5 btn-show rounded-md text-xs font-medium">Show</a>
+                                        <x-admin.action-show :href="route('admin.team.show', $member)" />
                                         @can('update', $member)
-                                            <a href="{{ route('admin.team.edit', $member) }}" class="inline-flex items-center px-3 py-1.5 btn-edit rounded-md text-xs font-medium">Edit</a>
+                                            <x-admin.action-edit :href="route('admin.team.edit', $member)" />
                                         @endcan
                                         @can('delete', $member)
-                                            <form action="{{ route('admin.team.destroy', $member) }}" method="POST" onsubmit="return confirm('Are you sure?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="inline-flex items-center px-3 py-1.5 btn-delete rounded-md text-xs font-medium">Delete</button>
-                                            </form>
+                                            <x-admin.action-delete :action="route('admin.team.destroy', $member)" />
                                         @endcan
                                     </div>
                                 </td>

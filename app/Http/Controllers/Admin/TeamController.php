@@ -111,7 +111,7 @@ class TeamController extends Controller
         }
 
         if ($team->user) {
-            $role = $team->user_id === auth()->id()
+            $role = $team->user->isSuperAdmin() || $team->user_id === auth()->id()
                 ? $team->user->role
                 : ($validated['role'] ?? $team->user->role);
 

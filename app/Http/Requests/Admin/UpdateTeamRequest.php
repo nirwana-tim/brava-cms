@@ -23,7 +23,7 @@ class UpdateTeamRequest extends FormRequest
 
     public function rules(): array
     {
-        $roleRule = ['nullable', 'string', 'in:staff,admin'];
+        $roleRule = ['nullable', 'string', 'in:staff,admin,super_admin'];
         if ($this->user()?->isAdmin() && ! $this->user()?->isSuperAdmin()) {
             $roleRule[] = function ($attribute, $value, $fail) {
                 if ($value === 'admin') {

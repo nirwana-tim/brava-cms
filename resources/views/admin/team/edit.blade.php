@@ -67,12 +67,21 @@
 
                     <div>
                         <x-input-label for="role" :value="__('Role')" />
-                        <select id="role" name="role" class="form-select mt-1">
-                            @if (auth()->user()->isSuperAdmin())
-                                <option value="admin" {{ old('role', $team->user?->role?->value ?? 'admin') === 'admin' ? 'selected' : '' }}>Admin</option>
-                            @endif
-                            <option value="staff" {{ old('role', $team->user?->role?->value ?? 'staff') === 'staff' ? 'selected' : '' }}>Staff</option>
-                        </select>
+                        @if ($team->user?->isSuperAdmin())
+                            <input type="hidden" name="role" value="super_admin" />
+                            <div class="form-input mt-1 flex items-center justify-between">
+                                <span>Super Administrator</span>
+                                <span class="text-xs font-medium" style="color: var(--muted-text)">Tidak dapat diubah</span>
+                            </div>
+                            <p class="text-xs mt-1" style="color: var(--muted-text)">Role Super Administrator tidak dapat diubah.</p>
+                        @else
+                            <select id="role" name="role" class="form-select mt-1">
+                                @if (auth()->user()->isSuperAdmin())
+                                    <option value="admin" {{ old('role', $team->user?->role?->value ?? 'admin') === 'admin' ? 'selected' : '' }}>Admin</option>
+                                @endif
+                                <option value="staff" {{ old('role', $team->user?->role?->value ?? 'staff') === 'staff' ? 'selected' : '' }}>Staff</option>
+                            </select>
+                        @endif
                         <x-input-error class="mt-2" :messages="$errors->get('role')" />
                     </div>
 

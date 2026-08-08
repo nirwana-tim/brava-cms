@@ -8,7 +8,12 @@
                 <p class="text-xs" style="color: var(--muted-text)">Kelola banner promo utama (Highlight) dan daftar penawaran spesial.</p>
             </div>
             <a href="{{ route('admin.promos.create') }}">
-                <x-primary-button>{{ __('New Promo') }}</x-primary-button>
+                <x-primary-button>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    {{ __('New Promo') }}
+                </x-primary-button>
             </a>
         </div>
 
@@ -111,12 +116,8 @@
                                 </td>
                                 <td>
                                     <div class="flex items-center gap-2">
-                                        <a href="{{ route('admin.promos.edit', $promo) }}" class="inline-flex items-center px-3 py-1.5 btn-edit rounded-md text-xs font-medium">Edit</a>
-                                        <form action="{{ route('admin.promos.destroy', $promo) }}" method="POST" onsubmit="return confirm('Hapus promo ini?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 btn-delete rounded-md text-xs font-medium">Delete</button>
-                                        </form>
+                                        <x-admin.action-edit :href="route('admin.promos.edit', $promo)" />
+                                        <x-admin.action-delete :action="route('admin.promos.destroy', $promo)" confirm="Hapus promo ini?" />
                                     </div>
                                 </td>
                             </tr>

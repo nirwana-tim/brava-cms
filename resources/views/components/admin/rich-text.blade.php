@@ -12,7 +12,7 @@
     <textarea
         id="{{ $editorId }}"
         name="{{ $name }}"
-        class="rich-editor mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
+        class="rich-editor mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-[var(--input-focus-border)] dark:focus:border-[var(--input-focus-border)] focus:ring-[var(--input-focus-ring)] dark:focus:ring-[var(--input-focus-ring)] rounded-md shadow-sm"
         rows="15"
     >{{ old($dotName, $value) }}</textarea>
     <x-input-error class="mt-2" :messages="$errors->get($dotName)" />
@@ -122,6 +122,8 @@
 </script>
 @endonce
 <script>
+var __bravaEditorBg = getComputedStyle(document.documentElement).getPropertyValue('--bg-dashboard').trim() || '#f0f3ff';
+var __bravaEditorText = getComputedStyle(document.documentElement).getPropertyValue('--input-text').trim() || '#111827';
 tinymce.init({
     selector: '#{{ $editorId }}',
     license_key: 'gpl',
@@ -133,6 +135,7 @@ tinymce.init({
     remove_script_host: false,
     document_base_url: '{{ url('/') }}/',
     block_formats: 'Heading 1=h1; Heading 2=h2; Heading 3=h3; Heading 4=h4; Paragraph=p; Blockquote=blockquote',
+    content_style: 'body { background-color: ' + __bravaEditorBg + '; color: ' + __bravaEditorText + '; font-size: 0.875rem; } p { margin: 0 0 0.75rem; }',
     valid_elements: 'h1,h2,h3,h4,h5,h6,p,blockquote,ul,ol,li,a[href|title|rel|target],img[alt|src|class|width|height|style],strong,em,u,s,br,pre,code,table[*],thead[*],tbody[*],tr[*],th[*],td[*],span[class|style],div[class|style]',
     invalid_styles: 'color font-size font-family background-color backgroundColor',
     link_default_target: '_blank',

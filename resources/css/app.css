@@ -28,9 +28,9 @@
     --badge-default-bg: #f3f4f6;
     --badge-default-text: #1f2937;
 
-    --btn-edit-bg: #eef2ff;
-    --btn-edit-text: #4338ca;
-    --btn-edit-hover-bg: #e0e7ff;
+    --btn-edit-bg: #e8ecfb;
+    --btn-edit-text: #2336b7;
+    --btn-edit-hover-bg: #dbe2fa;
     --btn-delete-bg: #fef2f2;
     --btn-delete-text: #b91c1c;
     --btn-delete-hover-bg: #fee2e2;
@@ -55,17 +55,17 @@
     --heading-text: #111827;
     --muted-text: #6b7280;
 
-    --input-bg: #ffffff;
+    --input-bg: var(--bg-dashboard);
     --input-border: #d1d5db;
     --input-text: #111827;
     --input-placeholder: #9ca3af;
-    --input-focus-border: #6366f1;
-    --input-focus-ring: #6366f1;
+    --input-focus-border: #4d5ed3;
+    --input-focus-ring: #4d5ed3;
     --label-text: #374151;
     --error-text: #dc2626;
 
-    --btn-primary-bg: #4f46e5;
-    --btn-primary-hover: #4338ca;
+    --btn-primary-bg: #2336b7;
+    --btn-primary-hover: #1c2b97;
     --btn-primary-text: #ffffff;
     --btn-secondary-bg: #ffffff;
     --btn-secondary-border: #d1d5db;
@@ -75,18 +75,30 @@
     --btn-danger-hover: #b91c1c;
     --btn-danger-text: #ffffff;
 
+    --brand-primary-500: #2336b7;
+    --brand-primary-400: #4d5ed3;
+    --brand-primary-300: #7b8cf5;
+    --brand-secondary-500: #faaf36;
+    --brand-secondary-300: #ffdda6;
+    --brand-neutral-600: #e1e1e1;
+    --brand-neutral-white: #ffffff;
+    --brand-neutral-black: #111111;
+    --brand-neutral-black-400: #2f2f2f;
+
+    --bg-dashboard: #f0f3ff;
+
     --sidebar-bg: #ffffff;
     --sidebar-border: #e5e7eb;
-    --sidebar-logo-bg: #4f46e5;
+    --sidebar-logo-bg: #2336b7;
     --sidebar-logo-text: #ffffff;
-    --sidebar-link-active-bg: #eef2ff;
-    --sidebar-link-active-text: #4338ca;
+    --sidebar-link-active-bg: #2336b7;
+    --sidebar-link-active-text: #ffffff;
     --sidebar-link-text: #4b5563;
     --sidebar-link-hover-bg: #f3f4f6;
     --sidebar-link-hover-text: #111827;
     --sidebar-section-header: #9ca3af;
-    --sidebar-user-avatar-bg: #eef2ff;
-    --sidebar-user-avatar-text: #4f46e5;
+    --sidebar-user-avatar-bg: #e8ecfb;
+    --sidebar-user-avatar-text: #2336b7;
     --sidebar-user-name: #111827;
     --sidebar-user-role: #6b7280;
 }
@@ -110,9 +122,9 @@
     --badge-default-bg: #374151;
     --badge-default-text: #e5e7eb;
 
-    --btn-edit-bg: #312e81;
-    --btn-edit-text: #a5b4fc;
-    --btn-edit-hover-bg: #3730a3;
+    --btn-edit-bg: #1e2a6e;
+    --btn-edit-text: #aab8f7;
+    --btn-edit-hover-bg: #24327f;
     --btn-delete-bg: #7f1d1d;
     --btn-delete-text: #fecaca;
     --btn-delete-hover-bg: #991b1b;
@@ -137,17 +149,19 @@
     --heading-text: #f3f4f6;
     --muted-text: #9ca3af;
 
+    --bg-dashboard: #111827;
+
     --input-bg: #1f2937;
     --input-border: #4b5563;
     --input-text: #f3f4f6;
     --input-placeholder: #6b7280;
-    --input-focus-border: #818cf8;
-    --input-focus-ring: #818cf8;
+    --input-focus-border: #7b8cf5;
+    --input-focus-ring: #7b8cf5;
     --label-text: #d1d5db;
     --error-text: #fca5a5;
 
-    --btn-primary-bg: #4f46e5;
-    --btn-primary-hover: #4338ca;
+    --btn-primary-bg: #2336b7;
+    --btn-primary-hover: #1c2b97;
     --btn-primary-text: #ffffff;
     --btn-secondary-bg: #374151;
     --btn-secondary-border: #4b5563;
@@ -159,16 +173,16 @@
 
     --sidebar-bg: #1f2937;
     --sidebar-border: #374151;
-    --sidebar-logo-bg: #4f46e5;
+    --sidebar-logo-bg: #2336b7;
     --sidebar-logo-text: #ffffff;
-    --sidebar-link-active-bg: #312e81;
-    --sidebar-link-active-text: #a5b4fc;
+    --sidebar-link-active-bg: #2336b7;
+    --sidebar-link-active-text: #ffffff;
     --sidebar-link-text: #9ca3af;
     --sidebar-link-hover-bg: #374151;
     --sidebar-link-hover-text: #f3f4f6;
     --sidebar-section-header: #6b7280;
-    --sidebar-user-avatar-bg: #312e81;
-    --sidebar-user-avatar-text: #a5b4fc;
+    --sidebar-user-avatar-bg: #1e2a6e;
+    --sidebar-user-avatar-text: #aab8f7;
     --sidebar-user-name: #f3f4f6;
     --sidebar-user-role: #9ca3af;
 }
@@ -383,6 +397,7 @@
 .btn-primary {
     display: inline-flex;
     align-items: center;
+    gap: 0.5rem;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     font-weight: 600;

@@ -77,7 +77,7 @@
                             @foreach ([['Bebas', 0], ['1:1', 1], ['4:3', 4 / 3], ['3:2', 3 / 2], ['16:9', 16 / 9]] as [$label, $value])
                                 <button type="button"
                                     @click="$store.imageEditor.setRatio({{ $value }})"
-                                    :class="$store.imageEditor.ratio === {{ $value }} ? 'bg-indigo-600 text-white shadow-sm' : 'text-[var(--table-text)] hover:bg-gray-100 dark:hover:bg-gray-700'"
+                                    :class="$store.imageEditor.ratio === {{ $value }} ? 'bg-[var(--btn-primary-bg)] text-white shadow-sm' : 'text-[var(--table-text)] hover:bg-gray-100 dark:hover:bg-gray-700'"
                                     class="px-2 py-1.5 rounded-lg text-xs font-medium transition">
                                     {{ $label }}
                                 </button>
@@ -143,7 +143,7 @@
                 Batalkan
             </button>
             <button type="button" @click="$store.imageEditor.save()" :disabled="$store.imageEditor.saving"
-                class="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-60 transition shadow-sm">
+                class="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold text-white bg-[var(--btn-primary-bg)] hover:bg-[var(--btn-primary-hover)] disabled:opacity-60 transition shadow-sm">
                 <template x-if="$store.imageEditor.saving">
                     <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>

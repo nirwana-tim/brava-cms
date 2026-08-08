@@ -363,7 +363,7 @@ class AnalyticsService
             orderBy: ['metric' => 'sessions', 'desc' => true],
         );
 
-        $deviceColorMap = ['mobile' => '#4f46e5', 'desktop' => '#06b6d4', 'tablet' => '#f59e0b'];
+        $deviceColorMap = ['mobile' => '#2336b7', 'desktop' => '#7b8cf5', 'tablet' => '#ffdda6'];
         $devices = collect($deviceRows)
             ->filter(fn (array $row) => ! empty($row['deviceCategory']))
             ->map(fn (array $row) => [
@@ -402,7 +402,7 @@ class AnalyticsService
             limit: 10,
         );
 
-        $geoColors = ['#4f46e5', '#06b6d4', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', '#6366f1'];
+        $geoColors = ['#2336b7', '#4d5ed3', '#7b8cf5', '#faaf36', '#ffd680', '#ffdda6'];
         $geoStats = collect($geoRows)
             ->filter(fn (array $row) => ! empty($row['city']) && $row['city'] !== '(not set)')
             ->values()
@@ -495,9 +495,9 @@ class AnalyticsService
         ]);
 
         $devices = collect([
-            ['device' => 'Mobile', 'sessions' => rand(300, 600), 'color' => '#4f46e5'],
-            ['device' => 'Desktop', 'sessions' => rand(150, 350), 'color' => '#06b6d4'],
-            ['device' => 'Tablet', 'sessions' => rand(20, 80), 'color' => '#f59e0b'],
+            ['device' => 'Mobile', 'sessions' => rand(300, 600), 'color' => '#2336b7'],
+            ['device' => 'Desktop', 'sessions' => rand(150, 350), 'color' => '#7b8cf5'],
+            ['device' => 'Tablet', 'sessions' => rand(20, 80), 'color' => '#ffdda6'],
         ]);
 
         $pages = [
@@ -541,14 +541,14 @@ class AnalyticsService
         $topPages = collect($pages);
 
         $geoStats = collect([
-            ['city' => 'Jakarta', 'sessions' => rand(100, 300), 'color' => '#4f46e5'],
-            ['city' => 'Surabaya', 'sessions' => rand(50, 150), 'color' => '#06b6d4'],
-            ['city' => 'Bandung', 'sessions' => rand(40, 120), 'color' => '#f59e0b'],
-            ['city' => 'Medan', 'sessions' => rand(30, 80), 'color' => '#10b981'],
-            ['city' => 'Semarang', 'sessions' => rand(20, 60), 'color' => '#ef4444'],
-            ['city' => 'Makassar', 'sessions' => rand(10, 40), 'color' => '#8b5cf6'],
-            ['city' => 'Yogyakarta', 'sessions' => rand(15, 50), 'color' => '#ec4899'],
-            ['city' => 'Palembang', 'sessions' => rand(10, 30), 'color' => '#14b8a6'],
+            ['city' => 'Jakarta', 'sessions' => rand(100, 300), 'color' => '#2336b7'],
+            ['city' => 'Surabaya', 'sessions' => rand(50, 150), 'color' => '#4d5ed3'],
+            ['city' => 'Bandung', 'sessions' => rand(40, 120), 'color' => '#7b8cf5'],
+            ['city' => 'Medan', 'sessions' => rand(30, 80), 'color' => '#faaf36'],
+            ['city' => 'Semarang', 'sessions' => rand(20, 60), 'color' => '#ffd680'],
+            ['city' => 'Makassar', 'sessions' => rand(10, 40), 'color' => '#ffdda6'],
+            ['city' => 'Yogyakarta', 'sessions' => rand(15, 50), 'color' => '#2336b7'],
+            ['city' => 'Palembang', 'sessions' => rand(10, 30), 'color' => '#7b8cf5'],
         ]);
 
         $totalSessionsSources = $sources->sum('sessions');

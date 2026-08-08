@@ -101,3 +101,61 @@ test('user cannot delete their own team account', function () {
     $response->assertSessionHas('error', 'You cannot delete your own account.');
     expect(TeamMember::where('id', $adminTeam->id)->exists())->toBeTrue();
 });
+
+test('superadmin cannot demote their own or other superadmin team account', function () {
+    $superAdminUser = User::factory()->create(['role' => UserRole::SuperAdmin]);
+    $superAdminTeam = TeamMember::create([
+        'user_id' => $superAdminUser->id,
+        'name' => $superAdminUser->name,
+        'position' => 'Super Administrator',
+        'email' => $superAdminUser->email,
+        'is_active' => true,
+    ]);
+
+    $peer = User::factory()->create(['role' => UserRole::SuperAdmin]);
+    $peerTeam = TeamMember::create([
+        'user_id' => $peer->id,
+        'name' => $peer->name,
+        'position' => 'Super Administrator',
+        'email' => $peer->email,
+        'is_active' => true,
+    ]);
+
+    $this->actingAs($superAdminUser)
+        ->put(route('admin.team.update', $superAdminTeam), [
+            'name' => $superAdminUser->name,
+            'position' => 'Super Administrator',
+            'role' => UserRole::Staff->value,
+        ])
+        ->assertRedirect(route('admin.team.index'));
+
+    expect($superAdminUser->fresh()->role)->toBe(UserRole::SuperAdmin);
+
+    $this->actingAs($superAdminUser)
+        ->put(route('admin.team.update', $peerTeam), [
+            'name' => $peer->name,
+            'position' => 'Super Administrator',
+            'role' => UserRole::Admin->value,
+        ])
+        ->assertRedirect(route('admin.team.index'));
+
+    expect($peer->fresh()->role)->toBe(UserRole::SuperAdmin);
+});
+
+test('edit page locks role select for superadmin team member', function () {
+    $superAdminUser = User::factory()->create(['role' => UserRole::SuperAdmin]);
+    $superAdminTeam = TeamMember::create([
+        'user_id' => $superAdminUser->id,
+        'name' => $superAdminUser->name,
+        'position' => 'Super Administrator',
+        'email' => $superAdminUser->email,
+        'is_active' => true,
+    ]);
+
+    $response = $this->actingAs($superAdminUser)->get(route('admin.team.edit', $superAdminTeam));
+
+    $response->assertOk();
+    $response->assertSee('Super Administrator');
+    $response->assertSee('Tidak dapat diubah');
+    $response->assertDontSee('value="admin"');
+});

@@ -5,20 +5,20 @@
         <ol class="flex flex-wrap items-center gap-1 text-sm">
             @foreach ($crumbs as $index => $crumb)
                 @if ($index > 0)
-                    <li aria-hidden="true" class="text-xs font-bold" style="color: var(--muted-text)">&gt;</li>
+                    <li aria-hidden="true" class="text-xs font-bold" style="color: var(--btn-primary-bg)">&gt;</li>
                 @endif
 
                 @if (! $loop->last && $crumb['href'])
                     <li>
                         <a href="{{ $crumb['href'] }}"
-                            class="transition hover:opacity-75"
+                            class="transition hover:opacity-80"
                             style="color: var(--muted-text)">
                             {{ $crumb['label'] }}
                         </a>
                     </li>
                 @else
                     <li>
-                        <span class="font-medium" style="color: var(--heading-text)" aria-current="page">
+                        <span class="font-semibold" style="color: var(--btn-primary-bg)" aria-current="page">
                             {{ $crumb['label'] }}
                         </span>
                     </li>

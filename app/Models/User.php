@@ -65,6 +65,24 @@ class User extends Authenticatable
         return $this->isAdmin() || $this->isStaff();
     }
 
+    public function displayRole(): string
+    {
+        if ($this->position) {
+            return $this->position;
+        }
+
+        if ($position = $this->teamMember?->getTranslation('position', app()->getLocale(), false)) {
+            return $position;
+        }
+
+        return match ($this->role) {
+            UserRole::SuperAdmin => 'Super Administrator',
+            UserRole::Admin => 'Administrator',
+            UserRole::Staff => 'Staff',
+            default => ucfirst($this->role?->value ?? 'Admin'),
+        };
+    }
+
     public function blogs(): HasMany
     {
         return $this->hasMany(Blog::class, 'author_id');
