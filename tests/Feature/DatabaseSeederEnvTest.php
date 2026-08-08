@@ -1,7 +1,15 @@
 <?php
 
 use App\Enums\UserRole;
+use App\Models\Blog;
+use App\Models\Category;
+use App\Models\Faq;
+use App\Models\PortfolioItem;
+use App\Models\Promo;
+use App\Models\Service;
+use App\Models\Setting;
 use App\Models\TeamMember;
+use App\Models\Testimonial;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -72,4 +80,18 @@ test('DatabaseSeeder falls back to default emails when env is empty', function (
 
     expect(User::where('email', 'superadmin@brava.id')->exists())->toBeTrue()
         ->and(User::where('email', 'admin@brava.id')->exists())->toBeTrue();
+});
+
+test('DatabaseSeeder seeds only users and base settings, no demo content', function () {
+    $this->seed(DatabaseSeeder::class);
+
+    expect(Blog::count())->toBe(0)
+        ->and(Service::count())->toBe(0)
+        ->and(Category::count())->toBe(0)
+        ->and(Promo::count())->toBe(0)
+        ->and(Faq::count())->toBe(0)
+        ->and(Testimonial::count())->toBe(0)
+        ->and(PortfolioItem::count())->toBe(0)
+        ->and(User::count())->toBe(2)
+        ->and(Setting::where('key', 'site_name')->exists())->toBeTrue();
 });

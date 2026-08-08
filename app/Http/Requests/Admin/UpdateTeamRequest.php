@@ -23,6 +23,15 @@ class UpdateTeamRequest extends FormRequest
 
     public function rules(): array
     {
+        $roleRule = ['nullable', 'string', 'in:staff,admin'];
+        if ($this->user()?->isAdmin() && ! $this->user()?->isSuperAdmin()) {
+            $roleRule[] = function ($attribute, $value, $fail) {
+                if ($value === 'admin') {
+                    $fail('Admin biasa tidak dapat mengubah role menjadi Admin.');
+                }
+            };
+        }
+
         return [
             'name' => ['required', 'array'],
             'name.id' => ['required', 'string', 'max:255'],
@@ -35,7 +44,7 @@ class UpdateTeamRequest extends FormRequest
             'phone' => ['nullable', 'string', 'max:50'],
             'sort_order' => ['nullable', 'integer', 'min:0', Rule::unique('team_members', 'sort_order')->ignore($this->route('team'))],
             'is_active' => ['boolean'],
-            'role' => ['nullable', 'string', 'in:staff,admin'],
+            'role' => $roleRule,
         ];
     }
 }

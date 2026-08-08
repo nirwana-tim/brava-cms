@@ -90,3 +90,19 @@ test('superadmin can update adsense settings via put request', function () {
 
     expect(Setting::where('key', 'adsense_client_id')->value('value'))->toBe('ca-pub-1234567890123456');
 });
+
+test('public settings endpoint never exposes adsense or system groups', function () {
+    Setting::updateOrCreate(['key' => 'adsense_enabled'], ['value' => '1', 'group' => 'adsense', 'type' => 'boolean']);
+    Setting::updateOrCreate(['key' => 'adsense_client_id'], ['value' => 'ca-pub-HIDDEN', 'group' => 'adsense', 'type' => 'text']);
+    Setting::updateOrCreate(['key' => 'mail_password'], ['value' => 'smtp-secret', 'group' => 'system', 'type' => 'text']);
+
+    $response = $this->getJson('/api/v1/settings');
+
+    $response->assertOk();
+
+    $data = $response->json('data');
+
+    expect($data)->not->toHaveKeys(['adsense', 'system'])
+        ->and(collect($data)->flatten()->all())->not->toContain('ca-pub-HIDDEN')
+        ->and(collect($data)->flatten()->all())->not->toContain('smtp-secret');
+});

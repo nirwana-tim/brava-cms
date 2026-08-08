@@ -76,12 +76,15 @@ class MediaController extends Controller
             return back()->withErrors(['file' => $e->getMessage()])->withInput();
         }
 
+        $mimeType = Storage::disk('public')->mimeType($path);
+        $size = Storage::disk('public')->size($path);
+
         try {
             Media::create([
                 'name' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
                 'file_name' => $file->getClientOriginalName(),
-                'mime_type' => $file->getMimeType(),
-                'size' => $file->getSize(),
+                'mime_type' => $mimeType,
+                'size' => $size,
                 'disk' => 'public',
                 'path' => $path,
                 'alt_text' => $request->alt_text,
@@ -113,12 +116,15 @@ class MediaController extends Controller
 
             $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
 
+            $mimeType = Storage::disk('public')->mimeType($path);
+            $size = Storage::disk('public')->size($path);
+
             try {
                 $media = Media::create([
                     'name' => $name,
                     'file_name' => $file->getClientOriginalName(),
-                    'mime_type' => $file->getMimeType(),
-                    'size' => $file->getSize(),
+                    'mime_type' => $mimeType,
+                    'size' => $size,
                     'disk' => 'public',
                     'path' => $path,
                     'alt_text' => $request->input('alt_text') ?: str_replace(['-', '_'], ' ', $name),

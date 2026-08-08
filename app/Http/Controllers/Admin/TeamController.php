@@ -55,7 +55,7 @@ class TeamController extends Controller
     {
         $validated = $request->validated();
 
-        if (($validated['sort_order'] ?? null) === null) {
+        if (empty($validated['sort_order'] ?? null)) {
             $validated['sort_order'] = (int) TeamMember::max('sort_order') + 1;
         }
 

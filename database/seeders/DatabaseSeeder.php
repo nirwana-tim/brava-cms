@@ -57,14 +57,6 @@ class DatabaseSeeder extends Seeder
         $this->call([
             SettingSeeder::class,
             ContactSettingSeeder::class,
-            CategorySeeder::class,
-            ServiceSeeder::class,
-            BlogSeeder::class,
-            PortfolioSeeder::class,
-            TestimonialSeeder::class,
-            FaqSeeder::class,
-            TeamSeeder::class,
-            PromoSeeder::class,
         ]);
     }
 }

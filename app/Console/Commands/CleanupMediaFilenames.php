@@ -200,18 +200,23 @@ class CleanupMediaFilenames extends Command
         $paths = [];
 
         if (preg_match('#^https?://[^/]+/storage/(.+)$#', $value, $m) || preg_match('#^/storage/(.+)$#', $value, $m)) {
-            $paths[] = $m[1];
+            $paths[] = $this->cleanStoragePath($m[1]);
         } elseif (preg_match('#^(uploads|media)/.+$#', $value)) {
-            $paths[] = $value;
+            $paths[] = $this->cleanStoragePath($value);
         }
 
         preg_match_all('#/storage/([^\s"\'<>]+)#', $value, $m);
 
         foreach ($m[1] ?? [] as $path) {
-            $paths[] = $path;
+            $paths[] = $this->cleanStoragePath($path);
         }
 
-        return $paths;
+        return array_values(array_unique($paths));
+    }
+
+    private function cleanStoragePath(string $path): string
+    {
+        return preg_replace('/[?#].*$/', '', $path) ?? $path;
     }
 
     private function sluggedPath(string $path): string

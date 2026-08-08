@@ -27,7 +27,7 @@ class Media extends Model
 
     public function getUrlAttribute(): string
     {
-        $url = Storage::url($this->path);
+        $url = Storage::disk($this->disk)->url($this->path);
 
         if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
             return preg_replace('#^https?://[^/]+#', '', $url) ?: $url;

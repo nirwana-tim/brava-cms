@@ -538,12 +538,21 @@ Route::post('/contact', [ContactController::class, 'store'])
 
 ### CORS
 
-CORS is wide-open for GET requests (Next.js needs it). For production, restrict `allowed_origins` to the actual frontend domain.
+Data reads berjalan server-side di frontend (Next.js Server Components/ISR), jadi CORS hanya
+relevan untuk request dari browser — saat ini satu-satunya adalah `POST /api/v1/contact`.
+Batasi `allowed_origins` ke daftar domain frontend yang dipakai (`config/cors.php`):
 
 ```php
 // config/cors.php
-'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000')],
-'allowed_methods' => ['GET', 'POST'],
+'allowed_methods' => ['GET', 'POST', 'OPTIONS'],
+'allowed_origins' => explode(',', (string) env('CORS_ALLOWED_ORIGINS', '')),
+'allowed_origins_patterns' => array_values(array_filter(array_map('trim', explode(',', (string) env('CORS_ALLOWED_ORIGINS_PATTERNS', ''))))),
+```
+
+```dotenv
+# .env
+CORS_ALLOWED_ORIGINS=https://brava.id,https://brava-compro-git-dev-nirwana-tims-projects.vercel.app
+# CORS_ALLOWED_ORIGINS_PATTERNS=/^https:\/\/.*\.vercel\.app$/
 ```
 
 ---

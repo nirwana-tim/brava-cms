@@ -107,11 +107,19 @@ class HtmlSanitizer
 
     private function isSafeUrl(string $attribute, string $value): bool
     {
-        $decoded = rawurldecode(str_replace(["\0", "\r", "\n", "\t", ' '], '', (string) $value));
-        $scheme = strtolower((string) parse_url($decoded, PHP_URL_SCHEME));
+        // Browsers strip ASCII control characters (C0 + DEL) and tabs/newlines from
+        // URLs before resolving the scheme. Strip the same set so that obfuscated
+        // schemes such as "jav\x0Ascript:" are rejected, not allowed through.
+        $stripped = preg_replace('/[\x00-\x20\x7f]/', '', rawurldecode((string) $value)) ?? '';
+
+        $scheme = strtolower((string) parse_url($stripped, PHP_URL_SCHEME));
 
         if ($scheme === '') {
             return true;
+        }
+
+        if (preg_match('/^[a-z][a-z0-9+.-]*$/', $scheme) !== 1) {
+            return false;
         }
 
         $allowed = $attribute === 'src' ? ['http', 'https'] : ['http', 'https', 'mailto', 'tel'];

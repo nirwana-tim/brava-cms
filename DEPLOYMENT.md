@@ -1,0 +1,278 @@
+# Deploy Brava CMS — cPanel Shared Hosting
+
+Runbook lengkap untuk men-deploy **brava-cms** (Laravel 13) ke **cPanel shared hosting**.
+Backend produksi: `https://cms.brava.id` · Frontend publik: `https://brava.id` (Next.js, di Vercel).
+
+---
+
+## Arsitektur singkat
+
+```
+brava-compro (Next.js 16, Vercel)  --HTTP-->  brava-cms (Laravel 13, cPanel)
+    SSR/ISR reads (server-side)                     GET  /api/v1/*
+    browser POST (form kontak)                      POST /api/v1/contact
+```
+
+- API publik seluruhnya **GET tanpa auth** + `POST /contact` (rate-limited).
+- Admin panel = Blade, di **domain sama** dengan API (`cms.brava.id/admin`) → tidak kena CORS.
+- Tidak ada queue job aktif dan tidak ada email aktif → worker queue & SMTP **belum wajib**.
+
+---
+
+## 0. Pre-flight checklist
+
+- [ ] PHP **≥ 8.3** tersedia di host (Laravel 13 butuh `^8.3`).
+- [ ] Ekstensi PHP: `gd` (**dengan dukungan WebP**), `mbstring`, `intl`, `curl`, `openssl`, `pdo_mysql`, `dom`/`xml`, `fileinfo`, `bcmath`, `sodium`.
+- [ ] Composer bisa dijalankan (cPanel "Setup PHP Application" atau Terminal).
+- [ ] Bun/Node tersedia **lokal** untuk build Vite (`public/build`).
+- [ ] Domain `brava.id` dan `cms.brava.id` sudah mengarah ke hosting (A record).
+- [ ] SSL (AutoSSL/gratis) tersedia untuk `cms.brava.id`.
+
+---
+
+## 1. Setup cPanel
+
+### 1.1 Subdomain backend
+1. cPanel → **Subdomains** → buat `cms` pada domain `brava.id`.
+2. **Document root** arahkan ke: `/home/USER/brava-cms/public`
+   > Jangan arahkan ke `public_html`. Letakkan project di `/home/USER/brava-cms` (di luar `public_html`) supaya `.env` dan source tidak pernah ter-serve publik.
+   > Jika host memaksa docroot di dalam `public_html`, alternatif: upload project ke `/home/USER/brava-cms`, lalu di `public_html` buat folder `cms` yang berisi symlink/isi dari `public/`. (Kurang ideal; usahakan opsi pertama.)
+
+### 1.2 Database MySQL
+1. cPanel → **MySQL Databases** → buat DB (mis. `brava_cms`) + user (mis. `brava_cms`).
+2. Klik **Add User To Database** → beri **ALL PRIVILEGES**.
+3. Catat `DB_HOST` (biasanya `127.0.0.1` atau `localhost`), nama DB, user, password.
+
+### 1.3 Versi & ekstensi PHP
+1. cPanel → **MultiPHP Manager** → pilih **PHP 8.3+** untuk `cms.brava.id`.
+2. Di **Select PHP Version** pastikan ekstensi di atas aktif.
+3. Pastikan **GD mendukung WebP**: jalankan `php -r "var_dump(function_exists('imagewebp'));"` → harus `true`. (Tanpa ini upload gambar gagal.)
+
+### 1.4 Batas upload & memori
+Buat file `.user.ini` di **docroot project** (`/home/USER/brava-cms/public/.user.ini`):
+
+```ini
+upload_max_filesize = 20M
+post_max_size = 20M
+memory_limit = 256M
+max_execution_time = 120
+```
+
+(Aplikasi membatasi upload 10MB per file, 20M memberi ruang encoding.)
+
+---
+
+## 2. Build asset (lokal, sebelum upload)
+
+Blade admin memakai Vite. Jalankan di repo lokal `brava-cms`:
+
+```bash
+bun install
+bun run build
+```
+
+Pastikan `public/build/` dan `public/manifest.json` ter-update. (Bersihkan dulu `public/build/*` lama bila perlu.)
+
+---
+
+## 3. Upload file ke server
+
+Yang **harus di-upload** ke `/home/USER/brava-cms/`:
+
+```
+app/            bootstrap/      config/
+database/       public/         resources/
+routes/         storage/        tests/ (opsional)
+composer.json   composer.lock   .env.production.example
+artisan
+```
+
+Yang **jangan di-upload**:
+- `.env` (buat ulang di server), `node_modules/`, `.git/`, `vendor/` (install di server), `storage/app/public/**` (konten upload lokal), file log lokal.
+
+Pakai File Manager / FTP dengan cara aman. Isi `storage/framework/{cache,views,sessions}` dibiarkan kosong — akan dibuat otomatis.
+
+---
+
+## 4. Install dependency & konfigurasi
+
+> Sebaiknya via **Terminal** cPanel (SSH). Alternatif: cPanel → "Setup PHP Application" → **Composer**.
+
+```bash
+cd ~/brava-cms
+composer install --no-dev --optimize-autoloader --no-interaction
+```
+
+Buat environment:
+
+```bash
+cp .env.production.example .env
+```
+
+Lalu edit `.env` dan isi sesuai tabel di bawah (**jangan** pakai nilai `.env` dari lokal).
+
+### Tabel env produksi
+
+| Variabel | Nilai contoh | Keterangan |
+|---|---|---|
+| `APP_ENV` | `production` | |
+| `APP_DEBUG` | `false` | Wajib di produksi |
+| `APP_KEY` | *(generate)* | `php artisan key:generate` |
+| `APP_URL` | `https://cms.brava.id` | Domain backend; dipakai URL gambar absolute |
+| `FRONTEND_URL` | `https://brava.id` | Canonical URL & sitemap — **bukan** untuk CORS |
+| `DB_CONNECTION` | `mysql` | Default `.env` masih `sqlite`! |
+| `DB_HOST/DB_DATABASE/DB_USERNAME/DB_PASSWORD` | *(dari cPanel)* | |
+| `SESSION_DRIVER` | `database` | Tabel `sessions` (auto-migrate) |
+| `SESSION_SECURE_COOKIE` | `true` | Setelah SSL aktif |
+| `CACHE_STORE` | `database` | Store `api` → tabel `api_cache` |
+| `LOG_CHANNEL` | `daily` | Rotasi log harian |
+| `LOG_LEVEL` | `warning` | |
+| `CORS_ALLOWED_ORIGINS` | `https://brava.id,https://brava-compro-git-dev-nirwana-tims-projects.vercel.app` | Origin browser (POST contact) |
+| `CORS_ALLOWED_ORIGINS_PATTERNS` | *(opsional)* `/^https:\/\/.*\.vercel\.app$/` | Wildcard preview Vercel |
+| `SUPERADMIN_EMAIL/SUPERADMIN_PASSWORD` | *(isi)* | Dibuat saat `db:seed` |
+| `ADMIN_EMAIL/ADMIN_PASSWORD` | *(isi)* | Dibuat saat `db:seed` |
+| `GA4_PROPERTY_ID`, `GA4_SERVICE_ACCOUNT_KEY` | *(opsional)* | Dashboard admin GA4 |
+
+---
+
+## 5. Perintah setelah upload
+
+```bash
+cd ~/brava-cms
+
+php artisan key:generate
+php artisan migrate --force
+php artisan db:seed --force
+php artisan storage:link
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan event:cache
+```
+
+### Apa yang di-seed
+`DatabaseSeeder` di versi ini hanya membuat:
+- 1 user **Super Admin** + 1 user **Admin** (dari env) dan `team_members`-nya,
+- **base settings** (`SettingSeeder` + `ContactSettingSeeder`) agar halaman Settings CMS bisa dipakai.
+
+Konten (blog/portfolio/promo/testimonial/faq/service/kategori/team) **tidak** di-seed — diisi lewat CMS.
+
+### Permission (jika perlu)
+```bash
+chmod -R 775 storage bootstrap/cache
+```
+
+### Storage symlink
+`php artisan storage:link` membuat `public/storage` → `storage/app/public` (file upload disajikan di `/storage/uploads`, `/storage/media`).
+
+Jika host **melarang symlink** (jarang, tapi bisa), alternatif manual via Terminal:
+```bash
+ln -s ~/brava-cms/storage/app/public ~/brava-cms/public/storage
+```
+Atau jika betul-betul tidak bisa: ubah disk `public` di `config/filesystems.php` agar `root` dan `url` menunjuk ke folder publik nyata. (Usahakan symlink dulu.)
+
+---
+
+## 6. Cron jobs (WAJIB)
+
+cPanel → **Cron Jobs**, tambah:
+
+```
+* * * * * php /home/USER/brava-cms/artisan schedule:run >> /dev/null 2>&1
+```
+
+- Ganti `USER` dengan username cPanel.
+- Jika `php` bukan versi 8.3, gunakan path eksplisit, mis. `/usr/local/bin/php83` (cek dengan `which php` atau cek versi di MultiPHP).
+- Ini menjalankan 2 tugas terjadwal (`routes/console.php`):
+  - `promos:clear-stale-highlights` — harian.
+  - `media:cleanup-filenames --remove-orphans` — pukul 03:30. **Perintah ini menghapus file yang tidak direferensikan.**
+
+> **Sebelum cron aktif pertama kali**: jalankan manual sekali dengan `--dry-run` dan **backup `storage/app/public` + DB**:
+> ```bash
+> php artisan media:cleanup-filenames --dry-run
+> php artisan media:cleanup-filenames   # tanpa --remove-orphans, lihat output rename
+> ```
+
+---
+
+## 7. SSL & cookie
+
+1. cPanel → **SSL/TLS Status** → aktifkan AutoSSL untuk `cms.brava.id` (atau Let's Encrypt via host).
+2. Pastikan `https://cms.brava.id` sudah terkunci.
+3. `SESSION_SECURE_COOKIE=true` di `.env` (sudah default template produksi) → jalankan ulang `php artisan config:cache`.
+4. Login admin: `https://cms.brava.id/admin`.
+
+---
+
+## 8. Integrasi frontend (brava-compro / Vercel)
+
+1. Di project brava-compro, ganti base URL API dari ngrok/lokal menjadi:
+   ```
+   NEXT_PUBLIC_API_URL=https://cms.brava.id/api/v1     # sesuai struktur fetch di lib
+   ```
+   (Sesuaikan nama variabel dengan `lib/` — lihat `docs/API_INTEGRATION.md`.)
+2. `CORS_ALLOWED_ORIGINS` di backend sudah berisi `https://brava.id` dan preview `https://brava-compro-git-dev-nirwana-tims-projects.vercel.app`.
+3. Deploy/redeploy di Vercel. Data reads server-side → tidak kena CORS; form kontak (browser) kena → sudah di daftar.
+4. Sanity check:
+   - `curl https://cms.brava.id/api/v1/settings` → JSON.
+   - `curl https://cms.brava.id/up` → `OK`.
+   - `curl -I -H "Origin: https://brava.id" https://cms.brava.id/api/v1/settings` → header `Access-Control-Allow-Origin` ada.
+   - Buka preview Vercel → data tampil, submit form kontak → 200.
+
+---
+
+## 9. Backup & rollback
+
+- **Rutin**: backup DB via phpMyAdmin (Export SQL) + zip `storage/app/public` (upload) + `.env`.
+- **Rollback deploy**: simpan folder sebelumnya (atau gunakan git tag di repo). Untuk data: `php artisan migrate:rollback` bukan untuk produksi — buat restore dari SQL backup.
+- Sebelum menjalankan perintah destruktif (`media:cleanup-filenames --remove-orphans`, `migrate:fresh`) selalu backup.
+
+---
+
+## 10. Troubleshooting
+
+| Gejala | Kemungkinan | Solusi |
+|---|---|---|
+| Halaman 500 / blank | APP_KEY kosong / permission | `php artisan key:generate`; `chmod -R 775 storage bootstrap/cache` |
+| 404 untuk semua route kecuali `/` | Docroot salah / rewrite mati | Docroot harus `.../brava-cms/public`; pastikan `public/.htaccess` ada |
+| Gambar upload 404 | Symlink belum ada | `php artisan storage:link` |
+| Upload gambar gagal | GD tanpa WebP / limit | Cek `imagewebp`; naikkan `.user.ini` |
+| Login tidak tersimpan (cookie hilang) | SESSION_SECURE_COOKIE=true tanpa SSL | Aktifkan SSL dulu, atau set false saat masih http |
+| Data API lama setelah edit | Cache API (database) | `php artisan cache:clear` (store default) atau hapus tabel `api_cache` |
+| Error migrasi `Unique constraint` | Data duplikat | Periksa key duplikat; jangan `migrate:fresh` di produksi tanpa backup |
+| `Unable to locate file in Vite manifest` | `public/build` lama | `bun run build` lokal lalu upload `public/build` |
+| Log penuh | `LOG_CHANNEL=single` | Pakai `LOG_CHANNEL=daily` |
+| Cron tidak jalan | Path `php` salah | Ganti dengan `/usr/local/bin/php83` (sesuai host) |
+
+---
+
+## 11. Security checklist
+
+- [ ] `APP_DEBUG=false`, `APP_ENV=production`.
+- [ ] `APP_KEY` terisi, `.env` tidak ikut ter-upload & di luar docroot.
+- [ ] Docroot tepat di `.../brava-cms/public` (folder lain tidak terserve).
+- [ ] `SESSION_SECURE_COOKIE=true` + HTTPS-only (`SESSION_COOKIE` default).
+- [ ] DB user tidak memakai password lemah; user DB hanya punya akses ke DB-nya.
+- [ ] `CORS_ALLOWED_ORIGINS` daftar ketat (jangan `*`).
+- [ ] Rate limit API aktif (throttle 60/menit; POST contact di-limit terpisah).
+- [ ] Log `daily`; review `storage/logs/laravel-*.log`.
+- [ ] Update patch: `composer update --no-dev` terjadwal; jalankan `php artisan migrate --force` setelahnya.
+
+---
+
+## 12. Checklist deploy akhir
+
+```
+[ ] PHP 8.3 + ekstensi (gd-webp)   [ ] Subdomain cms + docroot /public
+[ ] DB MySQL dibuat                 [ ] .env terisi (tabel §4)
+[ ] composer install --no-dev       [ ] key:generate
+[ ] migrate --force                 [ ] db:seed --force
+[ ] storage:link                    [ ] config/route/view/event cache
+[ ] Cron schedule:run tiap menit    [ ] SSL aktif + secure cookie
+[ ] CORS berisi frontend + preview  [ ] /up & /api/v1/settings 200
+[ ] Frontend base URL -> cms.brava.id [ ] Backup DB + storage terjadwal
+```
+
+---
+
+*Dokumen ini spesifik untuk `brava-cms`. Untuk frontend: `brava-compro/docs/AI_CONTEXT.md`, `API_INTEGRATION.md`, `CACHING.md`.*

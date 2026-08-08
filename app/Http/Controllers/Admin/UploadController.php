@@ -46,7 +46,7 @@ class UploadController extends Controller
 
         $path = $request->input('path');
 
-        if (! str_starts_with($path, 'uploads/')) {
+        if (! str_starts_with($path, 'uploads/') || str_contains($path, '..')) {
             return response()->json(['error' => 'Invalid upload path.'], 422);
         }
 

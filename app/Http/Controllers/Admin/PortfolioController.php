@@ -75,8 +75,8 @@ class PortfolioController extends Controller
         $validated = $this->applySeoFallbacks($request->validated(), 'description', 'photo', 'photo_alt');
         $portfolio = PortfolioItem::create($validated);
 
-        if ($request->has('categories')) {
-            $portfolio->categories()->sync($request->categories);
+        if (($categoryIds = $request->input('category_ids')) !== null) {
+            $portfolio->categories()->sync($categoryIds);
             cache()->store('api')->flush();
         }
 
@@ -135,10 +135,8 @@ class PortfolioController extends Controller
             }
         }
 
-        if ($request->has('categories')) {
-            $portfolio->categories()->sync($request->categories);
-        } else {
-            $portfolio->categories()->sync([]);
+        if (($categoryIds = $request->input('category_ids')) !== null) {
+            $portfolio->categories()->sync($categoryIds);
         }
 
         cache()->store('api')->flush();

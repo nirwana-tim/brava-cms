@@ -49,16 +49,6 @@ class MediaUsageService
         Promo::class => ['table' => 'promos', 'label' => 'Promo', 'title' => 'title'],
     ];
 
-    public function isInUse(Media $media): bool
-    {
-        return $this->usageSummary($media) !== [];
-    }
-
-    /**
-     * Human readable list of content referencing the media.
-     *
-     * @return list<string> e.g. ['Blog "Hello World"', 'Promo "Diskon 50%"']
-     */
     public function usageSummary(Media $media): array
     {
         $summary = [];
@@ -147,10 +137,16 @@ class MediaUsageService
         $media = Media::query()
             ->where(function ($query) use ($missing) {
                 foreach ($missing as $basename) {
-                    $query->orWhere('path', 'like', '%'.$basename);
+                    $query->orWhere('path', 'like', '%'.$this->escapeLike($basename));
                 }
             })
             ->get(['path', 'alt_text']);
+
+        foreach ($missing as $basename) {
+            if (! array_key_exists($basename, self::$altCache)) {
+                self::$altCache[$basename] = null;
+            }
+        }
 
         foreach ($media as $item) {
             self::$altCache[basename($item->path)] = $item->alt_text;
@@ -175,7 +171,7 @@ class MediaUsageService
         }
 
         return self::$altCache[$basename] = Media::query()
-            ->where('path', 'like', '%'.$basename)
+            ->where('path', 'like', '%'.$this->escapeLike($basename))
             ->value('alt_text');
     }
 
@@ -216,11 +212,16 @@ class MediaUsageService
             ->where(function ($query) use ($columns, $basenames) {
                 foreach ($columns as $column) {
                     foreach ($basenames as $basename) {
-                        $query->orWhere($column, 'like', '%/'.$basename.'%');
+                        $query->orWhere($column, 'like', '%/'.$this->escapeLike($basename).'%');
                     }
                 }
             })
             ->get();
+    }
+
+    private function escapeLike(string $value): string
+    {
+        return addcslashes($value, '%_\\');
     }
 
     /**

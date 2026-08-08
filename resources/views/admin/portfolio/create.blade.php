@@ -29,6 +29,19 @@
                         </select>
                         <x-input-error class="mt-2" :messages="$errors->get('service_id')" />
                     </div>
+
+                    <div>
+                        <x-input-label :value="__('Categories')" />
+                        <div class="mt-2 space-y-1">
+                            @foreach ($categories as $id => $name)
+                                <label class="inline-flex items-center gap-2 text-sm">
+                                    <input type="checkbox" name="category_ids[]" value="{{ $id }}" @checked(in_array($id, old('category_ids', []), true))>
+                                    <span>{{ $name }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                        <x-input-error class="mt-2" :messages="$errors->get('category_ids')" />
+                    </div>
                 </div>
 
                 <x-admin.language-tabs>

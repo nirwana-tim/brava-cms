@@ -36,15 +36,14 @@ class MediaService
         $image->scaleDown(width: 1920);
 
         $encoded = match ($file->getMimeType()) {
-            'image/webp' => $image->encodeUsingFormat(Format::WEBP, quality: 85),
-            'image/png' => $image->encodeUsingFormat(Format::PNG),
+            'image/webp', 'image/jpeg' => $image->encodeUsingFormat(Format::WEBP, quality: 85),
+            'image/png' => $image->encodeUsingFormat(Format::WEBP, quality: 100),
             'image/gif' => $image->encodeUsingFormat(Format::GIF),
             default => $image->encodeUsingFormat(Format::JPEG, quality: 85),
         };
 
         $extension = match ($file->getMimeType()) {
-            'image/webp' => 'webp',
-            'image/png' => 'png',
+            'image/webp', 'image/jpeg', 'image/png' => 'webp',
             'image/gif' => 'gif',
             default => 'jpg',
         };
@@ -113,13 +112,17 @@ class MediaService
             $path = (string) parse_url($path, PHP_URL_PATH);
         }
 
-        if (str_starts_with($path, '/storage/')) {
-            $path = substr($path, strlen('/storage/'));
-        } elseif (str_starts_with($path, 'storage/')) {
+        $path = ltrim($path, '/');
+
+        if (str_starts_with($path, 'storage/')) {
             $path = substr($path, strlen('storage/'));
         }
 
         if (! str_starts_with($path, 'uploads/')) {
+            return null;
+        }
+
+        if (str_contains($path, '..')) {
             return null;
         }
 

@@ -12,7 +12,6 @@ class TestimonialResource extends JsonResource
         return [
             'id' => $this->id,
             'client_name' => $this->client_name,
-            'company' => $this->client_name,
             'content' => $this->content,
             'rating' => $this->rating,
             'avatar' => $this->avatar ? url($this->avatar) : null,
