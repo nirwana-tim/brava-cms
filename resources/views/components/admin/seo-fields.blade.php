@@ -99,9 +99,9 @@
             </div>
         @endif
 
-        <div class="flex items-center gap-6 pt-2">
-            <x-admin.toggle name="robots_index" :checked="old('robots_index', $robotsIndex)" label="Allow Search Indexing (Robots Index)" />
-            <x-admin.toggle name="robots_follow" :checked="old('robots_follow', $robotsFollow)" label="Allow Following Links (Robots Follow)" />
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+            <x-admin.toggle name="robots_index" :checked="old('robots_index', $robotsIndex)" label="Allow Search Indexing (Robots Index)" hint="Allow search engines to index this page" />
+            <x-admin.toggle name="robots_follow" :checked="old('robots_follow', $robotsFollow)" label="Allow Following Links (Robots Follow)" hint="Allow search engines to follow links on this page" />
         </div>
     </div>
 </details>

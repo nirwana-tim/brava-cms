@@ -21,16 +21,18 @@
                 <x-admin.language-tabs>
                     <!-- ID Tab -->
                     <div x-show="langTab === 'id'" class="space-y-6">
-                        <div>
-                            <x-input-label for="title_id" :value="__('Title (ID)')" :required="true" />
-                            <x-text-input id="title_id" name="title[id]" type="text" class="mt-1 block w-full" :value="old('title.id')" required />
-                            <x-input-error class="mt-2" :messages="$errors->get('title.id')" />
-                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <x-input-label for="title_id" :value="__('Title (ID)')" :required="true" />
+                                <x-text-input id="title_id" name="title[id]" type="text" class="mt-1 block w-full" :value="old('title.id')" required />
+                                <x-input-error class="mt-2" :messages="$errors->get('title.id')" />
+                            </div>
 
-                        <div>
-                            <x-input-label for="slug_id" :value="__('Slug (ID)')" :required="true" />
-                            <x-text-input id="slug_id" name="slug[id]" type="text" class="mt-1 block w-full" :value="old('slug.id')" required />
-                            <x-input-error class="mt-2" :messages="$errors->get('slug.id')" />
+                            <div>
+                                <x-input-label for="slug_id" :value="__('Slug (ID)')" :required="true" />
+                                <x-text-input id="slug_id" name="slug[id]" type="text" class="mt-1 block w-full" :value="old('slug.id')" required />
+                                <x-input-error class="mt-2" :messages="$errors->get('slug.id')" />
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -63,16 +65,18 @@
 
                     <!-- EN Tab -->
                     <div x-show="langTab === 'en'" class="space-y-6">
-                        <div>
-                            <x-input-label for="title_en" :value="__('Title (EN - English)')" />
-                            <x-text-input id="title_en" name="title[en]" type="text" class="mt-1 block w-full" :value="old('title.en')" placeholder="Leave blank to fallback to Indonesian" />
-                            <x-input-error class="mt-2" :messages="$errors->get('title.en')" />
-                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <x-input-label for="title_en" :value="__('Title (EN - English)')" />
+                                <x-text-input id="title_en" name="title[en]" type="text" class="mt-1 block w-full" :value="old('title.en')" placeholder="Leave blank to fallback to Indonesian" />
+                                <x-input-error class="mt-2" :messages="$errors->get('title.en')" />
+                            </div>
 
-                        <div>
-                            <x-input-label for="slug_en" :value="__('Slug (EN - English)')" />
-                            <x-text-input id="slug_en" name="slug[en]" type="text" class="mt-1 block w-full" :value="old('slug.en')" placeholder="e.g. independence-promo" />
-                            <x-input-error class="mt-2" :messages="$errors->get('slug.en')" />
+                            <div>
+                                <x-input-label for="slug_en" :value="__('Slug (EN - English)')" />
+                                <x-text-input id="slug_en" name="slug[en]" type="text" class="mt-1 block w-full" :value="old('slug.en')" placeholder="e.g. independence-promo" />
+                                <x-input-error class="mt-2" :messages="$errors->get('slug.en')" />
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -119,21 +123,21 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <x-input-label for="valid_from" :value="__('Start Date')" />
+                            <x-input-label for="valid_from" :value="__('Valid From')" />
                             <x-text-input id="valid_from" name="valid_from" type="datetime-local" class="mt-1 block w-full" :value="old('valid_from')" />
                             <x-input-error class="mt-2" :messages="$errors->get('valid_from')" />
                         </div>
 
                         <div>
-                            <x-input-label for="valid_until" :value="__('End Date')" />
+                            <x-input-label for="valid_until" :value="__('Valid Until')" />
                             <x-text-input id="valid_until" name="valid_until" type="datetime-local" class="mt-1 block w-full" :value="old('valid_until')" />
                             <x-input-error class="mt-2" :messages="$errors->get('valid_until')" />
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-6">
-                        <x-admin.toggle name="is_active" :checked="old('is_active', true)" label="Active" />
-                        <x-admin.toggle name="is_highlighted" :checked="old('is_highlighted', false)" label="Featured Hero Banner (Highlight)" />
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                        <x-admin.toggle name="is_active" :checked="old('is_active', true)" label="Active" hint="Show this promo on the website" />
+                        <x-admin.toggle name="is_highlighted" :checked="old('is_highlighted', false)" label="Featured Hero Banner (Highlight)" hint="Displays this promo as the hero banner in the promotions highlight" />
                     </div>
 
                     <div class="border-t pt-6">

@@ -19,51 +19,21 @@
                     </div>
                 @endif
 
-                <div class="space-y-6 mb-6">
-                    <div>
-                        <x-input-label for="service_id" :value="__('Service')" :required="true" />
-                        <select id="service_id" name="service_id" class="form-select mt-1" required>
-                            <option value="">-- Select Service --</option>
-                            @foreach ($services as $id => $name)
-                                <option value="{{ $id }}" {{ old('service_id', $portfolio->service_id) == $id ? 'selected' : '' }}>{{ $name }}</option>
-                            @endforeach
-                        </select>
-                        <x-input-error class="mt-2" :messages="$errors->get('service_id')" />
-                    </div>
-
-                    <div>
-                        <x-input-label :value="__('Categories')" />
-                        <div class="mt-2 space-y-1">
-                            @foreach ($categories as $id => $name)
-                                <label class="inline-flex items-center gap-2 text-sm">
-                                    <input type="checkbox" name="category_ids[]" value="{{ $id }}" @checked(in_array($id, old('category_ids', $portfolio->categories->pluck('id')->all()), true))>
-                                    <span>{{ $name }}</span>
-                                </label>
-                            @endforeach
-                        </div>
-                        <x-input-error class="mt-2" :messages="$errors->get('category_ids')" />
-                    </div>
-                </div>
-
                 <x-admin.language-tabs>
                     <!-- ID Tab -->
                     <div x-show="langTab === 'id'" class="space-y-6">
-                        <div>
-                            <x-input-label for="title_id" :value="__('Title (ID)')" :required="true" />
-                            <x-text-input id="title_id" name="title[id]" type="text" class="mt-1 block w-full" :value="old('title.id', $portfolio->getTranslation('title', 'id', false))" required />
-                            <x-input-error class="mt-2" :messages="$errors->get('title.id')" />
-                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <x-input-label for="title_id" :value="__('Title (ID)')" :required="true" />
+                                <x-text-input id="title_id" name="title[id]" type="text" class="mt-1 block w-full" :value="old('title.id', $portfolio->getTranslation('title', 'id', false))" required />
+                                <x-input-error class="mt-2" :messages="$errors->get('title.id')" />
+                            </div>
 
-                        <div>
-                            <x-input-label for="slug_id" :value="__('Slug (ID)')" :required="true" />
-                            <x-text-input id="slug_id" name="slug[id]" type="text" class="mt-1 block w-full" :value="old('slug.id', $portfolio->getTranslation('slug', 'id', false))" required />
-                            <x-input-error class="mt-2" :messages="$errors->get('slug.id')" />
-                        </div>
-
-                        <div>
-                            <x-input-label for="client_id" :value="__('Client Name (ID)')" />
-                            <x-text-input id="client_id" name="client[id]" type="text" class="mt-1 block w-full" :value="old('client.id', $portfolio->getTranslation('client', 'id', false))" />
-                            <x-input-error class="mt-2" :messages="$errors->get('client.id')" />
+                            <div>
+                                <x-input-label for="slug_id" :value="__('Slug (ID)')" :required="true" />
+                                <x-text-input id="slug_id" name="slug[id]" type="text" class="mt-1 block w-full" :value="old('slug.id', $portfolio->getTranslation('slug', 'id', false))" required />
+                                <x-input-error class="mt-2" :messages="$errors->get('slug.id')" />
+                            </div>
                         </div>
 
                         <div>
@@ -72,31 +42,29 @@
                             <x-input-error class="mt-2" :messages="$errors->get('description.id')" />
                         </div>
 
+                        <x-admin.alt-input field="photo_alt[id]" :value="old('photo_alt.id', $portfolio->getTranslation('photo_alt', 'id', false))" label="Cover Photo Alt Text (ID)" />
+
                         <x-admin.portfolio-fields
                             locale="id"
-                            :specifications="old('specifications.id', $portfolio->specificationsFor('id') ?? [])"
-                            :features="old('features.id', $portfolio->featuresFor('id') ?? [])"
+                            :specifications="old('specifications.id', $portfolio->specifications['id'] ?? [])"
+                            :features="old('features.id', $portfolio->features['id'] ?? [])"
                         />
                     </div>
 
                     <!-- EN Tab -->
                     <div x-show="langTab === 'en'" class="space-y-6">
-                        <div>
-                            <x-input-label for="title_en" :value="__('Title (EN - English)')" />
-                            <x-text-input id="title_en" name="title[en]" type="text" class="mt-1 block w-full" :value="old('title.en', $portfolio->getTranslation('title', 'en', false))" placeholder="Leave blank to fallback to Indonesian" />
-                            <x-input-error class="mt-2" :messages="$errors->get('title.en')" />
-                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <x-input-label for="title_en" :value="__('Title (EN - English)')" />
+                                <x-text-input id="title_en" name="title[en]" type="text" class="mt-1 block w-full" :value="old('title.en', $portfolio->getTranslation('title', 'en', false))" placeholder="Leave blank to fallback to Indonesian" />
+                                <x-input-error class="mt-2" :messages="$errors->get('title.en')" />
+                            </div>
 
-                        <div>
-                            <x-input-label for="slug_en" :value="__('Slug (EN - English)')" />
-                            <x-text-input id="slug_en" name="slug[en]" type="text" class="mt-1 block w-full" :value="old('slug.en', $portfolio->getTranslation('slug', 'en', false))" placeholder="e.g. pdh-uniform-project" />
-                            <x-input-error class="mt-2" :messages="$errors->get('slug.en')" />
-                        </div>
-
-                        <div>
-                            <x-input-label for="client_en" :value="__('Client Name (EN - English)')" />
-                            <x-text-input id="client_en" name="client[en]" type="text" class="mt-1 block w-full" :value="old('client.en', $portfolio->getTranslation('client', 'en', false))" />
-                            <x-input-error class="mt-2" :messages="$errors->get('client.en')" />
+                            <div>
+                                <x-input-label for="slug_en" :value="__('Slug (EN - English)')" />
+                                <x-text-input id="slug_en" name="slug[en]" type="text" class="mt-1 block w-full" :value="old('slug.en', $portfolio->getTranslation('slug', 'en', false))" placeholder="e.g. pdh-uniform-project" />
+                                <x-input-error class="mt-2" :messages="$errors->get('slug.en')" />
+                            </div>
                         </div>
 
                         <div>
@@ -105,15 +73,43 @@
                             <x-input-error class="mt-2" :messages="$errors->get('description.en')" />
                         </div>
 
+                        <x-admin.alt-input field="photo_alt[en]" :value="old('photo_alt.en', $portfolio->getTranslation('photo_alt', 'en', false))" label="Cover Photo Alt Text (EN - English)" />
+
                         <x-admin.portfolio-fields
                             locale="en"
-                            :specifications="old('specifications.en', $portfolio->specificationsFor('en') ?? [])"
-                            :features="old('features.en', $portfolio->featuresFor('en') ?? [])"
+                            :specifications="old('specifications.en', $portfolio->specifications['en'] ?? [])"
+                            :features="old('features.en', $portfolio->features['en'] ?? [])"
                         />
                     </div>
                 </x-admin.language-tabs>
 
                 <div class="mt-6 space-y-6 border-t pt-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                        <div>
+                            <x-input-label for="service_id" :value="__('Service')" :required="true" />
+                            <select id="service_id" name="service_id" class="form-select mt-1" required>
+                                <option value="">-- Select Service --</option>
+                                @foreach ($services as $id => $name)
+                                    <option value="{{ $id }}" {{ old('service_id', $portfolio->service_id) == $id ? 'selected' : '' }}>{{ $name }}</option>
+                                @endforeach
+                            </select>
+                            <x-input-error class="mt-2" :messages="$errors->get('service_id')" />
+                        </div>
+
+                        <div>
+                            <x-input-label :value="__('Categories')" />
+                            <div class="mt-2 space-y-1">
+                                @foreach ($categories as $id => $name)
+                                    <label class="inline-flex items-center gap-2 text-sm">
+                                        <input type="checkbox" name="category_ids[]" value="{{ $id }}" @checked(in_array($id, old('category_ids', $portfolio->categories->pluck('id')->all()), true))>
+                                        <span>{{ $name }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                            <x-input-error class="mt-2" :messages="$errors->get('category_ids')" />
+                        </div>
+                    </div>
+
                     <div id="portfolio-form" x-data="{
                         photoUrl: @js(old('photo', $portfolio->photo)),
                         photoAlt: @js(old('photo_alt.id', $portfolio->getTranslation('photo_alt', 'id', false))),
@@ -121,29 +117,96 @@
                         get galleryIds() { return this.galleryItems.map(i => i.id).join(',') },
                         addGallery(id, url) { if (this.galleryItems.length < 4) this.galleryItems.push({ id, url }) },
                         removeGallery(id) { this.galleryItems = this.galleryItems.filter(i => i.id !== id) },
+                        async uploadGallery(event) {
+                            const file = event.target.files[0];
+                            event.target.value = '';
+                            if (!file) return;
+                            const formData = new FormData();
+                            formData.append('file', file);
+                            formData.append('collection', 'portfolio');
+                            try {
+                                const res = await fetch('{{ route('admin.media.upload-ajax') }}', {
+                                    method: 'POST',
+                                    headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                                    body: formData,
+                                });
+                                const data = await res.json();
+                                this.addGallery(data.id, data.url);
+                            } catch (e) {
+                                console.error('Gallery upload failed', e);
+                                alert('Upload gagal. Silakan coba lagi.');
+                            }
+                        },
                     }">
-                        <x-input-label for="photo" :value="__('Cover Photo')" :required="true" />
-                        <input type="hidden" name="photo" id="photo" value="{{ old('photo', $portfolio->photo) }}" />
                         <input type="hidden" name="gallery_media_ids" :value="galleryIds" />
-                        <template x-if="photoUrl">
-                            <div class="mb-2">
-                                <img :src="photoUrl" :alt="photoAlt" class="rounded-lg" style="max-width:240px;max-height:160px;object-fit:cover">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                            <div>
+                                <x-input-label for="photo" :value="__('Cover Photo')" :required="true" />
+                                <input type="hidden" name="photo" id="photo" value="{{ old('photo', $portfolio->photo) }}" />
+                                <template x-if="photoUrl">
+                                    <div class="mb-2">
+                                        <img :src="photoUrl" :alt="photoAlt" class="rounded-lg" style="max-width:240px;max-height:160px;object-fit:cover">
+                                    </div>
+                                </template>
+                                <x-admin.media-picker target="photo" collection="portfolio" />
+                                <x-input-error class="mt-2" :messages="$errors->get('photo')" />
                             </div>
-                        </template>
-                        <x-admin.media-picker target="photo" collection="portfolio" />
-                        <x-admin.alt-input field="photo_alt[id]" :value="old('photo_alt.id', $portfolio->getTranslation('photo_alt', 'id', false))" label="Cover Photo Alt Text (ID)" />
-                        <x-admin.alt-input field="photo_alt[en]" :value="old('photo_alt.en', $portfolio->getTranslation('photo_alt', 'en', false))" label="Cover Photo Alt Text (EN - English)" />
-                        <x-input-error class="mt-2" :messages="$errors->get('photo')" />
+
+                            <div>
+                                <x-input-label :value="__('Gallery Photos')" />
+                                <p class="text-xs mb-2" style="color:var(--muted-text)">
+                                    <span x-text="galleryItems.length"></span> / 4 photos — maksimal 4 foto detail pendukung
+                                </p>
+                                <div class="flex flex-wrap gap-2 mb-2">
+                                    <template x-for="item in galleryItems" :key="item.id">
+                                        <div class="relative">
+                                            <img :src="item.url" class="rounded-lg border" style="width:96px;height:72px;object-fit:cover">
+                                            <button type="button" @click="removeGallery(item.id)"
+                                                class="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold shadow"
+                                                style="background-color: var(--btn-danger-bg, #dc2626); color: #fff;"
+                                                title="Remove">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <input type="file" accept="image/*" id="gallery-file-input" class="hidden"
+                                        @change="uploadGallery($event)"
+                                        x-bind:disabled="!photoUrl || galleryItems.length >= 4">
+                                    <button type="button" @click="document.getElementById('gallery-file-input').click()"
+                                        class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium btn-edit"
+                                        id="gallery-upload-btn"
+                                        x-bind:disabled="!photoUrl || galleryItems.length >= 4"
+                                        x-bind:class="(!photoUrl || galleryItems.length >= 4) && 'opacity-50 cursor-not-allowed'">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/>
+                                        </svg>
+                                        Upload Gallery Photo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                        <div>
+                            <x-input-label for="client" :value="__('Client Name')" />
+                            <x-text-input id="client" name="client" type="text" class="mt-1 block w-full" :value="old('client', $portfolio->client)" placeholder="Contoh: KORPRI – Instansi Pemerintah" />
+                            <x-input-error class="mt-2" :messages="$errors->get('client')" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="completed_at" :value="__('Completion Date')" />
+                            <x-text-input id="completed_at" name="completed_at" type="date" class="mt-1 block w-full" :value="old('completed_at', $portfolio->completed_at?->format('Y-m-d'))" />
+                            <x-input-error class="mt-2" :messages="$errors->get('completed_at')" />
+                        </div>
                     </div>
 
                     <div>
-                        <x-input-label for="completed_at" :value="__('Completion Date')" />
-                        <x-text-input id="completed_at" name="completed_at" type="date" class="mt-1 block w-full" :value="old('completed_at', $portfolio->completed_at?->format('Y-m-d'))" />
-                        <x-input-error class="mt-2" :messages="$errors->get('completed_at')" />
-                    </div>
-
-                    <div>
-                        <x-admin.toggle name="is_active" :checked="old('is_active', $portfolio->is_active)" label="Active" />
+                        <x-admin.toggle name="is_active" :checked="old('is_active', $portfolio->is_active)" label="Active" hint="Show this portfolio item on the website" />
                     </div>
 
                     <div class="border-t pt-6">

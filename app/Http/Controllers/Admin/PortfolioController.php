@@ -44,8 +44,7 @@ class PortfolioController extends Controller
                     ->orWhere('title->en', 'like', "%{$search}%")
                     ->orWhere('slug->id', 'like', "%{$search}%")
                     ->orWhere('slug->en', 'like', "%{$search}%")
-                    ->orWhere('client->id', 'like', "%{$search}%")
-                    ->orWhere('client->en', 'like', "%{$search}%");
+                    ->orWhere('client', 'like', "%{$search}%");
             });
         }
 
@@ -80,23 +79,7 @@ class PortfolioController extends Controller
             cache()->store('api')->flush();
         }
 
-        if ($galleryIds = $request->input('gallery_media_ids')) {
-            $ids = collect(explode(',', $galleryIds))
-                ->map(fn ($id) => (int) trim($id))
-                ->filter(fn ($id) => $id > 0)
-                ->unique()
-                ->take(4);
-
-            DB::transaction(function () use ($portfolio, $ids) {
-                Media::query()
-                    ->whereIn('id', $ids)
-                    ->whereNull('mediable_id')
-                    ->update([
-                        'mediable_type' => PortfolioItem::class,
-                        'mediable_id' => $portfolio->id,
-                    ]);
-            });
-        }
+        $this->syncGalleryMedia($portfolio, $request->input('gallery_media_ids'));
 
         return redirect()->route('admin.portfolio.index')
             ->with('success', 'Portfolio item created successfully.');
@@ -138,6 +121,8 @@ class PortfolioController extends Controller
         if (($categoryIds = $request->input('category_ids')) !== null) {
             $portfolio->categories()->sync($categoryIds);
         }
+
+        $this->syncGalleryMedia($portfolio, $request->input('gallery_media_ids'));
 
         cache()->store('api')->flush();
 
@@ -225,5 +210,48 @@ class PortfolioController extends Controller
         ]);
 
         return response()->json(['success' => true]);
+    }
+
+    /**
+     * Sync the portfolio gallery with the selected media ids. Attaches previously
+     * unassigned media and detaches media that are no longer part of the gallery,
+     * never stealing media already attached to another item.
+     *
+     * @param  string|null  $galleryIds  Comma separated media ids from the gallery picker.
+     */
+    private function syncGalleryMedia(PortfolioItem $portfolio, ?string $galleryIds): void
+    {
+        $ids = collect(explode(',', (string) $galleryIds))
+            ->map(fn ($id) => (int) trim($id))
+            ->filter(fn ($id) => $id > 0)
+            ->unique()
+            ->take(4)
+            ->values();
+
+        if ($ids->isEmpty()) {
+            $portfolio->media()->update([
+                'mediable_type' => null,
+                'mediable_id' => null,
+            ]);
+
+            return;
+        }
+
+        DB::transaction(function () use ($portfolio, $ids) {
+            $portfolio->media()
+                ->whereNotIn('id', $ids)
+                ->update([
+                    'mediable_type' => null,
+                    'mediable_id' => null,
+                ]);
+
+            Media::query()
+                ->whereIn('id', $ids)
+                ->where(fn ($query) => $query->whereNull('mediable_id')->orWhere('mediable_id', $portfolio->id))
+                ->update([
+                    'mediable_type' => PortfolioItem::class,
+                    'mediable_id' => $portfolio->id,
+                ]);
+        });
     }
 }

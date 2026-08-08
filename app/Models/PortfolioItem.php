@@ -19,7 +19,7 @@ class PortfolioItem extends Model
     use ClearsApiCache, HasFactory, HasTranslations, LogsActivity, SoftDeletes;
 
     public array $translatable = [
-        'title', 'slug', 'description', 'client',
+        'title', 'slug', 'description',
         'photo_alt', 'meta_title', 'meta_description', 'meta_keywords', 'og_image_alt',
     ];
 
@@ -102,5 +102,24 @@ class PortfolioItem extends Model
         }
 
         return ($value['en'] ?? []) ?: ($value['id'] ?? []);
+    }
+
+    /**
+     * Decode legacy JSON stored in the client column (e.g. {"id":"Acme","en":null})
+     * so display and form values show a plain string.
+     */
+    protected function getClientAttribute(?string $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $decoded = json_decode($value, true);
+
+        if (is_array($decoded)) {
+            return isset($decoded['en']) && $decoded['en'] !== null ? $decoded['en'] : ($decoded['id'] ?? $value);
+        }
+
+        return $value;
     }
 }

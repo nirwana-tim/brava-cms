@@ -20,7 +20,8 @@ class UpdatePortfolioRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->normalizeTranslatableFields([
-            'title', 'slug', 'description', 'client', 'photo_alt',
+            'title', 'slug', 'description',
+            'photo_alt',
             'meta_title', 'meta_description', 'meta_keywords', 'og_image_alt',
         ]);
 
@@ -61,9 +62,7 @@ class UpdatePortfolioRequest extends FormRequest
                     }
                 },
             ],
-            'client' => ['nullable', 'array'],
-            'client.id' => ['nullable', 'string', 'max:255'],
-            'client.en' => ['nullable', 'string', 'max:255'],
+            'client' => ['nullable', 'string', 'max:255'],
             'photo' => $this->imageUrlRule(),
             'photo_alt' => ['nullable', 'array'],
             'photo_alt.id' => ['nullable', 'string', 'max:255'],

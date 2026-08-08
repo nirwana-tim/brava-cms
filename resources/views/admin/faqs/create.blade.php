@@ -58,7 +58,7 @@
                     </div>
 
                     <div class="flex items-center gap-2">
-                        <x-admin.toggle name="is_active" :checked="old('is_active', true)" label="Active" />
+                        <x-admin.toggle name="is_active" :checked="old('is_active', true)" label="Active" hint="Show this FAQ on the website" />
                     </div>
                 </div>
 

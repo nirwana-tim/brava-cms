@@ -81,8 +81,12 @@
                                 <x-input-label for="featured_image" :value="__('Featured Image')" />
                                 <input type="hidden" name="featured_image" id="featured_image" value="{{ old('featured_image') }}" />
                                 <template x-if="featured_image">
-                                    <div class="mb-4">
-                                        <img :src="featured_image" :alt="featured_image_alt" class="w-full rounded-lg object-cover" style="max-height: 280px;">
+                                    <img :src="featured_image" :alt="featured_image_alt" class="w-full rounded-lg object-cover mb-4" style="max-height: 280px;">
+                                </template>
+                                <template x-if="!featured_image">
+                                    <div class="w-full rounded-lg overflow-hidden flex items-center justify-center mb-4"
+                                        style="height: 220px; background-color: #E1E1E1; border: 1px solid var(--card-border);">
+                                        <span class="text-6xl font-bold" style="color: #9CA3AF;">{{ mb_strtoupper(mb_substr(trim(old('title.id') ?: 'B'), 0, 1)) }}</span>
                                     </div>
                                 </template>
                                 <x-admin.media-picker target="featured_image" collection="blogs" button-class="px-6 py-10 text-base" />
@@ -119,15 +123,7 @@
                                 <x-input-error class="mt-2" :messages="$errors->get('category_ids')" />
                             </div>
 
-                            <div class="rounded-lg border p-6" style="border-color: var(--card-border);">
-                                <div class="flex items-center justify-between gap-4">
-                                    <div>
-                                        <x-input-label :value="__('Featured Post')" />
-                                        <p class="text-xs mt-1.5" style="color: var(--muted-text)">Display this post in the featured hero section</p>
-                                    </div>
-                                    <x-admin.toggle name="is_featured" :checked="old('is_featured')" />
-                                </div>
-                            </div>
+                            <x-admin.toggle name="is_featured" :checked="old('is_featured')" label="Featured Post" hint="Display this post in the featured hero section" />
                         </div>
                     </div>
 

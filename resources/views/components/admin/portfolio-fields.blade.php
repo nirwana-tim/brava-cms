@@ -23,14 +23,14 @@
                 <div class="flex items-start gap-2">
                     <x-text-input
                         type="text"
-                        name="specifications[{{ $locale }}][][key]"
+                        x-bind:name="'specifications[' + '{{ $locale }}' + '][' + index + '][key]'"
                         x-model="spec.key"
                         placeholder="Key (contoh: Material)"
                         class="flex-1"
                     />
                     <x-text-input
                         type="text"
-                        name="specifications[{{ $locale }}][][value]"
+                        x-bind:name="'specifications[' + '{{ $locale }}' + '][' + index + '][value]'"
                         x-model="spec.value"
                         placeholder="Value (contoh: Lacoste CVC)"
                         class="flex-1"

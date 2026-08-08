@@ -91,7 +91,7 @@
                     </div>
 
                     <div>
-                        <x-admin.toggle name="is_active" :checked="old('is_active', $service->is_active)" label="Active" />
+                        <x-admin.toggle name="is_active" :checked="old('is_active', $service->is_active)" label="Active" hint="Show this service on the website" />
                     </div>
                 </div>
 

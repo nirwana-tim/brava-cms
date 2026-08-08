@@ -65,7 +65,7 @@ test('service and portfolio api support bilingual content and fallback', functio
         'title' => ['id' => 'Portofolio ID', 'en' => 'Portfolio EN'],
         'slug' => ['id' => 'portofolio-id', 'en' => 'portfolio-en'],
         'description' => ['id' => 'Detail ID', 'en' => 'Detail EN'],
-        'client' => ['id' => 'Klien ID', 'en' => 'Client EN'],
+        'client' => 'Klien ID',
         'is_active' => true,
     ]);
 
@@ -76,7 +76,7 @@ test('service and portfolio api support bilingual content and fallback', functio
     $this->getJson('/api/v1/portfolio/portfolio-en?lang=en')
         ->assertStatus(200)
         ->assertJsonPath('data.title', 'Portfolio EN')
-        ->assertJsonPath('data.client', 'Client EN');
+        ->assertJsonPath('data.client', 'Klien ID');
 });
 
 test('admin can store and update bilingual blog post', function () {

@@ -70,15 +70,17 @@
                                                 <textarea id="setting_{{ $setting->key }}" name="{{ $setting->key }}" class="form-textarea mt-1" rows="3">{{ old($setting->key, $setting->value) }}</textarea>
                                             @elseif ($setting->type === 'boolean' || $setting->type === 'bool')
                                                 <div class="mt-1">
-                                                    <x-admin.toggle name="{{ $setting->key }}" :checked="old($setting->key, $setting->value)" label="Enabled" />
+                                                    <x-admin.toggle name="{{ $setting->key }}" :checked="old($setting->key, $setting->value)" label="Enabled" :hint="$setting->hint" />
                                                 </div>
                                             @else
                                                 <x-text-input id="setting_{{ $setting->key }}" name="{{ $setting->key }}" type="text" class="mt-1 block w-full" :value="old($setting->key, $setting->value)" />
                                             @endif
                                             <x-input-error class="mt-2" :messages="$errors->get($setting->key)" />
-                                            @if ($setting->hint)
-                                                <p class="mt-1.5 text-xs" style="color: var(--muted-text)">{{ $setting->hint }}</p>
-                                            @endif
+                                            @unless ($setting->type === 'boolean' || $setting->type === 'bool')
+                                                @if ($setting->hint)
+                                                    <p class="mt-1.5 text-xs" style="color: var(--muted-text)">{{ $setting->hint }}</p>
+                                                @endif
+                                            @endunless
                                         </div>
                                     @endif
                                 @endforeach

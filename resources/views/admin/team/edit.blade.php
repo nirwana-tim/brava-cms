@@ -92,7 +92,7 @@
                     </div>
 
                     <div>
-                        <x-admin.toggle name="is_active" :checked="old('is_active', $team->is_active)" label="Active" />
+                        <x-admin.toggle name="is_active" :checked="old('is_active', $team->is_active)" label="Active" hint="Show this team member on the website" />
                     </div>
                 </div>
 

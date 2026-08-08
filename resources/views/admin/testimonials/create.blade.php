@@ -33,6 +33,8 @@
                             <textarea id="content_id" name="content[id]" class="form-textarea mt-1" rows="5" required>{{ old('content.id') }}</textarea>
                             <x-input-error class="mt-2" :messages="$errors->get('content.id')" />
                         </div>
+
+                        <x-admin.alt-input field="avatar_alt[id]" :value="old('avatar_alt.id')" label="Avatar Alt Text (ID)" />
                     </div>
 
                     <!-- EN Tab -->
@@ -48,6 +50,8 @@
                             <textarea id="content_en" name="content[en]" class="form-textarea mt-1" rows="5">{{ old('content.en') }}</textarea>
                             <x-input-error class="mt-2" :messages="$errors->get('content.en')" />
                         </div>
+
+                        <x-admin.alt-input field="avatar_alt[en]" :value="old('avatar_alt.en')" label="Avatar Alt Text (EN - English)" />
                     </div>
                 </x-admin.language-tabs>
 
@@ -62,8 +66,6 @@
                         <x-input-label for="avatar" :value="__('Avatar / Logo')" />
                         <input type="hidden" name="avatar" id="avatar" value="{{ old('avatar') }}" />
                         <x-admin.image-upload target="avatar" />
-                        <x-admin.alt-input field="avatar_alt[id]" :value="old('avatar_alt.id')" label="Avatar Alt Text (ID)" />
-                        <x-admin.alt-input field="avatar_alt[en]" :value="old('avatar_alt.en')" label="Avatar Alt Text (EN - English)" />
                         <x-input-error class="mt-2" :messages="$errors->get('avatar')" />
                     </div>
 
@@ -74,7 +76,7 @@
                     </div>
 
                     <div>
-                        <x-admin.toggle name="is_active" :checked="old('is_active', true)" label="Active" />
+                        <x-admin.toggle name="is_active" :checked="old('is_active', true)" label="Active" hint="Show this testimonial on the website" />
                     </div>
                 </div>
 

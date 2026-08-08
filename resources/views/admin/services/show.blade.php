@@ -45,7 +45,7 @@
                 <div x-show="langTab === 'id'" class="space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <p class="section-title">Slug</p>
+                            <p class="section-title">Slug (ID)</p>
                             <p style="color: var(--table-text)">{{ $service->getTranslation('slug', 'id', false) ?: '-' }}</p>
                         </div>
                         <div>
@@ -96,7 +96,7 @@
                 <div x-show="langTab === 'en'" class="space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <p class="section-title">Slug</p>
+                            <p class="section-title">Slug (EN)</p>
                             <p style="color: var(--table-text)">{{ $service->getTranslation('slug', 'en', false) ?: '-' }}</p>
                         </div>
                         <div>
