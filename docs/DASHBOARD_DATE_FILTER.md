@@ -86,7 +86,7 @@ Belum diimplementasikan. Refactor service dari model `$days` → date range eksp
 
 1. Implementasi Phase 1 → jalankan test → `vendor/bin/pint --dirty --format agent`.
 2. Implementasi Phase 2 (sesi terpisah lebih aman) → jalankan test.
-3. Cek visual: `bun run dev` / `bun run build` bila UI tidak muncul perubahan.
+3. Cek visual: `npm run dev` / `npm run build` (atau `bun run dev` / `bun run build`) bila UI tidak muncul perubahan.
 4. Total: `php artisan test --compact`.
 
 ---

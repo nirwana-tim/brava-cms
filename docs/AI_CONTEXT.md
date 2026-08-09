@@ -68,8 +68,7 @@ API
 
 Package Manager
 
-- Bun (not npm)
-- bun.lock (not package-lock.json)
+- Bun & npm supported (server: npm; lokal: bun) — punya dua lockfile: bun.lock + package-lock.json
 
 Deployment
 

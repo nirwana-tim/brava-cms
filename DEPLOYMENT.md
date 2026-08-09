@@ -23,7 +23,7 @@ brava-compro (Next.js 16, Vercel)  --HTTP-->  brava-cms (Laravel 13, cPanel)
 - [ ] PHP **≥ 8.3** tersedia di host (Laravel 13 butuh `^8.3`).
 - [ ] Ekstensi PHP: `gd` (**dengan dukungan WebP**), `mbstring`, `intl`, `curl`, `openssl`, `pdo_mysql`, `dom`/`xml`, `fileinfo`, `bcmath`, `sodium`.
 - [ ] Composer bisa dijalankan (cPanel "Setup PHP Application" atau Terminal).
-- [ ] Bun/Node tersedia **lokal** untuk build Vite (`public/build`).
+- [ ] Bun/Node tersedia **lokal** untuk build Vite (`public/build`). (npm dan bun sama-sama bisa — project punya `package-lock.json` + `bun.lock`.)
 - [ ] Domain `brava.id` dan `cms.brava.id` sudah mengarah ke hosting (A record).
 - [ ] SSL (AutoSSL/gratis) tersedia untuk `cms.brava.id`.
 
@@ -66,9 +66,11 @@ max_execution_time = 120
 Blade admin memakai Vite. Jalankan di repo lokal `brava-cms`:
 
 ```bash
-bun install
-bun run build
+npm install
+npm run build
 ```
+
+> Pakai bun di lokal? `bun install` + `bun run build` juga tetap bisa — project ini punya `bun.lock` dan `package-lock.json` sekaligus.
 
 Pastikan `public/build/` dan `public/manifest.json` ter-update. (Bersihkan dulu `public/build/*` lama bila perlu.)
 
@@ -239,7 +241,7 @@ cPanel → **Cron Jobs**, tambah:
 | Login tidak tersimpan (cookie hilang) | SESSION_SECURE_COOKIE=true tanpa SSL | Aktifkan SSL dulu, atau set false saat masih http |
 | Data API lama setelah edit | Cache API (database) | `php artisan cache:clear` (store default) atau hapus tabel `api_cache` |
 | Error migrasi `Unique constraint` | Data duplikat | Periksa key duplikat; jangan `migrate:fresh` di produksi tanpa backup |
-| `Unable to locate file in Vite manifest` | `public/build` lama | `bun run build` lokal lalu upload `public/build` |
+| `Unable to locate file in Vite manifest` | `public/build` lama | `npm run build` (atau `bun run build`) lokal lalu upload `public/build` |
 | Log penuh | `LOG_CHANNEL=single` | Pakai `LOG_CHANNEL=daily` |
 | Cron tidak jalan | Path `php` salah | Ganti dengan `/usr/local/bin/php83` (sesuai host) |
 
