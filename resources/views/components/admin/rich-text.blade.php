@@ -134,7 +134,7 @@ tinymce.init({
     relative_urls: false,
     remove_script_host: false,
     document_base_url: '{{ url('/') }}/',
-    block_formats: 'Heading 1=h1; Heading 2=h2; Heading 3=h3; Heading 4=h4; Paragraph=p; Blockquote=blockquote',
+    block_formats: 'Heading 2=h2; Heading 3=h3; Heading 4=h4; Paragraph=p; Blockquote=blockquote',
     content_style: 'body { background-color: ' + __bravaEditorBg + '; color: ' + __bravaEditorText + '; font-size: 0.875rem; } p { margin: 0 0 0.75rem; }',
     valid_elements: 'h1,h2,h3,h4,h5,h6,p,blockquote,ul,ol,li,a[href|title|rel|target],img[alt|src|class|width|height|style],strong,em,u,s,br,pre,code,table[*],thead[*],tbody[*],tr[*],th[*],td[*],span[class|style],div[class|style]',
     invalid_styles: 'color font-size font-family background-color backgroundColor',
