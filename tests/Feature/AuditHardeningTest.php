@@ -114,21 +114,33 @@ test('profile deletion removes the avatar upload file', function () {
 test('upload destroy endpoint deletes a quick upload file', function () {
     Storage::disk('public')->put('uploads/tmp.jpg', 'content');
 
-    $staff = User::factory()->staff()->create();
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
 
-    $this->actingAs($staff)->delete(route('admin.upload.destroy'), [
+    $this->actingAs($admin)->delete(route('admin.upload.destroy'), [
         'path' => 'uploads/tmp.jpg',
     ])->assertOk();
 
     Storage::disk('public')->assertMissing('uploads/tmp.jpg');
 });
 
-test('upload destroy endpoint rejects media library paths', function () {
-    Storage::disk('public')->put('media/library.jpg', 'content');
+test('staff cannot delete quick upload files', function () {
+    Storage::disk('public')->put('uploads/tmp.jpg', 'content');
 
     $staff = User::factory()->staff()->create();
 
     $this->actingAs($staff)->delete(route('admin.upload.destroy'), [
+        'path' => 'uploads/tmp.jpg',
+    ])->assertForbidden();
+
+    Storage::disk('public')->assertExists('uploads/tmp.jpg');
+});
+
+test('upload destroy endpoint rejects media library paths', function () {
+    Storage::disk('public')->put('media/library.jpg', 'content');
+
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+
+    $this->actingAs($admin)->delete(route('admin.upload.destroy'), [
         'path' => 'media/library.jpg',
     ])->assertStatus(422);
 

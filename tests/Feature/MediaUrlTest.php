@@ -11,12 +11,12 @@ test('media url is always host independent', function () {
     expect($media->url)->toBe('/storage/media/cover.jpg');
 });
 
-test('media absolute url uses current request host', function () {
+test('media absolute url uses the generated app url', function () {
     $media = Media::factory()->create(['path' => 'media/cover.jpg']);
 
     $this->get('/some-page');
 
-    expect($media->absolute_url)->toBe(request()->getSchemeAndHttpHost().'/storage/media/cover.jpg');
+    expect($media->absolute_url)->toBe(url('/storage/media/cover.jpg'));
 });
 
 test('media absolute url keeps already absolute value', function () {

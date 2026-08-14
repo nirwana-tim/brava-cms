@@ -42,7 +42,7 @@ class UploadController extends Controller
 
     public function destroy(Request $request): JsonResponse
     {
-        $this->authorize('delete', new Media);
+        $this->authorize('deleteQuickUpload', Media::class);
 
         $request->validate([
             'path' => ['required', 'string', 'max:255'],

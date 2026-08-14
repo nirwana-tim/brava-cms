@@ -37,6 +37,25 @@ class Setting extends Model
         return self::TRANSLATABLE_KEYS;
     }
 
+    /**
+     * Setting keys that are allowed to be created via the admin settings form.
+     * Anything outside this list is rejected to prevent arbitrary key creation.
+     *
+     * @return list<string>
+     */
+    public static function allowedKeys(): array
+    {
+        return array_values(array_unique([
+            ...self::TRANSLATABLE_KEYS,
+            ...array_keys(self::LABELS),
+            'address',
+            'email',
+            'default_og_image',
+            'google_verification',
+            'organization_schema',
+        ]));
+    }
+
     public function getTranslatableAttributes(): array
     {
         return in_array($this->key, self::TRANSLATABLE_KEYS, true) ? ['value'] : [];

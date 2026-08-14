@@ -44,7 +44,7 @@ class Media extends Model
             return $url;
         }
 
-        return request()->getSchemeAndHttpHost().$url;
+        return url($url);
     }
 
     protected static function booted(): void

@@ -142,6 +142,29 @@ test('normal admin cannot modify ga4 reporting settings via put request', functi
     expect(Setting::where('key', 'ga4_property_id')->value('value'))->toBe('ORIGINAL-ID');
 });
 
+test('unknown setting keys are rejected instead of being auto-created', function () {
+    $superadmin = User::factory()->create(['role' => UserRole::SuperAdmin]);
+
+    $this->actingAs($superadmin)->from('/admin/settings')
+        ->put('/admin/settings', [
+            'site_name' => 'Brava',
+            'totally_random_key' => 'value',
+        ])
+        ->assertSessionHasErrors('totally_random_key');
+
+    expect(Setting::where('key', 'totally_random_key')->exists())->toBeFalse();
+});
+
+test('allowed setting keys can still be created by superadmin', function () {
+    $superadmin = User::factory()->create(['role' => UserRole::SuperAdmin]);
+
+    $this->actingAs($superadmin)->put('/admin/settings', [
+        'contact_address' => ['id' => 'Jl. Melati No. 1', 'en' => 'Jasmine St. No. 1'],
+    ])->assertRedirect('/admin/settings');
+
+    expect(Setting::where('key', 'contact_address')->exists())->toBeTrue();
+});
+
 test('public settings endpoint exposes adsense identifiers but never system groups', function () {
     Setting::updateOrCreate(['key' => 'adsense_enabled'], ['value' => '1', 'group' => 'adsense', 'type' => 'boolean']);
     Setting::updateOrCreate(['key' => 'adsense_client_id'], ['value' => 'ca-pub-1234567890123456', 'group' => 'adsense', 'type' => 'text']);

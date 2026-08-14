@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\UpdateSettingRequest;
 use App\Models\Setting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -23,10 +24,8 @@ class SettingController extends Controller
         return view('admin.settings.index', compact('settings'));
     }
 
-    public function update(Request $request): RedirectResponse
+    public function update(UpdateSettingRequest $request): RedirectResponse
     {
-        $this->authorize('viewAny', Setting::class);
-
         $settings = Setting::all();
 
         foreach ($settings as $setting) {
@@ -42,8 +41,14 @@ class SettingController extends Controller
         }
 
         foreach ($request->except('_token', '_method') as $key => $value) {
-            if (! $settings->contains('key', $key) && $request->user()->isSuperAdmin()) {
-                if (mb_strlen($key) > 255 || mb_strlen((string) $value) > 5000) {
+            if ($settings->contains('key', $key) || ! in_array($key, Setting::allowedKeys(), true)) {
+                continue;
+            }
+
+            if ($request->user()->isSuperAdmin()) {
+                $valueString = is_array($value) ? json_encode($value) : (string) $value;
+
+                if (mb_strlen($key) > 255 || mb_strlen($valueString) > 5000) {
                     continue;
                 }
 
