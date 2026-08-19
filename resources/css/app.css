@@ -217,6 +217,11 @@
     border-bottom: 1px solid var(--table-border);
 }
 
+.admin-table-wrap td.cell-wrap {
+    white-space: normal;
+    vertical-align: top;
+}
+
 .admin-table-wrap tr:last-child td {
     border-bottom: none;
 }

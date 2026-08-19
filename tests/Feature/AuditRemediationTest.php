@@ -98,6 +98,7 @@ test('team member role is synced on update', function () {
     $this->actingAs($admin)->withoutMiddleware(EnsureStaffOrAdmin::class)->put('/admin/team/'.$team->id, [
         'name' => $admin->name,
         'position' => 'Administrator',
+        'email' => $admin->email,
     ])->assertRedirect('/admin/team');
 
     expect($admin->fresh()->role)->toBe(UserRole::Admin);

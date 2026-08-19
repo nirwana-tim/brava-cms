@@ -63,6 +63,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             SettingSeeder::class,
             ContactSettingSeeder::class,
+            PageSeoSeeder::class,
         ]);
     }
 }

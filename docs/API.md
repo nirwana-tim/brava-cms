@@ -147,6 +147,41 @@ Response:
 
 ---
 
+### Page SEO (Static & Listing Pages)
+
+> Public, no auth. Returns custom SEO metadata, OpenGraph, and Robots Indexing flags for static & listing pages (`home`, `about`, `services`, `portfolio`, `contact`, `blogs`, `promos`).
+
+#### `GET /api/v1/page-seo`
+
+| Param  | Type   | Description                                                           |
+| ------ | ------ | --------------------------------------------------------------------- |
+| `page` | string | Page key: `home`, `about`, `services`, `portfolio`, `contact`, `blogs`, `promos` |
+| `lang` | string | Target locale: `id` or `en` (default `id`)                             |
+
+Example: `GET /api/v1/page-seo?page=about&lang=id`
+
+Response:
+
+```json
+{
+    "success": true,
+    "message": "Page SEO retrieved successfully",
+    "data": {
+        "page_key": "about",
+        "meta_title": "Tentang Kami — Dedikasi & Kualitas Konveksi",
+        "meta_description": "Kenali BRAVA lebih dekat, nilai dedikasi kami dalam menghadirkan standar seragam berkualitas tinggi.",
+        "og_image": "http://localhost:8000/storage/seo/about-og.jpg",
+        "og_image_alt": "Tentang Kami BRAVA",
+        "robots_index": true,
+        "robots_follow": true,
+        "canonical_url": "https://brava.id/about",
+        "schema_type": "AboutPage"
+    }
+}
+```
+
+---
+
 ### Categories
 
 > Public, no auth.

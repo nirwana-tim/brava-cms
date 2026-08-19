@@ -12,10 +12,14 @@ trait BuildsCanonicalUrl
         $locale = app()->getLocale();
 
         $resource = $this->resource;
-        if ($resource instanceof Model && empty($resource->getTranslation('slug', $locale, false))) {
-            $locale = 'id';
+        if ($resource instanceof Model && method_exists($resource, 'isTranslatableAttribute') && $resource->isTranslatableAttribute('slug')) {
+            if (empty($resource->getTranslation('slug', $locale, false))) {
+                $locale = 'id';
+            }
         }
 
-        return $frontendUrl.'/'.$locale.'/'.ltrim($path, '/');
+        $cleanPath = ltrim($path, '/');
+
+        return $cleanPath ? $frontendUrl.'/'.$locale.'/'.$cleanPath : $frontendUrl.'/'.$locale;
     }
 }

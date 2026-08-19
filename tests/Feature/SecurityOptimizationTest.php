@@ -28,3 +28,17 @@ test('media picker list is limited to 60 items to prevent memory exhaustion', fu
     $response->assertStatus(200);
     expect(count($response->json()))->toBe(60);
 });
+
+test('media picker list filters by collection', function () {
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+
+    $blogMedia = Media::factory()->create(['collection' => 'blogs']);
+    Media::factory()->create(['collection' => 'portfolio']);
+    Media::factory()->create(['collection' => null]);
+
+    $response = $this->actingAs($admin)->getJson('/admin/media/picker-list?collection=blogs');
+
+    $response->assertStatus(200);
+    expect(count($response->json()))->toBe(1)
+        ->and($response->json('0.id'))->toBe($blogMedia->id);
+});

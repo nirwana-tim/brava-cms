@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin;
 use App\Http\Requests\Concerns\NormalizesTranslatableInputs;
 use App\Http\Requests\Concerns\ValidatesImageUrl;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreTeamRequest extends FormRequest
 {
@@ -39,12 +40,21 @@ class StoreTeamRequest extends FormRequest
             'position.id' => ['required', 'string', 'max:255'],
             'position.en' => ['nullable', 'string', 'max:255'],
             'avatar' => $this->imageUrlRule(),
-            'email' => ['nullable', 'email', 'max:255'],
+            'email' => ['nullable', 'required_if:create_user_account,1', 'email', 'max:255', Rule::unique('users', 'email'), Rule::unique('team_members', 'email')],
             'phone' => ['nullable', 'string', 'max:50'],
             'is_active' => ['boolean'],
             'create_user_account' => ['nullable', 'boolean'],
             'role' => $roleRule,
             'password' => ['nullable', 'required_if:create_user_account,1', 'string', 'min:8', 'confirmed'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'email.required_if' => 'Email wajib diisi jika membuat akun login.',
+            'email.unique' => 'Email sudah digunakan oleh member atau akun login lain.',
+            'password.required_if' => 'Password wajib diisi jika membuat akun login.',
         ];
     }
 }

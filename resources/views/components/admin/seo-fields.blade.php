@@ -73,6 +73,8 @@
                 <x-input-label for="schema_type" :value="__('Schema Type (JSON-LD)')" />
                 <select id="schema_type" name="schema_type" class="form-select mt-1">
                     <option value="WebPage" {{ old('schema_type', $schemaType) === 'WebPage' ? 'selected' : '' }}>WebPage</option>
+                    <option value="AboutPage" {{ old('schema_type', $schemaType) === 'AboutPage' ? 'selected' : '' }}>AboutPage</option>
+                    <option value="ContactPage" {{ old('schema_type', $schemaType) === 'ContactPage' ? 'selected' : '' }}>ContactPage</option>
                     <option value="Article" {{ old('schema_type', $schemaType) === 'Article' ? 'selected' : '' }}>Article</option>
                     <option value="NewsArticle" {{ old('schema_type', $schemaType) === 'NewsArticle' ? 'selected' : '' }}>NewsArticle</option>
                     <option value="Product" {{ old('schema_type', $schemaType) === 'Product' ? 'selected' : '' }}>Product</option>

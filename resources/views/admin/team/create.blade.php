@@ -50,7 +50,7 @@
                     </div>
                 </x-admin.language-tabs>
 
-                <div class="mt-6 space-y-6 border-t pt-6">
+                <div x-data="{ createAccount: {!! old('create_user_account', true) ? 'true' : 'false' !!} }" class="mt-6 space-y-6 border-t pt-6">
                     <div>
                         <x-input-label for="avatar" :value="__('Avatar')" />
                         <input type="hidden" name="avatar" id="avatar" value="{{ old('avatar') }}" />
@@ -59,28 +59,33 @@
                     </div>
 
                     <div>
-                        <x-input-label for="email" :value="__('Email')" />
+                        <x-input-label for="email">
+                            {{ __('Email') }}<span x-show="createAccount" class="ml-0.5 text-red-500 dark:text-red-400">*</span>
+                        </x-input-label>
                         <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email')" />
+                        <p class="form-hint mt-1">Wajib diisi jika membuat akun login.</p>
                         <x-input-error class="mt-2" :messages="$errors->get('email')" />
                     </div>
 
-                    <div x-data="{ createAccount: {!! old('create_user_account', true) ? 'true' : 'false' !!} }" class="flex items-center gap-2">
+                    <div class="flex items-center gap-2">
                         <input type="hidden" name="create_user_account" value="0">
                         <input id="create_user_account" name="create_user_account" type="checkbox" value="1" class="rounded" x-model="createAccount" x-init="$el.checked = createAccount">
                         <label for="create_user_account" class="text-sm font-medium" style="color: var(--label-text)">Create Login Account</label>
                         <x-input-error class="mt-2" :messages="$errors->get('create_user_account')" />
                     </div>
 
-                    <div x-show="createAccount" x-cloak>
-                        <x-input-label for="role" :value="__('Role')" />
-                        <select id="role" name="role" class="form-select mt-1">
-                            @if (auth()->user()->isSuperAdmin())
+                    @if (auth()->user()->isSuperAdmin())
+                        <div x-show="createAccount">
+                            <x-input-label for="role" :value="__('Role')" />
+                            <select id="role" name="role" class="form-select mt-1">
                                 <option value="admin" {{ old('role', 'admin') === 'admin' ? 'selected' : '' }}>Admin</option>
-                            @endif
-                            <option value="staff" {{ old('role', auth()->user()->isSuperAdmin() ? null : 'staff') === 'staff' ? 'selected' : '' }}>Staff</option>
-                        </select>
-                        <x-input-error class="mt-2" :messages="$errors->get('role')" />
-                    </div>
+                                <option value="staff" {{ old('role') === 'staff' ? 'selected' : '' }}>Staff</option>
+                            </select>
+                            <x-input-error class="mt-2" :messages="$errors->get('role')" />
+                        </div>
+                    @else
+                        <input type="hidden" name="role" value="{{ old('role', 'staff') }}">
+                    @endif
 
                     <div>
                         <x-input-label for="phone" :value="__('Phone')" />
@@ -88,14 +93,14 @@
                         <x-input-error class="mt-2" :messages="$errors->get('phone')" />
                     </div>
 
-                    <div x-show="createAccount" x-cloak>
-                        <x-input-label for="password" :value="__('Password')" />
+                    <div x-show="createAccount">
+                        <x-input-label for="password" :value="__('Password')" :required="true" />
                         <x-text-input id="password" name="password" type="password" class="mt-1 block w-full" />
                         <x-input-error class="mt-2" :messages="$errors->get('password')" />
                     </div>
 
-                    <div x-show="createAccount" x-cloak>
-                        <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+                    <div x-show="createAccount">
+                        <x-input-label for="password_confirmation" :value="__('Confirm Password')" :required="true" />
                         <x-text-input id="password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" />
                         <x-input-error class="mt-2" :messages="$errors->get('password_confirmation')" />
                     </div>

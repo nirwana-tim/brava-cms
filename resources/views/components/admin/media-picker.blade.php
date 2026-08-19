@@ -286,7 +286,8 @@
             async loadPicker() {
                 this.loadingPicker = true;
                 try {
-                    const res = await fetch('{{ route("admin.media.picker-list") }}');
+                    const url = '{{ route("admin.media.picker-list") }}' + (collectionName ? `?collection=${encodeURIComponent(collectionName)}` : '');
+                    const res = await fetch(url);
                     this.items = await res.json();
                 } catch (e) {
                     console.error('Failed to load media', e);

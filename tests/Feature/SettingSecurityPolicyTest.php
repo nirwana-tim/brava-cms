@@ -67,6 +67,26 @@ test('normal admin sees seo or general branding settings in technical settings c
     $response->assertSee('Untuk perubahan pengaturan ini, silakan hubungi developer.');
 });
 
+test('normal admin does not see adsense rows when adsense is disabled', function () {
+    Setting::where('key', 'adsense_enabled')->update(['value' => '0']);
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+
+    $this->actingAs($admin)->get('/admin/settings')
+        ->assertStatus(200)
+        ->assertDontSee('AdSense Enabled')
+        ->assertDontSee('AdSense Publisher ID');
+});
+
+test('normal admin sees adsense rows when adsense is enabled', function () {
+    Setting::where('key', 'adsense_enabled')->update(['value' => '1']);
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+
+    $this->actingAs($admin)->get('/admin/settings')
+        ->assertStatus(200)
+        ->assertSee('AdSense Enabled')
+        ->assertSee('AdSense Publisher ID');
+});
+
 test('superadmin can see all settings including seo and sees impact notes', function () {
     $superadmin = User::factory()->create(['role' => UserRole::SuperAdmin]);
 
@@ -96,10 +116,10 @@ test('normal admin cannot modify adsense settings via put request', function () 
 
     $admin = User::factory()->create(['role' => UserRole::Admin]);
 
-    $this->actingAs($admin)->put('/admin/settings', [
+    $this->actingAs($admin)->from('/admin/settings')->put('/admin/settings', [
         'adsense_slot_1' => 'HACKED-SLOT',
         'adsense_client_id' => 'ca-pub-HACKED',
-    ])->assertRedirect('/admin/settings');
+    ])->assertSessionHasErrors(['adsense_slot_1', 'adsense_client_id']);
 
     expect(Setting::where('key', 'adsense_slot_1')->first()->value)->toBe('ORIGINAL-SLOT');
     expect(Setting::where('key', 'adsense_client_id')->first()->value ?? '')->toBe('');
@@ -134,10 +154,10 @@ test('normal admin cannot modify ga4 reporting settings via put request', functi
 
     $admin = User::factory()->create(['role' => UserRole::Admin]);
 
-    $this->actingAs($admin)->put('/admin/settings', [
+    $this->actingAs($admin)->from('/admin/settings')->put('/admin/settings', [
         'ga4_property_id' => 'HACKED-ID',
         'ga4_service_account_key' => '{"private_key":"hacked"}',
-    ])->assertRedirect('/admin/settings');
+    ])->assertSessionHasErrors('ga4_property_id');
 
     expect(Setting::where('key', 'ga4_property_id')->value('value'))->toBe('ORIGINAL-ID');
 });

@@ -32,8 +32,11 @@ class PromoService
         $highlight = $this->getHighlighted();
         $excludeId = $highlight?->id;
         $locale = app()->getLocale();
+        $page = max(1, min((int) request()->integer('page', 1), 1000));
 
-        return Cache::store('api')->flexible('promos.list.'.$locale.'.'.md5(serialize($filters).'_'.$excludeId).'.p'.request()->integer('page', 1), [900, 1800], function () use ($filters, $perPage, $excludeId, $locale) {
+        $filters['search'] = isset($filters['search']) ? mb_substr((string) $filters['search'], 0, 100) : null;
+
+        return Cache::store('api')->flexible('promos.list.'.$locale.'.'.md5(serialize($filters).'_'.$excludeId).'.p'.$page, [900, 1800], function () use ($filters, $perPage, $excludeId, $locale, $page) {
             return Promo::active()
                 ->where(fn ($q) => $q->whereNull('valid_until')->orWhere('valid_until', '>=', now()))
                 ->when($excludeId, fn ($q) => $q->where('id', '!=', $excludeId))
@@ -49,7 +52,7 @@ class PromoService
                     });
                 })
                 ->latest()
-                ->paginate($perPage)
+                ->paginate($perPage, ['*'], 'page', $page)
                 ->withQueryString();
         });
     }

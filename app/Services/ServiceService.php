@@ -14,8 +14,11 @@ class ServiceService
     {
         $perPage = max(1, min((int) ($filters['per_page'] ?? 12), 100));
         $locale = app()->getLocale();
+        $page = max(1, min((int) request()->integer('page', 1), 1000));
 
-        return Cache::store('api')->flexible('services.list.'.$locale.'.'.md5(serialize($filters)).'.p'.request()->integer('page', 1), [900, 1800], function () use ($filters, $perPage, $locale) {
+        $filters['search'] = isset($filters['search']) ? mb_substr((string) $filters['search'], 0, 100) : null;
+
+        return Cache::store('api')->flexible('services.list.'.$locale.'.'.md5(serialize($filters)).'.p'.$page, [900, 1800], function () use ($filters, $perPage, $locale, $page) {
             return $this->model->active()
                 ->when($filters['search'] ?? null, function ($query, $search) use ($locale) {
                     $query->where(function ($q) use ($search, $locale) {
@@ -27,7 +30,7 @@ class ServiceService
                 })
                 ->orderBy('sort_order')
                 ->orderBy('id')
-                ->paginate($perPage)
+                ->paginate($perPage, ['*'], 'page', $page)
                 ->withQueryString();
         });
     }

@@ -125,6 +125,7 @@ test('superadmin cannot demote their own or other superadmin team account', func
         ->put(route('admin.team.update', $superAdminTeam), [
             'name' => $superAdminUser->name,
             'position' => 'Super Administrator',
+            'email' => $superAdminUser->email,
             'role' => UserRole::Staff->value,
         ])
         ->assertRedirect(route('admin.team.index'));
@@ -135,6 +136,7 @@ test('superadmin cannot demote their own or other superadmin team account', func
         ->put(route('admin.team.update', $peerTeam), [
             'name' => $peer->name,
             'position' => 'Super Administrator',
+            'email' => $peer->email,
             'role' => UserRole::Admin->value,
         ])
         ->assertRedirect(route('admin.team.index'));

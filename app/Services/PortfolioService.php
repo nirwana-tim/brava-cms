@@ -14,8 +14,11 @@ class PortfolioService
     {
         $perPage = max(1, min((int) ($filters['per_page'] ?? 12), 100));
         $locale = app()->getLocale();
+        $page = max(1, min((int) request()->integer('page', 1), 1000));
 
-        return Cache::store('api')->flexible('portfolio.list.'.$locale.'.'.md5(serialize($filters)).'.p'.request()->integer('page', 1), [1800, 3600], function () use ($filters, $perPage, $locale) {
+        $filters['search'] = isset($filters['search']) ? mb_substr((string) $filters['search'], 0, 100) : null;
+
+        return Cache::store('api')->flexible('portfolio.list.'.$locale.'.'.md5(serialize($filters)).'.p'.$page, [1800, 3600], function () use ($filters, $perPage, $locale, $page) {
             return $this->model->with('service')
                 ->active()
                 ->when($filters['search'] ?? null, function ($query, $search) use ($locale) {
@@ -27,7 +30,7 @@ class PortfolioService
                     });
                 })
                 ->latest()
-                ->paginate($perPage)
+                ->paginate($perPage, ['*'], 'page', $page)
                 ->withQueryString();
         });
     }

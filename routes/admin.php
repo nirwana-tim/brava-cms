@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\Admin\PageSeoController;
 use App\Http\Controllers\Admin\PortfolioController;
 use App\Http\Controllers\Admin\PromoController;
 use App\Http\Controllers\Admin\ServiceController;
@@ -46,4 +47,11 @@ Route::middleware(['auth', 'verified', 'staff_or_admin'])->prefix('admin')->name
     Route::resource('media', MediaController::class)->except(['show']);
     Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
     Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
+
+    Route::get('page-seo', [PageSeoController::class, 'index'])->name('page-seo.index');
+    Route::get('page-seo/defaults', [PageSeoController::class, 'defaults'])->name('page-seo.defaults');
+    Route::put('page-seo/defaults', [PageSeoController::class, 'updateDefaults'])->name('page-seo.defaults.update');
+    Route::get('page-seo/{page}', [PageSeoController::class, 'show'])->name('page-seo.show');
+    Route::get('page-seo/{page}/edit', [PageSeoController::class, 'edit'])->name('page-seo.edit');
+    Route::put('page-seo/{page}', [PageSeoController::class, 'update'])->name('page-seo.update');
 });

@@ -1,5 +1,7 @@
 # Database Schema
 
+> **Note:** Translatable fields (titles, slugs, descriptions, meta fields, etc.) are stored as JSON `{"id": "...", "en": "..."}` in `text`/`longText` columns, which is why they are wider than the admin-facing length limits.
+
 ## Table: `users`
 | Column | Type | Notes |
 |--------|------|-------|
@@ -21,10 +23,25 @@
 | id | bigIncrements | |
 | key | string(255) | unique |
 | value | text | nullable, translatable keys stored as JSON `{"id": "...", "en": null}` |
-| group | string(50) | general, seo, social, contact, system, adsense |
-| type | string(50) | text, textarea, image, color, boolean |
+| group | string(255) | general, seo, social, contact, system, adsense |
+| type | string(255) | text, textarea, image, color, boolean |
 | created_at | timestamp | |
 | updated_at | timestamp | |
+
+## Table: `page_seos`
+| Column | Type | Notes |
+|--------|------|-------|
+| id | bigIncrements | |
+| page_key | string(50) | unique: home, about, services, portfolio, contact, blogs, promos, indexed |
+| meta_title | text | nullable, translatable JSON `{"id","en"}` |
+| meta_description | text | nullable, translatable JSON `{"id","en"}` |
+| og_image | string(255) | nullable |
+| og_image_alt | text | nullable, translatable JSON `{"id","en"}` |
+| robots_index | boolean | default true |
+| robots_follow | boolean | default true |
+| canonical_url | string(255) | nullable |
+| schema_type | string(50) | default WebPage / AboutPage / ContactPage |
+| timestamps | | |
 
 ## Table: `media`
 | Column | Type | Notes |
@@ -32,13 +49,13 @@
 | id | bigIncrements | |
 | name | string(255) | original file name |
 | file_name | string(255) | hashed/stored file name |
-| mime_type | string(127) | e.g. image/jpeg |
-| size | integer | bytes |
-| disk | string(50) | default public |
+| mime_type | string(255) | e.g. image/jpeg |
+| size | integer unsigned | bytes |
+| disk | string(255) | default public |
 | path | string(255) | relative path only |
 | alt_text | string(255) | nullable |
 | sort_order | integer | default 0 |
-| collection | string(50) | nullable: portfolio, featured, logo |
+| collection | string(255) | nullable: portfolio, featured, logo |
 | mediable_type | string(255) | nullable, morphs |
 | mediable_id | bigInteger | nullable, morphs |
 | created_at | timestamp | |
@@ -48,8 +65,8 @@
 | Column | Type | Notes |
 |--------|------|-------|
 | id | bigIncrements | |
-| name | string(255) | translatable JSON `{"id","en"}` |
-| slug | string(255) | translatable JSON `{"id","en"}`, unique enforced in app layer per-locale |
+| name | text | translatable JSON `{"id","en"}` |
+| slug | text | translatable JSON `{"id","en"}`, unique enforced in app layer per-locale |
 | type | string(255) | nullable: blog, portfolio, indexed |
 | description | text | nullable, translatable JSON |
 | timestamps | | |
@@ -59,11 +76,11 @@
 | Column | Type | Notes |
 |--------|------|-------|
 | id | bigIncrements | |
-| title | string(255) | translatable JSON `{"id","en"}` |
-| slug | string(255) | translatable JSON `{"id","en"}`, unique enforced in app layer per-locale |
+| title | text | translatable JSON `{"id","en"}` |
+| slug | text | translatable JSON `{"id","en"}`, unique enforced in app layer per-locale |
 | description | text | nullable, translatable JSON |
 | photo | string(255) | nullable |
-| photo_alt | string(255) | nullable, translatable JSON |
+| photo_alt | text | nullable, translatable JSON |
 | is_active | boolean | default true, indexed |
 | sort_order | integer | default 0 |
 | timestamps | | |
@@ -74,20 +91,20 @@
 |--------|------|-------|
 | id | bigIncrements | |
 | author_id | bigInteger | FK to users.id |
-| title | string(255) | translatable JSON `{"id","en"}` |
-| slug | string(255) | translatable JSON `{"id","en"}`, unique enforced in app layer per-locale |
+| title | text | translatable JSON `{"id","en"}` |
+| slug | text | translatable JSON `{"id","en"}`, unique enforced in app layer per-locale |
 | excerpt | text | nullable, translatable JSON |
 | content | longText | nullable, translatable JSON |
 | featured_image | string(255) | nullable |
-| featured_image_alt | string(255) | nullable, translatable JSON |
+| featured_image_alt | text | nullable, translatable JSON |
 | published_at | timestamp | nullable |
 | is_featured | boolean | default false |
 | status | string(255) | enum: draft, published, archived; default draft |
-| meta_title | string(70) | nullable, translatable JSON |
-| meta_description | string(160) | nullable, translatable JSON |
-| meta_keywords | string(255) | nullable, translatable JSON |
+| meta_title | text | nullable, translatable JSON |
+| meta_description | text | nullable, translatable JSON |
+| meta_keywords | text | nullable, translatable JSON |
 | og_image | string(255) | nullable |
-| og_image_alt | string(255) | nullable, translatable JSON |
+| og_image_alt | text | nullable, translatable JSON |
 | robots_index | boolean | default true |
 | robots_follow | boolean | default true |
 | schema_type | string(50) | default Article |
@@ -101,21 +118,21 @@
 |--------|------|-------|
 | id | bigIncrements | |
 | service_id | bigInteger | FK to services.id, nullable |
-| title | string(255) | translatable JSON `{"id","en"}` |
-| slug | string(255) | translatable JSON `{"id","en"}`, unique enforced in app layer per-locale |
+| title | text | translatable JSON `{"id","en"}` |
+| slug | text | translatable JSON `{"id","en"}`, unique enforced in app layer per-locale |
 | description | text | nullable, translatable JSON |
 | specifications | json | nullable — [{key, value}] |
 | features | json | nullable — [string] |
-| client | string(255) | nullable, translatable JSON |
+| client | text | nullable, translatable JSON |
 | photo | string(255) | Cover photo, required |
-| photo_alt | string(255) | nullable, translatable JSON |
+| photo_alt | text | nullable, translatable JSON |
 | completed_at | date | nullable |
 | is_active | boolean | default true |
-| meta_title | string(70) | nullable, translatable JSON |
-| meta_description | string(160) | nullable, translatable JSON |
-| meta_keywords | string(255) | nullable, translatable JSON |
+| meta_title | text | nullable, translatable JSON |
+| meta_description | text | nullable, translatable JSON |
+| meta_keywords | text | nullable, translatable JSON |
 | og_image | string(255) | nullable |
-| og_image_alt | string(255) | nullable, translatable JSON |
+| og_image_alt | text | nullable, translatable JSON |
 | robots_index | boolean | default true |
 | robots_follow | boolean | default true |
 | schema_type | string(50) | default CreativeWork |
@@ -128,15 +145,21 @@
 | blog_id | bigInteger | FK to blogs.id, cascadeOnDelete |
 | category_id | bigInteger | FK to categories.id, cascadeOnDelete |
 
+## Table: `category_portfolio_item` (pivot)
+| Column | Type | Notes |
+|--------|------|-------|
+| category_id | bigInteger | FK to categories.id, cascadeOnDelete |
+| portfolio_item_id | bigInteger | FK to portfolio_items.id, cascadeOnDelete |
+
 ## Table: `testimonials`
 | Column | Type | Notes |
 |--------|------|-------|
 | id | bigIncrements | |
-| client_name | string(255) | translatable JSON `{"id","en"}`, holds Company/Organization name |
+| client_name | text | translatable JSON `{"id","en"}`, holds Company/Organization name |
 | content | text | translatable JSON `{"id","en"}` |
 | rating | tinyInteger | 1-5, nullable |
 | avatar | string(255) | nullable |
-| avatar_alt | string(255) | nullable |
+| avatar_alt | text | nullable |
 | is_active | boolean | default true, indexed |
 | sort_order | integer | default 0, unique enforced in app layer |
 | timestamps | | |
@@ -146,7 +169,7 @@
 | Column | Type | Notes |
 |--------|------|-------|
 | id | bigIncrements | |
-| question | string(255) | translatable JSON `{"id","en"}` |
+| question | text | translatable JSON `{"id","en"}` |
 | answer | text | translatable JSON `{"id","en"}` |
 | sort_order | integer | default 0, unique enforced in app layer |
 | is_active | boolean | default true, indexed |
@@ -158,7 +181,7 @@
 |--------|------|-------|
 | id | bigIncrements | |
 | user_id | bigInteger | FK to users.id, nullable |
-| name | string(255) | translatable JSON `{"id","en"}` |
+| name | text | translatable JSON `{"id","en"}` |
 | position | string(255) | nullable, translatable JSON |
 | avatar | string(255) | nullable |
 | email | string(255) | nullable |
@@ -171,20 +194,33 @@
 | Column | Type | Notes |
 |--------|------|-------|
 | id | bigIncrements | |
-| title | string(255) | Promo title, translatable JSON `{"id","en"}` |
-| slug | string(255) | translatable JSON `{"id","en"}`, unique enforced in app layer per-locale |
-| badge_text | string(100) | nullable, translatable JSON (e.g., PROMO TERBATAS) |
-| discount_info | string(100) | nullable, translatable JSON (e.g., 40%, Rp 500.000) |
+| title | text | Promo title, translatable JSON `{"id","en"}` |
+| slug | text | translatable JSON `{"id","en"}`, unique enforced in app layer per-locale |
+| badge_text | text | nullable, translatable JSON (e.g., PROMO TERBATAS) |
+| discount_info | text | nullable, translatable JSON (e.g., 40%, Rp 500.000) |
 | description | text | nullable, translatable JSON |
 | image | string(500) | nullable |
-| image_alt | string(255) | nullable, translatable JSON |
+| image_alt | text | nullable, translatable JSON |
 | valid_from | dateTime | nullable |
 | valid_until | dateTime | nullable, indexed |
 | wa_template | text | nullable (Custom WA message template), translatable JSON |
 | is_highlighted | boolean | default false (Only max 1 true), indexed |
 | is_active | boolean | default true, indexed |
-| meta_title | string(70) | nullable, translatable JSON |
-| meta_description | string(160) | nullable, translatable JSON |
-| meta_keywords | string(255) | nullable, translatable JSON |
+| meta_title | text | nullable, translatable JSON |
+| meta_description | text | nullable, translatable JSON |
+| meta_keywords | text | nullable, translatable JSON |
 | timestamps | | |
 | softDeletes | | |
+
+## Table: `activity_logs`
+| Column | Type | Notes |
+|--------|------|-------|
+| id | bigIncrements | |
+| user_id | bigInteger | FK to users.id, nullable |
+| loggable_type | string(255) | nullable, morphs |
+| loggable_id | bigInteger | nullable, morphs |
+| event | string(255) | created, updated, deleted, restored |
+| description | string(255) | |
+| properties | json | nullable |
+| created_at | timestamp | |
+| updated_at | timestamp | |

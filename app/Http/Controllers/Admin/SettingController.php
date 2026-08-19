@@ -18,6 +18,7 @@ class SettingController extends Controller
         $groupOrder = ['general', 'contact', 'social', 'seo', 'adsense', 'system'];
 
         $settings = Setting::all()
+            ->reject(fn (Setting $setting) => in_array($setting->key, PageSeoController::GLOBAL_DEFAULTS_KEYS, true))
             ->groupBy('group')
             ->sortBy(fn ($_, string $group) => array_search($group, $groupOrder) !== false ? array_search($group, $groupOrder) : 99);
 

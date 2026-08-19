@@ -19,6 +19,7 @@ it('reproduces leak: admin demoted by superadmin still accesses team/settings', 
     $this->actingAs($super)->put(route('admin.team.update', $adminTeam), [
         'name' => $admin->name,
         'position' => 'Administrator',
+        'email' => $admin->email,
         'role' => UserRole::Staff->value,
     ])->assertRedirect();
 

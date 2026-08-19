@@ -3,6 +3,15 @@
 
     <div class="card">
         <div class="card-body">
+            @if (auth()->user()->isSuperAdmin())
+                <div class="mb-6 rounded-lg border p-4" style="border-color: var(--card-border)">
+                    <p class="text-sm" style="color: var(--heading-text)">
+                        Global SEO defaults (<code>default_meta_title</code>, <code>default_meta_description</code>, <code>default_og_image</code>) kini dikelola di menu
+                        <a href="{{ route('admin.page-seo.defaults') }}" style="color: var(--btn-edit-text); text-decoration: underline"><strong>SEO → Global Defaults</strong></a>.
+                    </p>
+                </div>
+            @endif
+
             <form action="{{ route('admin.settings.update') }}" method="POST">
                 @csrf
                 @method('PUT')
@@ -22,6 +31,8 @@
                 @php
                     $groupLabels = ['general' => 'General', 'contact' => 'Contact', 'social' => 'Social Media', 'seo' => 'SEO', 'adsense' => 'AdSense', 'system' => 'System'];
                     $restrictedSettings = [];
+                    $adsenseEnabled = (bool) ($settings->flatten()->firstWhere('key', 'adsense_enabled')?->value ?? false);
+                    $hideInactiveAdsense = ! auth()->user()->isSuperAdmin() && ! $adsenseEnabled;
                 @endphp
 
                 @foreach ($settings as $group => $groupSettings)
@@ -88,6 +99,10 @@
                         </div>
                     @endif
                 @endforeach
+
+                @php
+                    $restrictedSettings = array_values(array_filter($restrictedSettings, fn ($setting) => ! ($hideInactiveAdsense && $setting->group === 'adsense')));
+                @endphp
 
                 @if (count($restrictedSettings) > 0)
                     <div class="mb-8">

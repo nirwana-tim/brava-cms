@@ -21,6 +21,7 @@ class AdminBreadcrumbs
         'faqs' => ['label' => 'FAQs', 'index' => 'admin.faqs.index', 'singular' => 'faq'],
         'promos' => ['label' => 'Promo & Voucher', 'index' => 'admin.promos.index', 'singular' => 'promo'],
         'team' => ['label' => 'Team', 'index' => 'admin.team.index', 'singular' => 'team'],
+        'page-seo' => ['label' => 'SEO', 'index' => 'admin.page-seo.index', 'singular' => null],
         'media' => ['label' => 'Media', 'index' => 'admin.media.index', 'singular' => 'medium'],
         'settings' => ['label' => 'Settings', 'index' => 'admin.settings.index', 'singular' => null],
         'trash' => ['label' => 'Recycle Bin', 'index' => 'admin.trash.index', 'singular' => null],
@@ -67,7 +68,7 @@ class AdminBreadcrumbs
             $crumbs[] = ['label' => $section['label'], 'href' => route($section['index'])];
         }
 
-        $current = $this->currentLabel($request, $section, $action);
+        $current = $this->currentLabel($request, $sectionKey, $section, $action);
 
         if ($current !== '') {
             $crumbs[] = ['label' => $current, 'href' => null];
@@ -79,10 +80,18 @@ class AdminBreadcrumbs
     /**
      * @param  array{label: string, index: string|null, singular: string|null}  $section
      */
-    protected function currentLabel(Request $request, array $section, string $action): string
+    protected function currentLabel(Request $request, string $sectionKey, array $section, string $action): string
     {
         if ($action === 'index') {
             return $section['label'];
+        }
+
+        if ($sectionKey === 'page-seo' && in_array($action, ['show', 'edit'], true)) {
+            $pageKey = $request->route('page');
+
+            if (is_string($pageKey) && $pageKey !== '') {
+                return str($pageKey)->title()->limit(40)->toString();
+            }
         }
 
         if ($action === 'create') {

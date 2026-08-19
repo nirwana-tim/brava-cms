@@ -250,6 +250,7 @@ test('admin can update team member of staff', function () {
     $this->actingAs($admin)->put(route('admin.team.update', $team), [
         'name' => 'Updated Staff',
         'position' => 'Content Editor',
+        'email' => $staff->email,
     ])->assertRedirect(route('admin.team.index'));
 
     expect($team->fresh()->name)->toBe('Updated Staff');

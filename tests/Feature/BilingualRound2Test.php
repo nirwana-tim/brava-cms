@@ -26,6 +26,7 @@ test('team member update syncs the id translation to the linked user account', f
     $this->actingAs($admin)->put(route('admin.team.update', $team), [
         'name' => ['id' => 'Nama Baru', 'en' => 'New Name'],
         'position' => ['id' => 'Editor Konten', 'en' => 'Content Editor'],
+        'email' => $staff->email,
     ])->assertRedirect(route('admin.team.index'));
 
     expect($staff->refresh()->name)->toBe('Nama Baru')

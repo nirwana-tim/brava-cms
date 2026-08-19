@@ -14,8 +14,11 @@ class BlogService
     {
         $perPage = max(1, min((int) ($filters['per_page'] ?? 12), 100));
         $locale = app()->getLocale();
+        $page = max(1, min((int) request()->integer('page', 1), 1000));
 
-        return Cache::store('api')->flexible('blog.list.'.$locale.'.'.md5(serialize($filters)).'.p'.request()->integer('page', 1), [900, 1800], function () use ($filters, $perPage, $locale) {
+        $filters['search'] = isset($filters['search']) ? mb_substr((string) $filters['search'], 0, 100) : null;
+
+        return Cache::store('api')->flexible('blog.list.'.$locale.'.'.md5(serialize($filters)).'.p'.$page, [900, 1800], function () use ($filters, $perPage, $locale, $page) {
             return $this->model->with(['author', 'categories'])
                 ->published()
                 ->when($filters['category'] ?? null, function ($query, $category) use ($locale) {
@@ -31,7 +34,7 @@ class BlogService
                     });
                 })
                 ->orderByDesc('published_at')
-                ->paginate($perPage)
+                ->paginate($perPage, ['*'], 'page', $page)
                 ->withQueryString();
         });
     }

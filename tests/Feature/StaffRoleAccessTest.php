@@ -34,6 +34,18 @@ test('staff cannot access team management', function () {
     $this->actingAs($staff)->get('/admin/team/create')->assertForbidden();
 });
 
+test('admin can view the team create page', function () {
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+
+    $this->actingAs($admin)->get('/admin/team/create')->assertOk()->assertDontSee('select id="role"', false);
+});
+
+test('superadmin sees the role field on the team create page', function () {
+    $superadmin = User::factory()->superAdmin()->create();
+
+    $this->actingAs($superadmin)->get('/admin/team/create')->assertOk()->assertSee('select id="role"', false);
+});
+
 test('staff cannot access settings', function () {
     $staff = User::factory()->staff()->create();
 
@@ -101,6 +113,7 @@ test('admin cannot change their own role to staff', function () {
     $response = $this->actingAs($admin)->put(route('admin.team.update', $team), [
         'name' => $admin->name,
         'position' => 'Administrator',
+        'email' => $admin->email,
         'role' => UserRole::Staff->value,
     ]);
 

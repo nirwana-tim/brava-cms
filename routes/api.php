@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\FaqController;
+use App\Http\Controllers\Api\PageSeoController;
 use App\Http\Controllers\Api\PortfolioController;
 use App\Http\Controllers\Api\PromoController;
 use App\Http\Controllers\Api\ServiceController;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
     Route::middleware('throttle:60,1')->group(function () {
         Route::get('/settings', [SettingController::class, 'index']);
+        Route::get('/page-seo', [PageSeoController::class, 'index']);
         Route::get('/categories', [CategoryController::class, 'index']);
         Route::get('/services', [ServiceController::class, 'index']);
         Route::get('/blogs', [BlogController::class, 'index']);

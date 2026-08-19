@@ -2,7 +2,7 @@
 
 > [!IMPORTANT]
 > **Status: IMPLEMENTED / DONE (Selesai & Terverifikasi).**
-> Fitur i18n bilingual ID-EN dengan fallback ke `id` dan dual-slug per locale telah **selesai dieksekusi & teruji 100%** di backend Laravel CMS. Untuk petunjuk konsumsi sisi frontend Next.js, lihat `C:\laragon\www\brava-compro\docs\I18N_BILINGUAL_PLAN.md`.
+> Fitur i18n bilingual ID-EN dengan fallback ke `id` dan dual-slug per locale telah **selesai dieksekusi & teruji 100%** di backend Laravel CMS. Untuk petunjuk konsumsi sisi frontend Next.js, lihat `C:\laragon\www\brava\brava-compro\docs\I18N_BILINGUAL_PLAN.md`.
 
 ---
 

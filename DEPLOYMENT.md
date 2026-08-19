@@ -76,6 +76,38 @@ Pastikan `public/build/` dan `public/manifest.json` ter-update. (Bersihkan dulu 
 
 ---
 
+## 2b. Incremental deploy (git-based)
+
+Kalau server sudah menjalankan git (`git clone`/`git pull` di `/home/USER/brava-cms`), deploy perubahan berikut cukup dengan `git pull`. **`public/build` di-gitignore** → hasil build Vite tidak pernah ikut via git.
+
+### Aturan: kapan perlu `bun run build`?
+
+| Jenis perubahan | Perlu build? | Langkah |
+|---|---|---|
+| PHP / Blade / migration / seeder / routes | ❌ Tidak | `git pull` + refresh cache |
+| `resources/css/*`, `resources/js/*`, `vite.config.*`, `package.json`, atau **class Tailwind baru di Blade** yang belum ada di CSS hasil build | ✅ Ya | `bun run build` lokal, lalu **upload manual** `public/build/` + `public/manifest.json` (atau build di server jika terminal cPanel punya node/bun) |
+
+> Cek cepat apakah ada perubahan asset: `git status --short` → ada file `resources/css`, `resources/js`, `package.json`, `vite.config.*`? Kalau tidak ada → aman tanpa build.
+
+### Runbook backend-only (ganti `bun run build`/upload)
+
+```bash
+cd ~/brava-cms
+git pull
+composer install --no-dev --optimize-autoloader --no-interaction   # hanya jika composer.lock berubah
+php artisan migrate --force                                        # jika ada migration baru
+php artisan db:seed --class=PageSeoSeeder --force                  # seed idempotent (updateOrCreate)
+php artisan optimize:clear
+php artisan config:cache route:cache view:cache event:cache
+```
+
+- `optimize:clear` lalu re-cache wajib karena produksi memakai `config/route/view/event` cache dan Blade berubah.
+- Migration baru wajib `migrate --force` sebelum halaman baru dipakai.
+- Seed bisa dijalankan penuh (`db:seed --force`) — `DatabaseSeeder` idempotent (`firstOrCreate`/`updateOrCreate`).
+- Tambahan route API baru tidak berdampak ke frontend; redeploy `brava-compro` (Vercel) hanya jika mau memakai endpoint baru.
+
+---
+
 ## 3. Upload file ke server
 
 Yang **harus di-upload** ke `/home/USER/brava-cms/`:

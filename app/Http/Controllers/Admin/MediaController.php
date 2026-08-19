@@ -44,11 +44,17 @@ class MediaController extends Controller
         return view('admin.media.index', compact('media', 'collections'));
     }
 
-    public function pickerList(): JsonResponse
+    public function pickerList(Request $request): JsonResponse
     {
         $this->authorize('viewAny', Media::class);
 
-        $media = Media::latest()->limit(60)->get()->map(fn ($item) => [
+        $query = Media::latest();
+
+        if ($collection = $request->query('collection')) {
+            $query->where('collection', $collection);
+        }
+
+        $media = $query->limit(60)->get()->map(fn ($item) => [
             'id' => $item->id,
             'url' => $item->url,
             'name' => $item->name,
