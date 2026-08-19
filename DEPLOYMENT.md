@@ -106,6 +106,36 @@ php artisan config:cache route:cache view:cache event:cache
 - Seed bisa dijalankan penuh (`db:seed --force`) — `DatabaseSeeder` idempotent (`firstOrCreate`/`updateOrCreate`).
 - Tambahan route API baru tidak berdampak ke frontend; redeploy `brava-compro` (Vercel) hanya jika mau memakai endpoint baru.
 
+### Runbook git pull + upload build via FTP (terminal tanpa npm/bun)
+
+Setup yang dipakai di produksi: terminal cPanel bisa `git pull` dan `php artisan`, tapi **tidak bisa** menjalankan `npm install`/`bun run build` → build Vite dikerjakan lokal, hasilnya di-upload manual via FTP.
+
+**Lokal (komputer dev):**
+1. Commit & push: `git add -A && git commit -m "..." && git push`
+2. Build asset: `bun run build` (atau `npm run build`) → regenerasi `public/build/` + `public/manifest.json`.
+
+**Hosting (Terminal cPanel) — tarik source + urus DB:**
+```bash
+cd ~/brava-cms
+git pull
+php artisan migrate --force                          # jika ada migration baru
+php artisan db:seed --class=PageSeoSeeder --force    # jika ada seeder baru
+```
+
+**Upload build via FTP/File Manager** — tujuan `/home/USER/brava-cms/public/`:
+- Hapus isi folder `public/build` lama, lalu upload isi folder `public/build` hasil build lokal.
+- Timpa `public/manifest.json` di level `public/` (level yang sama dengan folder `build`, **bukan** di dalam `public/build/`).
+
+**Hosting (Terminal cPanel) — refresh cache:**
+```bash
+php artisan optimize:clear
+php artisan config:cache route:cache view:cache event:cache
+```
+
+- Urutan `git pull` vs upload build bebas — git tidak menyentuh `public/build` karena di-gitignore.
+- Cek konsistensi manifest: nama file hash di `public/manifest.json` harus ada di dalam folder `public/build`. Jika muncul `Unable to locate file in Vite manifest` → upload build belum selesai atau salah folder.
+- Cek cepat apakah batch ini butuh build: `git status --short` lihat `resources/css`, `resources/js`, `package.json`, `vite.config.*` → tidak ada berarti hanya runbook backend-only di atas.
+
 ---
 
 ## 3. Upload file ke server
