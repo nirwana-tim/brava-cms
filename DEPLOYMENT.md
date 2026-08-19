@@ -123,8 +123,10 @@ php artisan db:seed --class=PageSeoSeeder --force    # jika ada seeder baru
 ```
 
 **Upload build via FTP/File Manager** — tujuan `/home/USER/brava-cms/public/`:
-- Hapus isi folder `public/build` lama, lalu upload isi folder `public/build` hasil build lokal.
-- Timpa `public/manifest.json` di level `public/` (level yang sama dengan folder `build`, **bukan** di dalam `public/build/`).
+- Hapus isi folder `public/build` lama, lalu upload **seluruh isi folder `public/build`** hasil build lokal (`assets/`, `manifest.json`, `fonts-manifest.json`).
+- `manifest.json` Vite ada **di dalam** `public/build/` — bukan di level `public/`. Tidak ada file `public/manifest.json` tersendiri.
+
+> Jangan tertukar dengan `public/site.webmanifest` — itu PWA/web app manifest (file statis yang **di-track git**), otomatis ikut saat `git pull`, dan **bukan** hasil build Vite. Tidak perlu di-upload via FTP.
 
 **Hosting (Terminal cPanel) — refresh cache:**
 ```bash
@@ -133,7 +135,7 @@ php artisan config:cache route:cache view:cache event:cache
 ```
 
 - Urutan `git pull` vs upload build bebas — git tidak menyentuh `public/build` karena di-gitignore.
-- Cek konsistensi manifest: nama file hash di `public/manifest.json` harus ada di dalam folder `public/build`. Jika muncul `Unable to locate file in Vite manifest` → upload build belum selesai atau salah folder.
+- Cek konsistensi manifest: nama file hash di `public/build/manifest.json` harus ada di dalam folder `public/build`. Jika muncul `Unable to locate file in Vite manifest` → upload build belum selesai atau salah folder.
 - Cek cepat apakah batch ini butuh build: `git status --short` lihat `resources/css`, `resources/js`, `package.json`, `vite.config.*` → tidak ada berarti hanya runbook backend-only di atas.
 
 ---
