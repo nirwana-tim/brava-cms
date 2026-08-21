@@ -89,3 +89,17 @@ test('valid values pass validation and are persisted', function () {
         ->and(Setting::where('key', 'adsense_client_id')->value('value'))->toBe('ca-pub-1234567890123456')
         ->and(Setting::where('key', 'google_analytics_id')->value('value'))->toBe('G-ABCDEF123');
 });
+
+test('non translatable json settings keep full payload when id key exists', function () {
+    $schema = Setting::updateOrCreate(['key' => 'organization_schema'], ['value' => '{"id":"org-1","@type":"Organization","name":"Brava"}', 'group' => 'seo', 'type' => 'textarea']);
+    $ga4 = Setting::updateOrCreate(['key' => 'ga4_service_account_key'], ['value' => '{"client_id":"123","private_key":"secret"}', 'group' => 'system', 'type' => 'textarea']);
+
+    expect($schema->fresh()->value)->toBe('{"id":"org-1","@type":"Organization","name":"Brava"}')
+        ->and($ga4->fresh()->value)->toBe('{"client_id":"123","private_key":"secret"}');
+});
+
+test('only translatable shaped json id payload is extracted', function () {
+    $setting = Setting::create(['key' => 'hero_title', 'value' => ['id' => 'Brava', 'en' => 'Brava'], 'group' => 'general', 'type' => 'text']);
+
+    expect($setting->fresh()->value)->toBe('Brava');
+});

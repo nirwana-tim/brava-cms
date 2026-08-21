@@ -86,8 +86,8 @@
                                 </template>
                                 <template x-if="!featured_image">
                                     <div class="w-full rounded-lg overflow-hidden flex items-center justify-center mb-4"
-                                        style="height: 220px; background-color: #E1E1E1; border: 1px solid var(--card-border);">
-                                        <span class="text-6xl font-bold" style="color: #9CA3AF;">{{ mb_strtoupper(mb_substr(trim(old('title.id', $blog->getTranslation('title', 'id', false)) ?: 'B'), 0, 1)) }}</span>
+                                        style="height: 220px; background-color: var(--brand-neutral-600); border: 1px solid var(--card-border);">
+                                        <span class="text-6xl font-bold" style="color: var(--muted-text);">{{ mb_strtoupper(mb_substr(trim(old('title.id', $blog->getTranslation('title', 'id', false)) ?: 'B'), 0, 1)) }}</span>
                                     </div>
                                 </template>
                                 <x-admin.media-picker target="featured_image" collection="blogs" button-class="px-6 py-10 text-base" />
@@ -134,14 +134,14 @@
                             :metaTitleEn="old('meta_title.en', $blog->getTranslation('meta_title', 'en', false))"
                             :metaDescription="old('meta_description.id', $blog->getTranslation('meta_description', 'id', false))"
                             :metaDescriptionEn="old('meta_description.en', $blog->getTranslation('meta_description', 'en', false))"
-                            :metaKeywords="old('meta_keywords.id', $blog->getTranslation('meta_keywords', 'id', false))"
-                            :metaKeywordsEn="old('meta_keywords.en', $blog->getTranslation('meta_keywords', 'en', false))"
                             :ogImage="old('og_image', $blog->og_image)"
                             :ogImageAlt="old('og_image_alt.id', $blog->getTranslation('og_image_alt', 'id', false))"
                             :ogImageAltEn="old('og_image_alt.en', $blog->getTranslation('og_image_alt', 'en', false))"
                             :robotsIndex="old('robots_index', $blog->robots_index)"
                             :robotsFollow="old('robots_follow', $blog->robots_follow)"
-                            :schemaType="old('schema_type', $blog->schema_type ?? 'Article')"
+                            :schemaType="old('schema_type', $blog->schema_type ?? 'BlogPosting')"
+                            :schemaOptions="['Article' => 'Article', 'NewsArticle' => 'NewsArticle', 'BlogPosting' => 'BlogPosting']"
+                            :schemaHint="'BlogPosting (rekomendasi) untuk artikel blog biasa, NewsArticle untuk berita aktual.'"
                         />
                     </div>
                 </div>

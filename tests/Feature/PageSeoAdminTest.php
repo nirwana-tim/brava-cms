@@ -15,7 +15,6 @@ beforeEach(function () {
         'meta_description' => ['id' => 'Deskripsi tentang kami', 'en' => 'About us description'],
         'robots_index' => true,
         'robots_follow' => true,
-        'schema_type' => 'AboutPage',
     ]);
 });
 
@@ -23,10 +22,18 @@ test('staff, admin and super admin can view page seo index', function () {
     foreach ([UserRole::Staff, UserRole::Admin, UserRole::SuperAdmin] as $role) {
         $user = User::factory()->create(['role' => $role]);
 
-        $this->actingAs($user)->get(route('admin.page-seo.index'))
+        $response = $this->actingAs($user)->get(route('admin.page-seo.index'))
             ->assertOk()
             ->assertSee('about')
             ->assertSee('Tentang Kami');
+
+        if ($role === UserRole::SuperAdmin) {
+            $response->assertSee('Edit Defaults')
+                ->assertDontSee('Tidak memiliki izin untuk mengubah pengaturan ini.');
+        } else {
+            $response->assertDontSee('Edit Defaults')
+                ->assertSee('Tidak memiliki izin untuk mengubah pengaturan ini.');
+        }
     }
 });
 
@@ -40,8 +47,7 @@ test('can view page seo edit form', function () {
 
     $this->actingAs($admin)->get(route('admin.page-seo.edit', 'about'))
         ->assertOk()
-        ->assertSee('about')
-        ->assertSee('canonical_url');
+        ->assertSee('about');
 });
 
 test('unknown page key returns 404', function () {
@@ -56,7 +62,6 @@ test('staff, admin and super admin can view page seo detail', function () {
 
         $this->actingAs($user)->get(route('admin.page-seo.show', 'about'))
             ->assertOk()
-            ->assertSee('AboutPage')
             ->assertSee('Tentang Kami')
             ->assertSee('About Us');
     }
@@ -74,8 +79,6 @@ test('can update page seo metadata', function () {
         'meta_description' => ['id' => 'Deskripsi baru', 'en' => 'New description'],
         'og_image' => '/storage/seo/about.jpg',
         'og_image_alt' => ['id' => 'Tentang BRAVA', 'en' => 'About BRAVA'],
-        'canonical_url' => 'https://brava.id/about',
-        'schema_type' => 'AboutPage',
         'robots_index' => '1',
         'robots_follow' => '0',
     ])->assertRedirect(route('admin.page-seo.index'));
@@ -87,8 +90,6 @@ test('can update page seo metadata', function () {
         'meta_description->id' => 'Deskripsi baru',
         'meta_description->en' => 'New description',
         'og_image' => '/storage/seo/about.jpg',
-        'canonical_url' => 'https://brava.id/about',
-        'schema_type' => 'AboutPage',
         'robots_index' => 1,
         'robots_follow' => 0,
     ]);
@@ -106,22 +107,6 @@ test('unchecked robots toggles are saved as false', function () {
         'robots_index' => 0,
         'robots_follow' => 0,
     ]);
-});
-
-test('rejects invalid schema type', function () {
-    $admin = User::factory()->create(['role' => UserRole::Admin]);
-
-    $this->actingAs($admin)->put(route('admin.page-seo.update', 'about'), [
-        'schema_type' => 'BogusPage',
-    ])->assertSessionHasErrors('schema_type');
-});
-
-test('rejects invalid canonical url', function () {
-    $admin = User::factory()->create(['role' => UserRole::Admin]);
-
-    $this->actingAs($admin)->put(route('admin.page-seo.update', 'about'), [
-        'canonical_url' => 'not-a-url',
-    ])->assertSessionHasErrors('canonical_url');
 });
 
 test('guest is redirected from global defaults page', function () {

@@ -50,6 +50,10 @@ class SettingService
                             $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
                         }
 
+                        if ($setting->key === 'default_og_image' && is_string($value) && $value !== '' && ! str_starts_with($value, 'http')) {
+                            $value = url($value);
+                        }
+
                         return [$setting->key => $value];
                     })->all(),
                 ])

@@ -36,7 +36,6 @@ class BlogResource extends JsonResource
             'seo' => [
                 'meta_title' => $this->meta_title ?: $this->title,
                 'meta_description' => $this->meta_description ?: ($this->excerpt ?: str(strip_tags($this->content ?: ''))->limit(160)->toString()),
-                'meta_keywords' => $this->meta_keywords,
                 'og_title' => $this->meta_title ?: $this->title,
                 'og_description' => $this->meta_description ?: ($this->excerpt ?: str(strip_tags($this->content ?: ''))->limit(160)->toString()),
                 'og_image' => ($this->og_image ?: $this->featured_image) ? url($this->og_image ?: $this->featured_image) : null,

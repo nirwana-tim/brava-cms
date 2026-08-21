@@ -24,6 +24,7 @@ class MediaUsageService
         'testimonials' => 'Testimonial',
         'users' => 'User',
         'settings' => 'Setting',
+        'page_seos' => 'Page SEO',
     ];
 
     private const TITLE_COLUMNS = [
@@ -35,6 +36,7 @@ class MediaUsageService
         'testimonials' => 'client_name',
         'users' => 'name',
         'settings' => 'key',
+        'page_seos' => 'page_key',
     ];
 
     /**

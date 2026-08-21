@@ -79,14 +79,6 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                         <div class="space-y-6">
                             <div>
-                                <p class="section-title">Canonical URL</p>
-                                <p style="color: var(--table-text)">{{ $pageSeo->canonical_url ?: 'Otomatis ('.$path.')' }}</p>
-                            </div>
-                            <div>
-                                <p class="section-title">Schema Type</p>
-                                <p style="color: var(--table-text)">{{ $pageSeo->schema_type ?: 'WebPage' }}</p>
-                            </div>
-                            <div>
                                 <p class="section-title">Robots Indexing</p>
                                 <div class="flex items-center gap-1">
                                     @if ($pageSeo->robots_index)
@@ -113,9 +105,9 @@
                                     <img src="{{ $pageSeo->og_image }}" alt="{{ $pageSeo->getTranslation('og_image_alt', 'id', false) ?: $pageSeo->page_key }}" class="w-full object-cover" style="max-height: 200px;">
                                 </div>
                             @else
-                                <div class="mt-2 overflow-hidden rounded-lg shadow-sm" style="width: 100%; max-width: 320px; height: 160px; background-color: #E1E1E1; border: 1px solid var(--card-border);">
+                                <div class="mt-2 overflow-hidden rounded-lg shadow-sm" style="width: 100%; max-width: 320px; height: 160px; background-color: var(--brand-neutral-600); border: 1px solid var(--card-border);">
                                     <div class="w-full h-full flex items-center justify-center">
-                                        <span class="text-xs font-semibold uppercase tracking-wider" style="color: #9CA3AF;">No image (fallback)</span>
+                                        <span class="text-xs font-semibold uppercase tracking-wider" style="color: var(--muted-text);">No image (fallback)</span>
                                     </div>
                                 </div>
                             @endif

@@ -146,8 +146,6 @@
                             :metaTitleEn="old('meta_title.en')"
                             :metaDescription="old('meta_description.id')"
                             :metaDescriptionEn="old('meta_description.en')"
-                            :metaKeywords="old('meta_keywords.id')"
-                            :metaKeywordsEn="old('meta_keywords.en')"
                             :showOgImageAlt="false"
                         />
                     </div>

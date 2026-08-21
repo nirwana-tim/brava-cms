@@ -23,14 +23,14 @@ class Blog extends Model
 
     public array $translatable = [
         'title', 'slug', 'excerpt', 'content',
-        'meta_title', 'meta_description', 'meta_keywords',
+        'meta_title', 'meta_description',
         'featured_image_alt', 'og_image_alt',
     ];
 
     protected $fillable = [
         'author_id', 'title', 'slug', 'excerpt', 'content', 'featured_image',
         'featured_image_alt', 'published_at', 'is_featured', 'status',
-        'meta_title', 'meta_description', 'meta_keywords',
+        'meta_title', 'meta_description',
         'og_image', 'og_image_alt',
         'robots_index', 'robots_follow', 'schema_type',
     ];

@@ -85,8 +85,8 @@
                                 </template>
                                 <template x-if="!featured_image">
                                     <div class="w-full rounded-lg overflow-hidden flex items-center justify-center mb-4"
-                                        style="height: 220px; background-color: #E1E1E1; border: 1px solid var(--card-border);">
-                                        <span class="text-6xl font-bold" style="color: #9CA3AF;">{{ mb_strtoupper(mb_substr(trim(old('title.id') ?: 'B'), 0, 1)) }}</span>
+                                        style="height: 220px; background-color: var(--brand-neutral-600); border: 1px solid var(--card-border);">
+                                        <span class="text-6xl font-bold" style="color: var(--muted-text);">{{ mb_strtoupper(mb_substr(trim(old('title.id') ?: 'B'), 0, 1)) }}</span>
                                     </div>
                                 </template>
                                 <x-admin.media-picker target="featured_image" collection="blogs" button-class="px-6 py-10 text-base" />
@@ -133,14 +133,14 @@
                             :metaTitleEn="old('meta_title.en')"
                             :metaDescription="old('meta_description.id')"
                             :metaDescriptionEn="old('meta_description.en')"
-                            :metaKeywords="old('meta_keywords.id')"
-                            :metaKeywordsEn="old('meta_keywords.en')"
                             :ogImage="old('og_image')"
                             :ogImageAlt="old('og_image_alt.id')"
                             :ogImageAltEn="old('og_image_alt.en')"
                             :robotsIndex="old('robots_index', true)"
                             :robotsFollow="old('robots_follow', true)"
-                            :schemaType="old('schema_type', 'Article')"
+                            :schemaType="old('schema_type', 'BlogPosting')"
+                            :schemaOptions="['Article' => 'Article', 'NewsArticle' => 'NewsArticle', 'BlogPosting' => 'BlogPosting']"
+                            :schemaHint="'BlogPosting (rekomendasi) untuk artikel blog biasa, NewsArticle untuk berita aktual.'"
                         />
                     </div>
                 </div>

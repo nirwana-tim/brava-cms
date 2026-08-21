@@ -64,7 +64,7 @@ test('normal admin sees seo or general branding settings in technical settings c
     $response->assertSee('Brava CMS');
     $response->assertSee('hello@brava.id');
     $response->assertSee('G-ORIGINAL123');
-    $response->assertSee('Untuk perubahan pengaturan ini, silakan hubungi developer.');
+    $response->assertSee('Anda tidak memiliki izin untuk mengubah pengaturan teknis ini.');
 });
 
 test('normal admin does not see adsense rows when adsense is disabled', function () {

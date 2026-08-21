@@ -21,14 +21,14 @@ class PortfolioItem extends Model
 
     public array $translatable = [
         'title', 'slug', 'description',
-        'photo_alt', 'meta_title', 'meta_description', 'meta_keywords', 'og_image_alt',
+        'photo_alt', 'meta_title', 'meta_description', 'og_image_alt',
     ];
 
     protected $fillable = [
         'service_id', 'title', 'slug', 'description',
         'specifications', 'features',
         'client', 'photo', 'photo_alt', 'completed_at', 'is_active',
-        'meta_title', 'meta_description', 'meta_keywords', 'og_image', 'og_image_alt', 'robots_index',
+        'meta_title', 'meta_description', 'og_image', 'og_image_alt', 'robots_index',
         'robots_follow', 'schema_type',
     ];
 
@@ -133,7 +133,12 @@ class PortfolioItem extends Model
         $decoded = json_decode($value, true);
 
         if (is_array($decoded)) {
-            return isset($decoded['en']) && $decoded['en'] !== null ? $decoded['en'] : ($decoded['id'] ?? $value);
+            $locale = app()->getLocale();
+            if ($locale === 'en' && ! empty($decoded['en'])) {
+                return (string) $decoded['en'];
+            }
+
+            return (string) ($decoded['id'] ?? $decoded['en'] ?? $value);
         }
 
         return $value;

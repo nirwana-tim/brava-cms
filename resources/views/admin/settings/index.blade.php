@@ -118,7 +118,7 @@
                                     @endforeach
                                 </div>
                                 <p class="mt-4 text-xs" style="color: var(--flash-error-text)">
-                                    Untuk perubahan pengaturan ini, silakan hubungi developer.
+                                    Anda tidak memiliki izin untuk mengubah pengaturan teknis ini.
                                 </p>
                             </div>
                         </div>

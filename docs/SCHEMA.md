@@ -39,8 +39,6 @@
 | og_image_alt | text | nullable, translatable JSON `{"id","en"}` |
 | robots_index | boolean | default true |
 | robots_follow | boolean | default true |
-| canonical_url | string(255) | nullable |
-| schema_type | string(50) | default WebPage / AboutPage / ContactPage |
 | timestamps | | |
 
 ## Table: `media`
@@ -102,7 +100,6 @@
 | status | string(255) | enum: draft, published, archived; default draft |
 | meta_title | text | nullable, translatable JSON |
 | meta_description | text | nullable, translatable JSON |
-| meta_keywords | text | nullable, translatable JSON |
 | og_image | string(255) | nullable |
 | og_image_alt | text | nullable, translatable JSON |
 | robots_index | boolean | default true |
@@ -123,14 +120,13 @@
 | description | text | nullable, translatable JSON |
 | specifications | json | nullable — [{key, value}] |
 | features | json | nullable — [string] |
-| client | text | nullable, translatable JSON |
+| client | string(255) | nullable, single plain string |
 | photo | string(255) | Cover photo, required |
 | photo_alt | text | nullable, translatable JSON |
 | completed_at | date | nullable |
 | is_active | boolean | default true |
 | meta_title | text | nullable, translatable JSON |
 | meta_description | text | nullable, translatable JSON |
-| meta_keywords | text | nullable, translatable JSON |
 | og_image | string(255) | nullable |
 | og_image_alt | text | nullable, translatable JSON |
 | robots_index | boolean | default true |
@@ -208,7 +204,6 @@
 | is_active | boolean | default true, indexed |
 | meta_title | text | nullable, translatable JSON |
 | meta_description | text | nullable, translatable JSON |
-| meta_keywords | text | nullable, translatable JSON |
 | timestamps | | |
 | softDeletes | | |
 

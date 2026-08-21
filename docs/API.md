@@ -83,10 +83,9 @@ All GET API endpoints accept an optional `?lang=en` or `?lang=id` query paramete
 
 | Param        | Type   | Description                                                   |
 | ------------ | ------ | ------------------------------------------------------------- |
-| `page`     | int    | Page number (default: 1)                                      |
-| `per_page` | int    | Items per page (default: 12, max: 50)                         |
-| `fields`   | string | Comma-separated field names for sparse response               |
-| `sort`     | string | Field to sort by, prefix`-` for DESC (e.g. `-created_at`) |
+| `lang`       | string | Target locale: `id` or `en` (default: `id`)                   |
+| `page`       | int    | Page number (default: 1)                                      |
+| `per_page`   | int    | Items per page (default: 12, max: 100)                        |
 
 ---
 
@@ -112,7 +111,7 @@ Response:
         "seo": {
             "default_meta_title": "Brava CMS",
             "default_meta_description": "...",
-            "default_og_image": "/storage/og-default.jpg",
+            "default_og_image": "https://localhost/storage/og-default.jpg",
             "google_analytics_id": "G-XXXXXXXXXX",
             "google_verification": "...",
             "organization_schema": "{...}"
@@ -141,6 +140,8 @@ Response:
 ```
 
 > **SEO note:** Next.js should use `seo` group for global meta defaults.
+> **Image note:** `default_og_image` is returned as an absolute URL (built from the CMS origin)
+> so the frontend can use it directly in OpenGraph/Twitter metadata without resolving it locally.
 > **AdSense note:** Group `adsense` berisi identitas publik (Publisher ID, slot ID) + flag enable,
 > dibutuhkan frontend untuk memuat script iklan. Edit tetap superadmin-only di CMS; grup `system`
 > (berisi kredensial) tidak pernah di-expose.
@@ -173,9 +174,7 @@ Response:
         "og_image": "http://localhost:8000/storage/seo/about-og.jpg",
         "og_image_alt": "Tentang Kami BRAVA",
         "robots_index": true,
-        "robots_follow": true,
-        "canonical_url": "https://brava.id/about",
-        "schema_type": "AboutPage"
+        "robots_follow": true
     }
 }
 ```
@@ -371,6 +370,10 @@ Response:
         "id": 1,
         "title": "TechCorp Corporate Website",
         "slug": "techcorp-corporate-website",
+        "slugs": {
+            "id": "techcorp-corporate-website",
+            "en": "techcorp-corporate-website-en"
+        },
         "description": "Full description",
         "specifications": [
             { "key": "Material", "value": "Lacoste CVC" },
@@ -378,22 +381,40 @@ Response:
         ],
         "features": ["Nyaman digunakan", "Warna tahan lama"],
         "client": "TechCorp Indonesia",
-        "photo": "/storage/portfolio/cover.jpg",
+        "photo": "https://brava.id/storage/portfolio/cover.jpg",
         "photo_alt": "TechCorp Cover Photo",
-        "featured_image": "/storage/portfolio/cover.jpg",
+        "featured_image": "https://brava.id/storage/portfolio/cover.jpg",
         "completed_at": "2026-05-15",
         "service": {
             "id": 1,
             "title": "Corporate Website Package",
-            "slug": "corporate-website-package"
+            "slug": "corporate-website-package",
+            "slugs": {
+                "id": "corporate-website-package",
+                "en": "corporate-website-package-en"
+            }
         },
         "media": [
             {
                 "id": 10,
-                "url": "/storage/portfolio/gallery1.jpg",
+                "url": "https://brava.id/storage/portfolio/gallery1.jpg",
                 "alt_text": "Detail View 1"
             }
-        ]
+        ],
+        "seo": {
+            "meta_title": "TechCorp Corporate Website | Brava",
+            "meta_description": "Full description",
+            "og_title": "TechCorp Corporate Website",
+            "og_description": "Full description",
+            "og_image": "https://brava.id/storage/portfolio/cover.jpg",
+            "og_image_alt": "TechCorp Cover Photo",
+            "robots_index": true,
+            "robots_follow": true,
+            "schema_type": "CreativeWork",
+            "canonical_url": "https://brava.id/id/portfolio/techcorp-corporate-website"
+        },
+        "created_at": "2026-05-15T00:00:00Z",
+        "updated_at": "2026-05-15T00:00:00Z"
     }
 }
 ```
@@ -488,7 +509,7 @@ Response:
         {
             "type": "category",
             "slug": "technology",
-            "loc": "https://brava.id/blog?category=technology",
+            "loc": "https://brava.id/blogs?category=technology",
             "lastmod": "2026-07-27T10:00:00Z"
         }
     ]

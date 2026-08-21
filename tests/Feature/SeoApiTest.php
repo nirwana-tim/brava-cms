@@ -110,6 +110,7 @@ test('sitemap endpoint returns public content with valid locs', function () {
     Promo::factory()->create(['is_active' => false]);
     $service = Service::factory()->create(['is_active' => true]);
     $category = Category::create(['name' => 'Tech', 'slug' => 'tech', 'type' => 'blog']);
+    $portfolioCategory = Category::create(['name' => 'Web', 'slug' => 'web', 'type' => 'portfolio']);
 
     $response = $this->getJson('/api/v1/sitemap');
 
@@ -120,12 +121,13 @@ test('sitemap endpoint returns public content with valid locs', function () {
         ->and($urls->where('type', 'portfolio'))->toHaveCount(1)
         ->and($urls->where('type', 'promo'))->toHaveCount(1)
         ->and($urls->where('type', 'service'))->toHaveCount(1)
-        ->and($urls->where('type', 'category'))->toHaveCount(1)
+        ->and($urls->where('type', 'category'))->toHaveCount(2)
         ->and($urls->where('type', 'blog')->first()['loc'])->toBe(config('app.frontend_url').'/id/blogs/'.$blog->slug)
         ->and($urls->where('type', 'portfolio')->first()['loc'])->toBe(config('app.frontend_url').'/id/portfolio/'.$portfolio->slug)
         ->and($urls->where('type', 'promo')->first()['loc'])->toBe(config('app.frontend_url').'/id/promos/'.$promo->slug)
         ->and($urls->where('type', 'service')->first()['loc'])->toBe(config('app.frontend_url').'/id/services/'.$service->slug)
-        ->and($urls->where('type', 'category')->first()['loc'])->toBe(config('app.frontend_url').'/id/blog?category=tech');
+        ->and($urls->where('type', 'category')->first()['loc'])->toBe(config('app.frontend_url').'/id/blogs?category=tech')
+        ->and($urls->where('type', 'category')->last()['loc'])->toBe(config('app.frontend_url').'/id/portfolio?category=web');
 });
 
 test('sitemap endpoint is cached and invalidated on content change', function () {

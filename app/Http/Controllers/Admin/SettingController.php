@@ -56,7 +56,7 @@ class SettingController extends Controller
                 Setting::create([
                     'key' => $key,
                     'value' => $value,
-                    'group' => 'general',
+                    'group' => Setting::defaultGroupFor($key),
                     'type' => 'text',
                 ]);
             }

@@ -62,8 +62,7 @@ Storage
 
 API
 
-- REST API
-- Versionless (single namespace)
+- REST API (/api/v1 prefix)
 - Consumed by Next.js public website
 
 Package Manager

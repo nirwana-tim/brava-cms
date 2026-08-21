@@ -216,7 +216,7 @@
                     <div
                         class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full p-0.5 bg-white shadow-md flex items-center justify-center">
                         <div class="w-full h-full rounded-full flex items-center justify-center overflow-hidden"
-                            style="background-color: #13247d;">
+                            style="background-color: var(--sidebar-logo-bg);">
                             @if ($avatar->hasAvatar(Auth::user()->avatar))
                                 <img src="{{ Auth::user()->avatar }}" alt="{{ Auth::user()->name }}"
                                     class="w-full h-full object-cover">

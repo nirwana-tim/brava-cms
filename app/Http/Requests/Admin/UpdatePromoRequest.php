@@ -20,7 +20,7 @@ class UpdatePromoRequest extends FormRequest
     {
         $this->normalizeTranslatableFields([
             'title', 'slug', 'badge_text', 'discount_info', 'description',
-            'image_alt', 'wa_template', 'meta_title', 'meta_description', 'meta_keywords',
+            'image_alt', 'wa_template', 'meta_title', 'meta_description',
         ]);
     }
 
@@ -59,9 +59,6 @@ class UpdatePromoRequest extends FormRequest
             'meta_description' => ['nullable', 'array'],
             'meta_description.id' => ['nullable', 'string', 'max:160'],
             'meta_description.en' => ['nullable', 'string', 'max:160'],
-            'meta_keywords' => ['nullable', 'array'],
-            'meta_keywords.id' => ['nullable', 'string', 'max:255'],
-            'meta_keywords.en' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

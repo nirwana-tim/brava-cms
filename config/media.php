@@ -23,6 +23,7 @@ return [
         'testimonials' => ['avatar'],
         'users' => ['avatar'],
         'settings' => ['value'],
+        'page_seos' => ['og_image'],
     ],
 
 ];

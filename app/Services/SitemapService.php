@@ -88,6 +88,7 @@ class SitemapService
             $category = function (Category $category) use ($frontendUrl, $locale): array {
                 $slug = $category->getTranslation('slug', $locale, false);
                 $seg = empty($slug) ? 'id' : $locale;
+                $segment = $category->type === 'portfolio' ? 'portfolio' : 'blogs';
 
                 return [
                     'type' => 'category',
@@ -96,17 +97,40 @@ class SitemapService
                         'id' => $category->getTranslation('slug', 'id', false) ?: null,
                         'en' => $category->getTranslation('slug', 'en', false) ?: null,
                     ],
-                    'loc' => $frontendUrl.'/'.$seg.'/'.$category->type.'?category='.$category->getTranslation('slug', $seg),
+                    'loc' => $frontendUrl.'/'.$seg.'/'.$segment.'?category='.$category->getTranslation('slug', $seg),
                     'lastmod' => $category->updated_at?->toIso8601String(),
                 ];
             };
 
-            $urls = collect()
+            $staticPages = [
+                '' => null,
+                'about' => null,
+                'services' => null,
+                'blogs' => null,
+                'portfolio' => null,
+                'promos' => null,
+                'contact' => null,
+            ];
+
+            $staticEntries = collect($staticPages)->map(function ($_, string $path) use ($frontendUrl, $locale) {
+                $suffix = $path ? '/'.$path : '';
+
+                return [
+                    'type' => 'static',
+                    'slug' => $path ?: 'home',
+                    'slugs' => [
+                        'id' => $path ?: 'home',
+                        'en' => $path ?: 'home',
+                    ],
+                    'loc' => $frontendUrl.'/'.$locale.$suffix,
+                    'lastmod' => null,
+                ];
+            });
+
+            $urls = collect($staticEntries)
                 ->merge(Blog::query()->published()->get()->map($blog))
                 ->merge(PortfolioItem::query()->active()->get()->map($portfolio))
                 ->merge(Promo::query()->active()->get()->map($promo))
-                ->merge(Service::query()->active()->get()->map($service))
-                ->merge(Category::query()->whereNotNull('type')->get()->map($category))
                 ->values();
 
             return $urls->all();

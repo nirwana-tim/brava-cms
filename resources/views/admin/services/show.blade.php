@@ -77,9 +77,9 @@
                                         class="w-full object-cover" style="max-height: 200px;">
                                 </div>
                             @else
-                                <div class="mt-2 overflow-hidden rounded-lg shadow-sm" style="width: 100%; max-width: 320px; height: 160px; background-color: #E1E1E1; border: 1px solid var(--card-border);">
+                                <div class="mt-2 overflow-hidden rounded-lg shadow-sm" style="width: 100%; max-width: 320px; height: 160px; background-color: var(--brand-neutral-600); border: 1px solid var(--card-border);">
                                     <div class="w-full h-full flex items-center justify-center">
-                                        <span class="text-4xl font-bold" style="color: #9CA3AF;">{{ mb_strtoupper(mb_substr($service->getTranslation('title', 'id', false), 0, 1)) }}</span>
+                                        <span class="text-4xl font-bold" style="color: var(--muted-text);">{{ mb_strtoupper(mb_substr($service->getTranslation('title', 'id', false), 0, 1)) }}</span>
                                     </div>
                                 </div>
                             @endif
@@ -128,9 +128,9 @@
                                         class="w-full object-cover" style="max-height: 200px;">
                                 </div>
                             @else
-                                <div class="mt-2 overflow-hidden rounded-lg shadow-sm" style="width: 100%; max-width: 320px; height: 160px; background-color: #E1E1E1; border: 1px solid var(--card-border);">
+                                <div class="mt-2 overflow-hidden rounded-lg shadow-sm" style="width: 100%; max-width: 320px; height: 160px; background-color: var(--brand-neutral-600); border: 1px solid var(--card-border);">
                                     <div class="w-full h-full flex items-center justify-center">
-                                        <span class="text-4xl font-bold" style="color: #9CA3AF;">{{ mb_strtoupper(mb_substr($service->getTranslation('title', 'en', false) ?: $service->getTranslation('title', 'id', false), 0, 1)) }}</span>
+                                        <span class="text-4xl font-bold" style="color: var(--muted-text);">{{ mb_strtoupper(mb_substr($service->getTranslation('title', 'en', false) ?: $service->getTranslation('title', 'id', false), 0, 1)) }}</span>
                                     </div>
                                 </div>
                             @endif

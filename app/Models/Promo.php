@@ -19,7 +19,7 @@ class Promo extends Model
 
     public array $translatable = [
         'title', 'slug', 'badge_text', 'discount_info', 'description',
-        'image_alt', 'wa_template', 'meta_title', 'meta_description', 'meta_keywords',
+        'image_alt', 'wa_template', 'meta_title', 'meta_description',
     ];
 
     public const DEFAULT_WA_NUMBER = '6281234567890';
@@ -39,7 +39,6 @@ class Promo extends Model
         'is_active',
         'meta_title',
         'meta_description',
-        'meta_keywords',
     ];
 
     protected function casts(): array

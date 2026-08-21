@@ -34,15 +34,8 @@
                     :og-image-alt="$pageSeo->getTranslations('og_image_alt')"
                     :robots-index="$pageSeo->robots_index"
                     :robots-follow="$pageSeo->robots_follow"
-                    :schema-type="$pageSeo->schema_type"
+                    :show-schema-type="false"
                 />
-
-                <div class="mt-4">
-                    <x-input-label for="canonical_url" :value="__('Canonical URL (Override)')" />
-                    <x-text-input id="canonical_url" name="canonical_url" type="url" class="mt-1 block w-full" :value="old('canonical_url', $pageSeo->canonical_url)" placeholder="https://brava.id/about" />
-                    <p class="form-hint mt-1">Kosongkan agar canonical otomatis mengikuti URL halaman ini.</p>
-                    <x-input-error class="mt-2" :messages="$errors->get('canonical_url')" />
-                </div>
 
                 <div class="mt-6 flex items-center gap-4">
                     <x-primary-button>{{ __('Update') }}</x-primary-button>

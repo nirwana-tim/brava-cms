@@ -20,7 +20,7 @@ class UpdateBlogRequest extends FormRequest
     {
         $this->normalizeTranslatableFields([
             'title', 'slug', 'excerpt', 'content',
-            'meta_title', 'meta_description', 'meta_keywords',
+            'meta_title', 'meta_description',
             'featured_image_alt', 'og_image_alt',
         ]);
     }
@@ -63,10 +63,6 @@ class UpdateBlogRequest extends FormRequest
             'meta_description.id' => ['nullable', 'string', 'max:160'],
             'meta_description.en' => ['nullable', 'string', 'max:160'],
 
-            'meta_keywords' => ['nullable', 'array'],
-            'meta_keywords.id' => ['nullable', 'string', 'max:255'],
-            'meta_keywords.en' => ['nullable', 'string', 'max:255'],
-
             'og_image' => $this->imageUrlRule(),
             'og_image_alt' => ['nullable', 'array'],
             'og_image_alt.id' => ['nullable', 'string', 'max:255'],
@@ -74,7 +70,7 @@ class UpdateBlogRequest extends FormRequest
 
             'robots_index' => ['boolean'],
             'robots_follow' => ['boolean'],
-            'schema_type' => ['nullable', 'string', 'max:50'],
+            'schema_type' => ['nullable', 'string', Rule::in(['Article', 'NewsArticle', 'BlogPosting'])],
         ];
     }
 }

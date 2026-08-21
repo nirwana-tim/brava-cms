@@ -22,7 +22,7 @@ class UpdatePortfolioRequest extends FormRequest
         $this->normalizeTranslatableFields([
             'title', 'slug', 'description',
             'photo_alt',
-            'meta_title', 'meta_description', 'meta_keywords', 'og_image_alt',
+            'meta_title', 'meta_description', 'og_image_alt',
         ]);
 
         $this->normalizeLocalizedListFields(['specifications', 'features']);
@@ -77,16 +77,13 @@ class UpdatePortfolioRequest extends FormRequest
             'meta_description' => ['nullable', 'array'],
             'meta_description.id' => ['nullable', 'string', 'max:160'],
             'meta_description.en' => ['nullable', 'string', 'max:160'],
-            'meta_keywords' => ['nullable', 'array'],
-            'meta_keywords.id' => ['nullable', 'string', 'max:255'],
-            'meta_keywords.en' => ['nullable', 'string', 'max:255'],
             'og_image' => $this->imageUrlRule(),
             'og_image_alt' => ['nullable', 'array'],
             'og_image_alt.id' => ['nullable', 'string', 'max:255'],
             'og_image_alt.en' => ['nullable', 'string', 'max:255'],
             'robots_index' => ['boolean'],
             'robots_follow' => ['boolean'],
-            'schema_type' => ['nullable', 'string', 'max:50'],
+            'schema_type' => ['nullable', 'string', Rule::in(['CreativeWork', 'Product', 'WebPage'])],
         ];
     }
 }

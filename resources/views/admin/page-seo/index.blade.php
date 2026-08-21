@@ -12,17 +12,22 @@
         <div class="card-body">
             <div class="card mb-6" style="background: transparent; border: 1px solid var(--card-border)">
                 <div class="card-body">
-                    <div class="flex items-center justify-between gap-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
                             <h3 class="section-title">Global Defaults (Fallback Seluruh Situs)</h3>
                             <p class="text-xs" style="color: var(--muted-text)">Fallback untuk halaman yang tidak punya meta sendiri (root layout &amp; halaman dinamis). Bukan SEO per-halaman — setiap halaman diatur di tabel bawah.</p>
                         </div>
                         @can('update', $defaults['default_meta_title'])
-                            <a href="{{ route('admin.page-seo.defaults') }}">
+                            <a href="{{ route('admin.page-seo.defaults') }}" class="shrink-0">
                                 <x-primary-button>{{ __('Edit Defaults') }}</x-primary-button>
                             </a>
                         @else
-                            <span class="text-xs font-medium px-3 py-1.5 rounded-full badge-inactive">Superadmin only</span>
+                            <div class="shrink-0 inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md" style="background-color: var(--table-header-bg); border: 1px solid var(--card-border); color: var(--muted-text)">
+                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" style="color: var(--brand-primary-500)">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>Tidak memiliki izin untuk mengubah pengaturan ini.</span>
+                            </div>
                         @endcan
                     </div>
                     <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">

@@ -6,7 +6,7 @@
         <div class="rounded-2xl p-6" style="background-color: var(--brand-primary-400)">
             <div class="flex items-center justify-between gap-4">
                 <div>
-                    <p class="text-3xl font-bold" style="color: #ffffff">{{ $stats['services'] }}</p>
+                    <p class="text-3xl font-bold" style="color: var(--btn-primary-text)">{{ $stats['services'] }}</p>
                     <p class="text-sm mt-1" style="color: rgba(255, 255, 255, 0.85)">Services</p>
                 </div>
                 <svg class="w-10 h-10 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -19,7 +19,7 @@
         <div class="rounded-2xl p-6" style="background-color: var(--brand-primary-400)">
             <div class="flex items-center justify-between gap-4">
                 <div>
-                    <p class="text-3xl font-bold" style="color: #ffffff">{{ $stats['blogs'] }}</p>
+                    <p class="text-3xl font-bold" style="color: var(--btn-primary-text)">{{ $stats['blogs'] }}</p>
                     <p class="text-sm mt-1" style="color: rgba(255, 255, 255, 0.85)">Blog Posts</p>
                 </div>
                 <svg class="w-10 h-10 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -32,7 +32,7 @@
         <div class="rounded-2xl p-6" style="background-color: var(--brand-primary-400)">
             <div class="flex items-center justify-between gap-4">
                 <div>
-                    <p class="text-3xl font-bold" style="color: #ffffff">{{ $stats['promos'] }}</p>
+                    <p class="text-3xl font-bold" style="color: var(--btn-primary-text)">{{ $stats['promos'] }}</p>
                     <p class="text-sm mt-1" style="color: rgba(255, 255, 255, 0.85)">Promo</p>
                 </div>
                 <svg class="w-10 h-10 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -47,7 +47,7 @@
         <div class="rounded-2xl p-6" style="background-color: var(--brand-primary-400)">
             <div class="flex items-center justify-between gap-4">
                 <div>
-                    <p class="text-3xl font-bold" style="color: #ffffff">{{ $stats['users'] }}</p>
+                    <p class="text-3xl font-bold" style="color: var(--btn-primary-text)">{{ $stats['users'] }}</p>
                     <p class="text-sm mt-1" style="color: rgba(255, 255, 255, 0.85)">Users</p>
                 </div>
                 <svg class="w-10 h-10 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"

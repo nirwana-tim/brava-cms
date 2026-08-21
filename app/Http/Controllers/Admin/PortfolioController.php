@@ -76,7 +76,6 @@ class PortfolioController extends Controller
 
         if (($categoryIds = $request->input('category_ids')) !== null) {
             $portfolio->categories()->sync($categoryIds);
-            cache()->store('api')->flush();
         }
 
         $this->syncGalleryMedia($portfolio, $request->input('gallery_media_ids'));
@@ -123,8 +122,6 @@ class PortfolioController extends Controller
         }
 
         $this->syncGalleryMedia($portfolio, $request->input('gallery_media_ids'));
-
-        cache()->store('api')->flush();
 
         return redirect()->route('admin.portfolio.index')
             ->with('success', 'Portfolio item updated successfully.');

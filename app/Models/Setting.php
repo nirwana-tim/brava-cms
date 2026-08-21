@@ -38,6 +38,24 @@ class Setting extends Model
     }
 
     /**
+     * Group that a setting key belongs to. Used when a key is submitted via
+     * the admin form but does not exist yet, so it is created in the right
+     * group instead of defaulting to `general`.
+     */
+    public static function defaultGroupFor(string $key): string
+    {
+        return match ($key) {
+            'whatsapp_number', 'address', 'email', 'phone' => 'contact',
+            'facebook_url', 'instagram_url', 'youtube_url', 'tiktok_url', 'x_url', 'linkedin_url' => 'social',
+            'default_meta_title', 'default_meta_description', 'default_og_image',
+            'google_verification', 'organization_schema', 'google_analytics_id' => 'seo',
+            'adsense_enabled', 'adsense_client_id', 'adsense_slot_1', 'adsense_slot_2' => 'adsense',
+            'ga4_property_id', 'ga4_service_account_key' => 'system',
+            default => 'general',
+        };
+    }
+
+    /**
      * Setting keys that are allowed to be created via the admin settings form.
      * Anything outside this list is rejected to prevent arbitrary key creation.
      *
@@ -77,7 +95,7 @@ class Setting extends Model
             if (is_string($raw) && str_starts_with(ltrim($raw), '{')) {
                 $decoded = json_decode($raw, true);
 
-                if (is_array($decoded) && array_key_exists('id', $decoded)) {
+                if (is_array($decoded) && array_key_exists('id', $decoded) && array_diff(array_keys($decoded), ['id', 'en']) === []) {
                     return $decoded['id'];
                 }
             }

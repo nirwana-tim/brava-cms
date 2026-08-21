@@ -18,7 +18,6 @@ class PageSeoApiTest extends TestCase
             'meta_description' => ['id' => 'Deskripsi tentang kami', 'en' => 'About us description'],
             'robots_index' => true,
             'robots_follow' => true,
-            'schema_type' => 'AboutPage',
         ]);
 
         $response = $this->getJson('/api/v1/page-seo?page=about&lang=id');

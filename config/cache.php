@@ -2,10 +2,12 @@
 
 use App\Enums\PostStatus;
 use App\Enums\UserRole;
+use App\Models\ActivityLog;
 use App\Models\Blog;
 use App\Models\Category;
 use App\Models\Faq;
 use App\Models\Media;
+use App\Models\PageSeo;
 use App\Models\PortfolioItem;
 use App\Models\Promo;
 use App\Models\Service;
@@ -169,6 +171,8 @@ return [
         User::class,
         Category::class,
         Media::class,
+        PageSeo::class,
+        ActivityLog::class,
         PortfolioItem::class,
         Service::class,
         Promo::class,

@@ -214,14 +214,14 @@
                             :metaTitleEn="old('meta_title.en')"
                             :metaDescription="old('meta_description.id')"
                             :metaDescriptionEn="old('meta_description.en')"
-                            :metaKeywords="old('meta_keywords.id')"
-                            :metaKeywordsEn="old('meta_keywords.en')"
                             :ogImage="old('og_image')"
                             :ogImageAlt="old('og_image_alt.id')"
                             :ogImageAltEn="old('og_image_alt.en')"
                             :robotsIndex="old('robots_index', true)"
                             :robotsFollow="old('robots_follow', true)"
-                            :schemaType="old('schema_type', 'WebPage')"
+                            :schemaType="old('schema_type', 'CreativeWork')"
+                            :schemaOptions="['CreativeWork' => 'CreativeWork', 'Product' => 'Product', 'WebPage' => 'WebPage']"
+                            :schemaHint="'CreativeWork (default) untuk item portofolio, Product untuk produk komersial, WebPage untuk halaman statis.'"
                         />
                     </div>
                 </div>

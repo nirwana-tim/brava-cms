@@ -3,15 +3,27 @@
     'metaTitleEn' => null,
     'metaDescription' => null,
     'metaDescriptionEn' => null,
-    'metaKeywords' => null,
-    'metaKeywordsEn' => null,
     'ogImage' => null,
     'ogImageAlt' => null,
     'ogImageAltEn' => null,
     'showOgImageAlt' => true,
+    'showSchemaType' => true,
     'robotsIndex' => true,
     'robotsFollow' => true,
     'schemaType' => 'WebPage',
+    'schemaOptions' => [
+        'WebPage' => 'WebPage',
+        'AboutPage' => 'AboutPage',
+        'ContactPage' => 'ContactPage',
+        'Article' => 'Article',
+        'NewsArticle' => 'NewsArticle',
+        'BlogPosting' => 'BlogPosting',
+        'CreativeWork' => 'CreativeWork',
+        'Product' => 'Product',
+        'Offer' => 'Offer',
+        'Service' => 'Service',
+    ],
+    'schemaHint' => null,
 ])
 
 <details class="mt-4 border rounded-lg p-4" style="border-color: var(--table-border)">
@@ -47,20 +59,6 @@
         </div>
         <p class="form-hint mt-1">Optimal 150–160 karakter (termasuk spasi). Otomatis menjadi deskripsi share WhatsApp/sosmed (OG Description) dan mengikuti ringkasan artikel jika dikosongkan.</p>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-                <x-input-label for="meta_keywords_id" :value="__('Meta Keywords (ID)')" />
-                <x-text-input id="meta_keywords_id" name="meta_keywords[id]" type="text" class="mt-1 block w-full" :value="is_array($metaKeywords) ? ($metaKeywords['id'] ?? '') : (old('meta_keywords.id') ?: $metaKeywords)" placeholder="Dipisah koma" />
-                <x-input-error class="mt-2" :messages="$errors->get('meta_keywords.id')" />
-            </div>
-            <div>
-                <x-input-label for="meta_keywords_en" :value="__('Meta Keywords (EN)')" />
-                <x-text-input id="meta_keywords_en" name="meta_keywords[en]" type="text" class="mt-1 block w-full" :value="old('meta_keywords.en', is_array($metaKeywords) ? ($metaKeywords['en'] ?? '') : $metaKeywordsEn)" placeholder="Comma separated" />
-                <x-input-error class="mt-2" :messages="$errors->get('meta_keywords.en')" />
-            </div>
-        </div>
-        <p class="form-hint mt-1">Daftar 3–5 kata/frasa kunci relevan, dipisahkan koma.</p>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t" style="border-color: var(--table-border)">
             <div>
                 <x-input-label for="og_image" :value="__('OpenGraph Custom Image')" />
@@ -69,20 +67,20 @@
                 <x-input-error class="mt-2" :messages="$errors->get('og_image')" />
             </div>
 
-            <div>
-                <x-input-label for="schema_type" :value="__('Schema Type (JSON-LD)')" />
-                <select id="schema_type" name="schema_type" class="form-select mt-1">
-                    <option value="WebPage" {{ old('schema_type', $schemaType) === 'WebPage' ? 'selected' : '' }}>WebPage</option>
-                    <option value="AboutPage" {{ old('schema_type', $schemaType) === 'AboutPage' ? 'selected' : '' }}>AboutPage</option>
-                    <option value="ContactPage" {{ old('schema_type', $schemaType) === 'ContactPage' ? 'selected' : '' }}>ContactPage</option>
-                    <option value="Article" {{ old('schema_type', $schemaType) === 'Article' ? 'selected' : '' }}>Article</option>
-                    <option value="NewsArticle" {{ old('schema_type', $schemaType) === 'NewsArticle' ? 'selected' : '' }}>NewsArticle</option>
-                    <option value="Product" {{ old('schema_type', $schemaType) === 'Product' ? 'selected' : '' }}>Product</option>
-                    <option value="Offer" {{ old('schema_type', $schemaType) === 'Offer' ? 'selected' : '' }}>Offer</option>
-                    <option value="Service" {{ old('schema_type', $schemaType) === 'Service' ? 'selected' : '' }}>Service</option>
-                </select>
-                <x-input-error class="mt-2" :messages="$errors->get('schema_type')" />
-            </div>
+            @if ($showSchemaType)
+                <div>
+                    <x-input-label for="schema_type" :value="__('Schema Type (JSON-LD)')" />
+                    <select id="schema_type" name="schema_type" class="form-select mt-1">
+                        @foreach ($schemaOptions as $optionValue => $optionLabel)
+                            <option value="{{ $optionValue }}" {{ old('schema_type', $schemaType) === $optionValue ? 'selected' : '' }}>{{ $optionLabel }}</option>
+                        @endforeach
+                    </select>
+                    @if ($schemaHint)
+                        <p class="form-hint mt-1">{{ $schemaHint }}</p>
+                    @endif
+                    <x-input-error class="mt-2" :messages="$errors->get('schema_type')" />
+                </div>
+            @endif
         </div>
         <p class="form-hint mt-1">Optimal rasio 1.91:1 (1200x630 px) untuk banner sosmed. Otomatis mengikuti gambar utama jika dikosongkan.</p>
 

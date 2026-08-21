@@ -34,16 +34,7 @@ Setiap form pembuatan atau perbaikan konten (Blog, Portfolio, dan Promo) dilengk
 
 ---
 
-### C. Meta Keywords
-- **Fungsi Utama**: Menyimpan daftar kata kunci atau frasa topik yang berkaitan erat dengan konten.
-- **Rekomendasi Isi**: **3–5 kata/frasa kunci relevan**, dipisahkan dengan tanda koma (e.g., `seragam kantor, konveksi seragam, baju tambang`).
-- **Catatan Penting (Mengapa Tetap Diperlukan?)**:
-  - Mesin pencari tradisional seperti Google saat ini tidak menjadikan `meta keywords` sebagai faktor utama pemeringkatan.
-  - Namun, di Brava CMS, kolom ini sangat berguna untuk **pelabelan topik internal (taxonomy tagging)**, membantu **AI Search / Bot Indexer** mengelompokkan konteks halaman, serta memudahkan pencarian lokal dan sistem integrasi di masa depan.
-
----
-
-### D. OG Image & OG Image Alt (Open Graph)
+### C. OG Image & OG Image Alt (Open Graph)
 - **Fungsi Utama**: Menentukan gambar ilustrasi dan alt text saat halaman dibagikan ke WhatsApp, Facebook, LinkedIn, X, atau platform chat lainnya.
 - **Rekomendasi Ukuran**: **1200 x 630 piksel** (aspek rasio **1.91:1**).
 - **Tips Optimalisasi Gambar & Alt Text**:
@@ -54,7 +45,7 @@ Setiap form pembuatan atau perbaikan konten (Blog, Portfolio, dan Promo) dilengk
 
 ---
 
-### E. Robots Index & Robots Follow
+### D. Robots Index & Robots Follow
 - **Robots Index (`true/false`)**:
   - **Aktif (`true` / Default)**: Mengizinkan mesin pencari (Google, Bing, dll.) untuk mengindeks halaman ini agar tampil di hasil pencarian.
   - **Non-aktif (`false` / `noindex`)**: Gunakan hanya untuk halaman yang sifatnya sementara, draft, duplikat, atau halaman promosi internal yang tidak ingin ditemukan publik melalui mesin pencari.
@@ -64,7 +55,7 @@ Setiap form pembuatan atau perbaikan konten (Blog, Portfolio, dan Promo) dilengk
 
 ---
 
-### F. Schema Type (Structured Data / JSON-LD)
+### E. Schema Type (Structured Data / JSON-LD)
 - **Fungsi Utama**: Menentukan standar tipe data terstruktur schema.org agar mesin pencari memahami konteks halaman dan dapat menampilkan **Rich Snippets** (tampilan interaktif/terstruktur di SERP).
 - **Rekomendasi per Modul**:
   - **Blog**: Gunakan `Article` atau `BlogPosting`.

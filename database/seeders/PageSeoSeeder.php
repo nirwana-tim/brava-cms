@@ -22,7 +22,6 @@ class PageSeoSeeder extends Seeder
                 ],
                 'robots_index' => true,
                 'robots_follow' => true,
-                'schema_type' => 'WebPage',
             ],
             [
                 'page_key' => 'about',
@@ -36,7 +35,6 @@ class PageSeoSeeder extends Seeder
                 ],
                 'robots_index' => true,
                 'robots_follow' => true,
-                'schema_type' => 'AboutPage',
             ],
             [
                 'page_key' => 'services',
@@ -50,7 +48,6 @@ class PageSeoSeeder extends Seeder
                 ],
                 'robots_index' => true,
                 'robots_follow' => true,
-                'schema_type' => 'WebPage',
             ],
             [
                 'page_key' => 'portfolio',
@@ -64,7 +61,6 @@ class PageSeoSeeder extends Seeder
                 ],
                 'robots_index' => true,
                 'robots_follow' => true,
-                'schema_type' => 'WebPage',
             ],
             [
                 'page_key' => 'contact',
@@ -78,7 +74,6 @@ class PageSeoSeeder extends Seeder
                 ],
                 'robots_index' => true,
                 'robots_follow' => true,
-                'schema_type' => 'ContactPage',
             ],
             [
                 'page_key' => 'blogs',
@@ -92,7 +87,6 @@ class PageSeoSeeder extends Seeder
                 ],
                 'robots_index' => true,
                 'robots_follow' => true,
-                'schema_type' => 'WebPage',
             ],
             [
                 'page_key' => 'promos',
@@ -106,7 +100,6 @@ class PageSeoSeeder extends Seeder
                 ],
                 'robots_index' => true,
                 'robots_follow' => true,
-                'schema_type' => 'WebPage',
             ],
         ];
 

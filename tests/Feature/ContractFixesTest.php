@@ -33,6 +33,30 @@ test('api settings endpoint returns grouped structure with boolean cast', functi
         ->assertJsonPath('data.general.site_name', 'Brava CMS');
 });
 
+test('api settings endpoint exposes default og image as absolute url', function () {
+    Setting::updateOrCreate(
+        ['key' => 'default_og_image'],
+        ['value' => '/storage/seo/global-og.jpg', 'group' => 'seo', 'type' => 'text']
+    );
+
+    $response = $this->getJson('/api/v1/settings');
+
+    $response->assertOk()
+        ->assertJsonPath('data.seo.default_og_image', url('/storage/seo/global-og.jpg'));
+});
+
+test('api settings endpoint keeps absolute default og image untouched', function () {
+    Setting::updateOrCreate(
+        ['key' => 'default_og_image'],
+        ['value' => 'https://cdn.example.com/og.jpg', 'group' => 'seo', 'type' => 'text']
+    );
+
+    $response = $this->getJson('/api/v1/settings');
+
+    $response->assertOk()
+        ->assertJsonPath('data.seo.default_og_image', 'https://cdn.example.com/og.jpg');
+});
+
 test('api settings endpoint does not expose sensitive groups publicly', function () {
     Setting::updateOrCreate(
         ['key' => 'adsense_client_id'],

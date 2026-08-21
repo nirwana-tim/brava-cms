@@ -21,8 +21,6 @@ class PageSeo extends Model
         'og_image_alt',
         'robots_index',
         'robots_follow',
-        'canonical_url',
-        'schema_type',
     ];
 
     protected function casts(): array

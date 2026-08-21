@@ -44,7 +44,6 @@ class PromoResource extends JsonResource
             'seo' => [
                 'meta_title' => $this->meta_title ?: $this->title,
                 'meta_description' => $this->meta_description ?: str(strip_tags($this->description ?: ''))->limit(160)->toString(),
-                'meta_keywords' => $this->meta_keywords,
                 'og_title' => $this->meta_title ?: $this->title,
                 'og_description' => $this->meta_description ?: str(strip_tags($this->description ?: ''))->limit(160)->toString(),
                 'og_image' => $this->image ? url($this->image) : null,
