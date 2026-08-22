@@ -117,8 +117,10 @@ class PortfolioController extends Controller
             }
         }
 
-        if (($categoryIds = $request->input('category_ids')) !== null) {
-            $portfolio->categories()->sync($categoryIds);
+        if ($request->has('category_ids')) {
+            $portfolio->categories()->sync($request->input('category_ids') ?? []);
+        } else {
+            $portfolio->categories()->sync([]);
         }
 
         $this->syncGalleryMedia($portfolio, $request->input('gallery_media_ids'));

@@ -34,7 +34,7 @@ class FaqController extends Controller
             });
         }
 
-        $faqs = $query->latest()->paginate(15)->withQueryString();
+        $faqs = $query->orderBy('sort_order')->orderBy('id')->paginate(15)->withQueryString();
 
         return view('admin.faqs.index', compact('faqs'));
     }

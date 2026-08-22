@@ -39,7 +39,7 @@ class TestimonialController extends Controller
             });
         }
 
-        $testimonials = $query->latest()->paginate(15)->withQueryString();
+        $testimonials = $query->orderBy('sort_order')->orderBy('id')->paginate(15)->withQueryString();
 
         return view('admin.testimonials.index', compact('testimonials'));
     }
