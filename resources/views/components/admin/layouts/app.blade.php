@@ -278,7 +278,7 @@
 
                 {{-- Right actions --}}
                 <div class="flex items-center gap-4">
-                    <a href="{{ url('/') }}" target="_blank" rel="noopener noreferrer"
+                    <a href="{{ config('app.frontend_url', url('/')) }}" target="_blank" rel="noopener noreferrer"
                         style="color: var(--muted-text)" title="View site">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

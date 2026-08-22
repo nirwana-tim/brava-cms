@@ -37,7 +37,7 @@ class ServiceController extends Controller
             });
         }
 
-        $services = $query->latest()->paginate(15)->withQueryString();
+        $services = $query->orderBy('sort_order')->orderBy('id')->paginate(15)->withQueryString();
 
         return view('admin.services.index', compact('services'));
     }
