@@ -50,8 +50,17 @@ class MediaController extends Controller
 
         $query = Media::latest();
 
-        if ($collection = $request->query('collection')) {
+        $collection = $request->query('collection');
+        if ($collection && $collection !== 'all') {
             $query->where('collection', $collection);
+        }
+
+        if ($search = trim((string) $request->query('search'))) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('alt_text', 'like', "%{$search}%")
+                    ->orWhere('file_name', 'like', "%{$search}%");
+            });
         }
 
         $media = $query->limit(60)->get()->map(fn ($item) => [
@@ -59,6 +68,7 @@ class MediaController extends Controller
             'url' => $item->url,
             'name' => $item->name,
             'alt_text' => $item->alt_text,
+            'collection' => $item->collection,
             'mime_type' => $item->mime_type,
             'size' => number_format($item->size / 1024, 1).' KB',
             'is_image' => str_starts_with($item->mime_type, 'image/'),
@@ -94,7 +104,7 @@ class MediaController extends Controller
                 'disk' => 'public',
                 'path' => $path,
                 'alt_text' => $request->alt_text,
-                'collection' => $request->collection,
+                'collection' => $request->collection ?: 'general',
             ]);
         } catch (\Throwable $e) {
             Storage::disk('public')->delete($path);

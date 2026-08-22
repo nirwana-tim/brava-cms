@@ -80,6 +80,16 @@
                     </div>
 
                     <div>
+                        <x-input-label for="collection" :value="__('Collection')" />
+                        <select id="collection" name="collection" class="form-select mt-1 block w-full">
+                            @foreach (config('media.collections', ['general' => 'General', 'services' => 'Services', 'portfolio' => 'Portfolio', 'blogs' => 'Blogs', 'promos' => 'Promos', 'seo' => 'Page SEO']) as $key => $label)
+                                <option value="{{ $key }}" {{ old('collection', $medium->collection ?? 'general') === $key ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                        <x-input-error class="mt-2" :messages="$errors->get('collection')" />
+                    </div>
+
+                    <div>
                         <x-input-label for="alt_text" :value="__('Alt Text')" />
                         <x-text-input id="alt_text" name="alt_text" type="text" class="mt-1 block w-full" :value="old('alt_text', $medium->alt_text)" />
                         <p class="form-hint">Describes the image for accessibility and SEO. Screen readers and search engines use this text.</p>

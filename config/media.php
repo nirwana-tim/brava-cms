@@ -26,4 +26,13 @@ return [
         'page_seos' => ['og_image'],
     ],
 
+    'collections' => [
+        'general' => 'General',
+        'services' => 'Services',
+        'portfolio' => 'Portfolio',
+        'blogs' => 'Blogs',
+        'promos' => 'Promos',
+        'seo' => 'Page SEO',
+    ],
+
 ];

@@ -44,7 +44,11 @@
 
                     <div>
                         <x-input-label for="collection" :value="__('Collection')" />
-                        <x-text-input id="collection" name="collection" type="text" class="mt-1 block w-full" :value="old('collection')" placeholder="e.g., products, blogs, general" />
+                        <select id="collection" name="collection" class="form-select mt-1 block w-full">
+                            @foreach (config('media.collections', ['general' => 'General', 'services' => 'Services', 'portfolio' => 'Portfolio', 'blogs' => 'Blogs', 'promos' => 'Promos', 'seo' => 'Page SEO']) as $key => $label)
+                                <option value="{{ $key }}" {{ old('collection', 'general') === $key ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
+                        </select>
                         <x-input-error class="mt-2" :messages="$errors->get('collection')" />
                     </div>
                 </div>

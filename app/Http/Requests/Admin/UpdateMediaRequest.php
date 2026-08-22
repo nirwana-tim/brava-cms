@@ -15,6 +15,7 @@ class UpdateMediaRequest extends FormRequest
     {
         return [
             'alt_text' => ['nullable', 'string', 'max:255'],
+            'collection' => ['nullable', 'string', 'max:255'],
         ];
     }
 }
