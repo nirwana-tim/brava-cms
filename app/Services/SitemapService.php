@@ -131,6 +131,8 @@ class SitemapService
                 ->merge(Blog::query()->published()->get()->map($blog))
                 ->merge(PortfolioItem::query()->active()->get()->map($portfolio))
                 ->merge(Promo::query()->active()->get()->map($promo))
+                ->merge(Service::query()->active()->get()->map($service))
+                ->merge(Category::all()->map($category))
                 ->values();
 
             return $urls->all();

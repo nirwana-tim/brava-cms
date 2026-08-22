@@ -57,9 +57,19 @@
                 </div>
                 <p class="form-hint mt-1">Deskripsi standar untuk hasil pencarian Google saat halaman tidak punya deskripsi khusus.</p>
 
-                <div class="mt-4">
+                <div class="mt-4" x-data="{ defaultOgImageUrl: @js(old('default_og_image', $defaults['default_og_image']->value)) }">
                     <x-input-label for="default_og_image" :value="__('Default OpenGraph Image')" />
                     <input type="hidden" name="default_og_image" id="default_og_image" value="{{ old('default_og_image', $defaults['default_og_image']->value) }}" />
+                    <template x-if="defaultOgImageUrl">
+                        <div class="mb-3">
+                            <img :src="defaultOgImageUrl" alt="Default OG Preview" class="rounded-lg border object-cover mb-1.5" style="max-width:320px;max-height:180px;border-color:var(--table-border)">
+                            <button type="button" @click="defaultOgImageUrl = ''; document.getElementById('default_og_image').value = ''"
+                                class="text-xs text-red-500 hover:text-red-700 flex items-center gap-1 cursor-pointer">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                Hapus Gambar
+                            </button>
+                        </div>
+                    </template>
                     <x-admin.media-picker target="default_og_image" collection="seo" />
                     <p class="form-hint mt-1">Gambar OG default untuk halaman yang tidak punya gambar sendiri. Rasio ideal 1200x630 px.</p>
                     <x-input-error class="mt-2" :messages="$errors->get('default_og_image')" />

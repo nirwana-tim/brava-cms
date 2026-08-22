@@ -60,9 +60,19 @@
         <p class="form-hint mt-1">Optimal 150–160 karakter (termasuk spasi). Otomatis menjadi deskripsi share WhatsApp/sosmed (OG Description) dan mengikuti ringkasan artikel jika dikosongkan.</p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t" style="border-color: var(--table-border)">
-            <div>
+            <div x-data="{ ogImageUrl: @js(old('og_image', $ogImage)) }">
                 <x-input-label for="og_image" :value="__('OpenGraph Custom Image')" />
                 <input type="hidden" name="og_image" id="og_image" value="{{ old('og_image', $ogImage) }}" />
+                <template x-if="ogImageUrl">
+                    <div class="mb-3">
+                        <img :src="ogImageUrl" alt="OG Preview" class="rounded-lg border object-cover mb-1.5" style="max-width:320px;max-height:180px;border-color:var(--table-border)">
+                        <button type="button" @click="ogImageUrl = ''; document.getElementById('og_image').value = ''"
+                            class="text-xs text-red-500 hover:text-red-700 flex items-center gap-1 cursor-pointer">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            Hapus Gambar
+                        </button>
+                    </div>
+                </template>
                 <x-admin.media-picker target="og_image" collection="seo" />
                 <x-input-error class="mt-2" :messages="$errors->get('og_image')" />
             </div>

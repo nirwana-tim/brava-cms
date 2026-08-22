@@ -136,14 +136,14 @@ test('sitemap endpoint is cached and invalidated on content change', function ()
     $first = $this->getJson('/api/v1/sitemap')->json('data');
     $second = $this->getJson('/api/v1/sitemap')->json('data');
 
-    expect(count($first))->toBe(1)
-        ->and(count($second))->toBe(1);
+    expect(count($first))->toBe(8)
+        ->and(count($second))->toBe(8);
 
     Blog::factory()->published()->create();
     Cache::store('api')->forget('sitemap.all.id');
 
     $third = $this->getJson('/api/v1/sitemap')->json('data');
-    expect(count($third))->toBe(2);
+    expect(count($third))->toBe(9);
 });
 
 test('portfolio admin can store robots follow and schema type', function () {
