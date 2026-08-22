@@ -27,15 +27,15 @@
     <div class="flex h-screen overflow-hidden">
 
         {{-- Sidebar Backdrop (mobile) --}}
-        <div x-show="sidebarOpen" x-transition:enter="transition-opacity ease-linear duration-300"
+        <div x-cloak x-show="sidebarOpen" x-transition:enter="transition-opacity ease-linear duration-300"
             x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
             x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0" class="fixed inset-0 z-40 bg-gray-900/50 lg:hidden"
             @click="sidebarOpen = false"></div>
 
         {{-- Sidebar --}}
-        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-            class="fixed inset-y-0 left-0 z-50 w-64 lg:static lg:translate-x-0 lg:z-auto flex flex-col transition-transform duration-300 ease-in-out"
+        <aside :class="{ 'translate-x-0': sidebarOpen, '-translate-x-full': !sidebarOpen }"
+            class="-translate-x-full fixed inset-y-0 left-0 z-50 w-64 lg:static lg:translate-x-0 lg:z-auto flex flex-col transition-transform duration-300 ease-in-out"
             style="background-color: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border)">
             {{-- Sidebar Header --}}
             <div class="flex items-center justify-between h-16 px-6 border-b"
