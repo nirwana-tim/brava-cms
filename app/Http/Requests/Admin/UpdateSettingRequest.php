@@ -38,6 +38,8 @@ class UpdateSettingRequest extends FormRequest
         'organization_schema' => ['json'],
         'default_og_image' => ['url'],
         'google_verification' => ['string', 'max:255'],
+        'bing_verification' => ['string', 'max:255'],
+        'custom_webmaster_tags' => ['string', 'max:5000'],
     ];
 
     public function authorize(): bool

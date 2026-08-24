@@ -25,6 +25,8 @@ class SettingSeeder extends Seeder
             ['key' => 'default_meta_description', 'value' => 'Brava CMS is a modern headless CMS built with Laravel, designed for speed and SEO.', 'group' => 'seo', 'type' => 'textarea'],
             ['key' => 'default_og_image', 'value' => '', 'group' => 'seo', 'type' => 'text'],
             ['key' => 'google_verification', 'value' => '', 'group' => 'seo', 'type' => 'text'],
+            ['key' => 'bing_verification', 'value' => '', 'group' => 'seo', 'type' => 'text'],
+            ['key' => 'custom_webmaster_tags', 'value' => '', 'group' => 'seo', 'type' => 'textarea'],
             ['key' => 'organization_schema', 'value' => '', 'group' => 'seo', 'type' => 'textarea'],
             ['key' => 'google_analytics_id', 'value' => '', 'group' => 'seo', 'type' => 'text'],
             ['key' => 'adsense_enabled', 'value' => '0', 'group' => 'adsense', 'type' => 'boolean'],
