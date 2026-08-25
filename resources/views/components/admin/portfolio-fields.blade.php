@@ -46,11 +46,11 @@
         </div>
 
         <button type="button" @click="addSpec()"
-            class="mt-3 inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium btn-edit">
+            class="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium btn-edit">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
-            + Tambah Spesifikasi
+            Tambah Spesifikasi
         </button>
         <x-input-error class="mt-2" :messages="$errors?->get('specifications')" />
     </div>
@@ -58,7 +58,7 @@
     <div class="border-t pt-4 mt-4" style="border-color: var(--card-header-border)">
         <x-input-label :value="__('Fitur Produk')" />
         <p class="text-xs mb-3" style="color: var(--muted-text)">
-            Daftar fitur produk ({{ $locale === 'id' ? 'Bahasa Indonesia' : 'English' }}). Klik "+ Tambah Fitur" untuk menambah item.
+            Daftar fitur produk ({{ $locale === 'id' ? 'Bahasa Indonesia' : 'English' }}). Klik "Tambah Fitur" untuk menambah item.
         </p>
 
         <div class="space-y-2">
@@ -82,11 +82,11 @@
         </div>
 
         <button type="button" @click="addFeature()"
-            class="mt-3 inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium btn-edit">
+            class="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium btn-edit">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
-            + Tambah Fitur
+            Tambah Fitur
         </button>
         <x-input-error class="mt-2" :messages="$errors?->get('features')" />
     </div>

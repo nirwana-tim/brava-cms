@@ -113,6 +113,7 @@
                         photoUrl: @js(old('photo')),
                         photoAlt: @js(old('photo_alt.id')),
                         galleryItems: [],
+                        isUploading: false,
                         get galleryIds() { return this.galleryItems.map(i => i.id).join(',') },
                         addGallery(id, url) { if (this.galleryItems.length < 4) this.galleryItems.push({ id, url }) },
                         removeGallery(id) { this.galleryItems = this.galleryItems.filter(i => i.id !== id) },
@@ -120,6 +121,7 @@
                             const file = event.target.files[0];
                             event.target.value = '';
                             if (!file) return;
+                            this.isUploading = true;
                             const formData = new FormData();
                             formData.append('file', file);
                             formData.append('collection', 'portfolio');
@@ -129,11 +131,14 @@
                                     headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
                                     body: formData,
                                 });
+                                if (!res.ok) throw new Error('Upload failed');
                                 const data = await res.json();
                                 this.addGallery(data.id, data.url);
                             } catch (e) {
                                 console.error('Gallery upload failed', e);
                                 alert('Upload gagal. Silakan coba lagi.');
+                            } finally {
+                                this.isUploading = false;
                             }
                         },
                     }">
@@ -170,20 +175,38 @@
                                             </button>
                                         </div>
                                     </template>
+                                    <template x-if="isUploading">
+                                        <div class="relative flex flex-col items-center justify-center rounded-lg border border-dashed text-xs p-2 animate-pulse"
+                                            style="width:96px;height:72px;border-color:var(--focus-ring);background-color:rgba(59, 130, 246, 0.08);color:var(--muted-text)">
+                                            <svg class="w-5 h-5 animate-spin mb-1 text-blue-500" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            <span style="font-size: 10px; font-weight: 500;">Uploading...</span>
+                                        </div>
+                                    </template>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <input type="file" accept="image/*" id="gallery-file-input" class="hidden"
                                         @change="uploadGallery($event)"
-                                        x-bind:disabled="!photoUrl || galleryItems.length >= 4">
+                                        x-bind:disabled="!photoUrl || galleryItems.length >= 4 || isUploading">
                                     <button type="button" @click="document.getElementById('gallery-file-input').click()"
-                                        class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium btn-edit"
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium btn-edit transition-all"
                                         id="gallery-upload-btn"
-                                        x-bind:disabled="!photoUrl || galleryItems.length >= 4"
-                                        x-bind:class="(!photoUrl || galleryItems.length >= 4) && 'opacity-50 cursor-not-allowed'">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/>
-                                        </svg>
-                                        Upload Gallery Photo
+                                        x-bind:disabled="!photoUrl || galleryItems.length >= 4 || isUploading"
+                                        x-bind:class="(!photoUrl || galleryItems.length >= 4 || isUploading) && 'opacity-50 cursor-not-allowed'">
+                                        <template x-if="isUploading">
+                                            <svg class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                        </template>
+                                        <template x-if="!isUploading">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/>
+                                            </svg>
+                                        </template>
+                                        <span x-text="isUploading ? 'Uploading...' : 'Upload Gallery Photo'"></span>
                                     </button>
                                 </div>
                             </div>
