@@ -30,16 +30,11 @@
 
                 @php
                     $groupLabels = ['general' => 'General', 'contact' => 'Contact', 'social' => 'Social Media', 'seo' => 'SEO', 'adsense' => 'AdSense', 'system' => 'System'];
-                    $restrictedSettings = [];
-                    $adsenseEnabled = (bool) ($settings->flatten()->firstWhere('key', 'adsense_enabled')?->value ?? false);
-                    $hideInactiveAdsense = ! auth()->user()->isSuperAdmin() && ! $adsenseEnabled;
                 @endphp
 
                 @foreach ($settings as $group => $groupSettings)
                     @php
                         $editable = $groupSettings->filter(fn ($s) => auth()->user()->can('update', $s));
-                        $restricted = $groupSettings->filter(fn ($s) => ! auth()->user()->can('update', $s));
-                        $restrictedSettings = array_merge($restrictedSettings, $restricted->all());
                     @endphp
 
                     @if ($editable->isNotEmpty())
@@ -99,31 +94,6 @@
                         </div>
                     @endif
                 @endforeach
-
-                @php
-                    $restrictedSettings = array_values(array_filter($restrictedSettings, fn ($setting) => ! ($hideInactiveAdsense && $setting->group === 'adsense')));
-                @endphp
-
-                @if (count($restrictedSettings) > 0)
-                    <div class="mb-8">
-                        <h3 class="section-title">Technical Settings</h3>
-                        <div class="card" style="background: transparent; border: 1px solid var(--card-border)">
-                            <div class="card-body">
-                                <div class="space-y-4">
-                                    @foreach ($restrictedSettings as $setting)
-                                        <div>
-                                            <p class="text-xs font-semibold uppercase tracking-wider" style="color: var(--muted-text)">{{ $setting->label }}</p>
-                                            <p class="text-sm" style="color: var(--heading-text)">{{ $setting->value ?: '-' }}</p>
-                                        </div>
-                                    @endforeach
-                                </div>
-                                <p class="mt-4 text-xs" style="color: var(--flash-error-text)">
-                                    Anda tidak memiliki izin untuk mengubah pengaturan teknis ini.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                @endif
 
                 <div class="mt-6 flex items-center gap-4">
                     <x-primary-button>Save Settings</x-primary-button>
