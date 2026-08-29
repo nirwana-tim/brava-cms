@@ -31,6 +31,7 @@ class PortfolioItemFactory extends Factory
                 ],
             ],
             'client' => fake()->company(),
+            'photo' => '/storage/uploads/'.fake()->uuid().'.jpg',
             'completed_at' => fake()->date(),
             'is_active' => true,
             'meta_title' => fake()->words(5, true),

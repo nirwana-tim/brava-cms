@@ -141,3 +141,19 @@ test('portfolio create and edit views render gallery picker successfully', funct
         ->assertSee('Choose from Media')
         ->assertSee('name="gallery_media_ids"', false);
 });
+
+test('portfolio store rejects request without cover photo', function () {
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+    $service = Service::factory()->create();
+    $media = Media::factory()->create(['mediable_id' => null, 'mediable_type' => null]);
+
+    $response = $this->actingAs($admin)->post(route('admin.portfolio.store'), [
+        'service_id' => $service->id,
+        'title' => ['id' => 'Proyek Tanpa Cover', 'en' => 'Project Without Cover'],
+        'slug' => ['id' => 'proyek-tanpa-cover', 'en' => 'project-without-cover'],
+        'gallery_media_ids' => (string) $media->id,
+    ]);
+
+    $response->assertSessionHasErrors('photo');
+});
+

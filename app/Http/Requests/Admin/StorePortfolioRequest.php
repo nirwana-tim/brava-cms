@@ -63,7 +63,7 @@ class StorePortfolioRequest extends FormRequest
                 },
             ],
             'client' => ['nullable', 'string', 'max:255'],
-            'photo' => $this->imageUrlRule(),
+            'photo' => $this->imageUrlRule(true),
             'photo_alt' => ['nullable', 'array'],
             'photo_alt.id' => ['nullable', 'string', 'max:255'],
             'photo_alt.en' => ['nullable', 'string', 'max:255'],
