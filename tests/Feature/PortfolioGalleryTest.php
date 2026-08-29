@@ -97,14 +97,47 @@ test('portfolio update with empty gallery detaches all photos', function () {
     expect($photo->fresh()->mediable_id)->toBeNull();
 });
 
-test('portfolio update rejects more than four gallery media', function () {
+test('portfolio store attaches gallery media selected by the picker', function () {
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+    $service = Service::factory()->create();
+    $media1 = Media::factory()->create(['mediable_id' => null, 'mediable_type' => null]);
+    $media2 = Media::factory()->create(['mediable_id' => null, 'mediable_type' => null]);
+
+    $response = $this->actingAs($admin)->post(route('admin.portfolio.store'), [
+        'service_id' => $service->id,
+        'title' => ['id' => 'Proyek Baru', 'en' => 'New Project'],
+        'slug' => ['id' => 'proyek-baru', 'en' => 'new-project'],
+        'photo' => 'https://example.com/cover.jpg',
+        'gallery_media_ids' => "{$media1->id},{$media2->id}",
+    ]);
+
+    $response->assertRedirect(route('admin.portfolio.index'));
+
+    $portfolio = PortfolioItem::where('slug->id', 'proyek-baru')->firstOrFail();
+    expect($media1->fresh()->mediable_id)->toBe($portfolio->id)
+        ->and($media1->fresh()->mediable_type)->toBe(PortfolioItem::class)
+        ->and($media2->fresh()->mediable_id)->toBe($portfolio->id)
+        ->and($media2->fresh()->mediable_type)->toBe(PortfolioItem::class);
+});
+
+test('portfolio create and edit views render gallery picker successfully', function () {
     $admin = User::factory()->create(['role' => UserRole::Admin]);
     $service = Service::factory()->create();
     $portfolio = PortfolioItem::factory()->create(['service_id' => $service->id]);
-    $ids = Media::factory()->count(5)->create()->pluck('id')->implode(',');
+    $galleryMedia = Media::factory()->create([
+        'mediable_type' => PortfolioItem::class,
+        'mediable_id' => $portfolio->id,
+    ]);
 
-    $this->actingAs($admin)->put(
-        route('admin.portfolio.update', $portfolio),
-        adminUpdatePayload($portfolio, ['gallery_media_ids' => $ids])
-    )->assertSessionHasErrors('gallery_media_ids');
+    $this->actingAs($admin)->get(route('admin.portfolio.create'))
+        ->assertOk()
+        ->assertSee('Gallery Photos')
+        ->assertSee('Choose from Media')
+        ->assertSee('name="gallery_media_ids"', false);
+
+    $this->actingAs($admin)->get(route('admin.portfolio.edit', $portfolio))
+        ->assertOk()
+        ->assertSee('Gallery Photos')
+        ->assertSee('Choose from Media')
+        ->assertSee('name="gallery_media_ids"', false);
 });
