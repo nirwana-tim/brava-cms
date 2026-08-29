@@ -12,13 +12,14 @@ test('drops disallowed tags and keeps allowed content', function () {
         ->and($result)->not->toContain('iframe');
 });
 
-test('drops style attributes even on allowed tags', function () {
+test('preserves safe styles and drops unsafe styles on allowed tags', function () {
     $sanitizer = new HtmlSanitizer;
 
-    $result = $sanitizer->clean('<p style="position:fixed;top:0">Safe</p>');
+    $result = $sanitizer->clean('<p style="text-align: center; position: fixed; top: 0">Centered Text</p>');
 
-    expect($result)->toContain('Safe')
-        ->and($result)->not->toContain('style=');
+    expect($result)->toContain('style="text-align: center"')
+        ->and($result)->not->toContain('position')
+        ->and($result)->not->toContain('top');
 });
 
 test('strips javascript and data urls from href', function () {
