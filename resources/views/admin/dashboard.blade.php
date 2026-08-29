@@ -62,7 +62,7 @@
     @if ($canViewAnalytics)
         {{-- Analytics Section --}}
         <div class="mb-6">
-            <div class="flex flex-wrap items-center justify-between gap-3 mb-1">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
                 <h2 class="text-lg font-semibold" style="color: var(--heading-text)">Summary Analytics</h2>
                 <div class="flex flex-wrap items-center gap-1.5">
                     @foreach ([7 => '7H', 30 => '30H', 90 => '90H', 365 => '1Y'] as $value => $label)
@@ -75,22 +75,6 @@
                     @endforeach
                 </div>
             </div>
-            @if ($isDummy)
-                <p class="text-sm mb-4" style="color: var(--muted-text)">
-                    <span class="text-amber-600 dark:text-amber-400">Data dummy</span> —
-                    atur <code class="px-1 py-0.5 rounded text-xs font-mono"
-                        style="background-color: var(--table-header-bg); color: var(--table-text)">GA4 Property
-                        ID</code>
-                    &amp; <code class="px-1 py-0.5 rounded text-xs font-mono"
-                        style="background-color: var(--table-header-bg); color: var(--table-text)">Service Account
-                        Key</code>
-                    di <strong>Settings → Technical Settings</strong> untuk data sungguhan.
-                </p>
-            @else
-                <p class="text-sm mb-4" style="color: var(--muted-text)">
-                    Data diperbarui setiap {{ config('analytics.cache_ttl.fresh', 120) }} menit.
-                </p>
-            @endif
 
             @if ($realtime)
                 <div class="card mb-6">
@@ -250,16 +234,16 @@
             </div>
 
             {{-- Traffic Sources by Platform --}}
-            <div class="card">
+            <div class="card flex flex-col">
                 <div class="card-header">
                     <h3 class="text-sm font-semibold" style="color: var(--heading-text)">Traffic Sources</h3>
                 </div>
-                <div class="card-body">
-                    <div class="flex flex-col md:flex-row items-center gap-6">
-                        <div class="w-44 h-44 shrink-0">
+                <div class="card-body flex-1 flex items-center">
+                    <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-6 w-full my-auto">
+                        <div class="h-48 w-full flex items-center justify-center">
                             <canvas id="trafficSourcesChart"></canvas>
                         </div>
-                        <div class="flex-1 w-full flex flex-col justify-center gap-3">
+                        <div class="w-full flex flex-col justify-center gap-3">
                             @foreach ($data['sources'] as $source)
                                 <div class="flex items-center justify-between text-sm">
                                     <div class="flex items-center gap-2">
