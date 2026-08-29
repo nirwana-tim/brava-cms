@@ -110,40 +110,20 @@
                         </div>
                     </div>
 
+                    @php
+                        $galleryMediaItems = $portfolio->media->map(fn($m) => ['id' => $m->id, 'url' => $m->url])->toArray();
+                        if (old('gallery_media_ids') !== null) {
+                            $oldIds = array_filter(explode(',', (string) old('gallery_media_ids')));
+                            $galleryMediaItems = !empty($oldIds)
+                                ? \App\Models\Media::whereIn('id', $oldIds)->get()->map(fn($m) => ['id' => $m->id, 'url' => $m->url])->toArray()
+                                : [];
+                        }
+                    @endphp
+
                     <div id="portfolio-form" x-data="{
                         photoUrl: @js(old('photo', $portfolio->photo)),
                         photoAlt: @js(old('photo_alt.id', $portfolio->getTranslation('photo_alt', 'id', false))),
-                        galleryItems: @js($portfolio->media->map(fn($m) => ['id' => $m->id, 'url' => $m->url])->toArray()),
-                        isUploading: false,
-                        get galleryIds() { return this.galleryItems.map(i => i.id).join(',') },
-                        addGallery(id, url) { if (this.galleryItems.length < 4) this.galleryItems.push({ id, url }) },
-                        removeGallery(id) { this.galleryItems = this.galleryItems.filter(i => i.id !== id) },
-                        async uploadGallery(event) {
-                            const file = event.target.files[0];
-                            event.target.value = '';
-                            if (!file) return;
-                            this.isUploading = true;
-                            const formData = new FormData();
-                            formData.append('file', file);
-                            formData.append('collection', 'portfolio');
-                            try {
-                                const res = await fetch('{{ route('admin.media.upload-ajax') }}', {
-                                    method: 'POST',
-                                    headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                                    body: formData,
-                                });
-                                if (!res.ok) throw new Error('Upload failed');
-                                const data = await res.json();
-                                this.addGallery(data.id, data.url);
-                            } catch (e) {
-                                console.error('Gallery upload failed', e);
-                                alert('Upload gagal. Silakan coba lagi.');
-                            } finally {
-                                this.isUploading = false;
-                            }
-                        },
                     }">
-                        <input type="hidden" name="gallery_media_ids" :value="galleryIds" />
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                             <div>
                                 <x-input-label for="photo" :value="__('Cover Photo')" :required="true" />
@@ -159,57 +139,8 @@
 
                             <div>
                                 <x-input-label :value="__('Gallery Photos')" />
-                                <p class="text-xs mb-2" style="color:var(--muted-text)">
-                                    <span x-text="galleryItems.length"></span> / 4 photos — maksimal 4 foto detail pendukung
-                                </p>
-                                <div class="flex flex-wrap gap-2 mb-2">
-                                    <template x-for="item in galleryItems" :key="item.id">
-                                        <div class="relative">
-                                            <img :src="item.url" class="rounded-lg border" style="width:96px;height:72px;object-fit:cover">
-                                            <button type="button" @click="removeGallery(item.id)"
-                                                class="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold shadow"
-                                                style="background-color: var(--btn-danger-bg, #dc2626); color: #fff;"
-                                                title="Remove">
-                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </template>
-                                    <template x-if="isUploading">
-                                        <div class="relative flex flex-col items-center justify-center rounded-lg border border-dashed text-xs p-2 animate-pulse"
-                                            style="width:96px;height:72px;border-color:var(--focus-ring);background-color:rgba(59, 130, 246, 0.08);color:var(--muted-text)">
-                                            <svg class="w-5 h-5 animate-spin mb-1 text-blue-500" fill="none" viewBox="0 0 24 24">
-                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                            </svg>
-                                            <span style="font-size: 10px; font-weight: 500;">Uploading...</span>
-                                        </div>
-                                    </template>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <input type="file" accept="image/*" id="gallery-file-input" class="hidden"
-                                        @change="uploadGallery($event)"
-                                        x-bind:disabled="!photoUrl || galleryItems.length >= 4 || isUploading">
-                                    <button type="button" @click="document.getElementById('gallery-file-input').click()"
-                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium btn-edit transition-all"
-                                        id="gallery-upload-btn"
-                                        x-bind:disabled="!photoUrl || galleryItems.length >= 4 || isUploading"
-                                        x-bind:class="(!photoUrl || galleryItems.length >= 4 || isUploading) && 'opacity-50 cursor-not-allowed'">
-                                        <template x-if="isUploading">
-                                            <svg class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
-                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                            </svg>
-                                        </template>
-                                        <template x-if="!isUploading">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/>
-                                            </svg>
-                                        </template>
-                                        <span x-text="isUploading ? 'Uploading...' : 'Upload Gallery Photo'"></span>
-                                    </button>
-                                </div>
+                                <x-admin.gallery-picker :initial-items="$galleryMediaItems" collection="portfolio" />
+                                <x-input-error class="mt-2" :messages="$errors->get('gallery_media_ids')" />
                             </div>
                         </div>
                     </div>
