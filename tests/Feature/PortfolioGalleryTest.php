@@ -156,4 +156,3 @@ test('portfolio store rejects request without cover photo', function () {
 
     $response->assertSessionHasErrors('photo');
 });
-
