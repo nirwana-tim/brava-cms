@@ -27,6 +27,7 @@ class PortfolioListResource extends JsonResource
             'featured_image' => $this->photo ? url($this->photo) : null,
             'completed_at' => $this->completed_at?->toIso8601String(),
             'service' => new ServiceListResource($this->whenLoaded('service')),
+            'media' => MediaResource::collection($this->whenLoaded('media')),
         ];
     }
 }

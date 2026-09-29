@@ -19,7 +19,7 @@ class PortfolioService
         $filters['search'] = isset($filters['search']) ? mb_substr((string) $filters['search'], 0, 100) : null;
 
         return Cache::store('api')->flexible('portfolio.list.'.$locale.'.'.md5(serialize($filters)).'.p'.$page, [1800, 3600], function () use ($filters, $perPage, $locale, $page) {
-            return $this->model->with('service')
+            return $this->model->with(['service', 'media'])
                 ->active()
                 ->when($filters['search'] ?? null, function ($query, $search) use ($locale) {
                     $query->where(function ($q) use ($search, $locale) {
