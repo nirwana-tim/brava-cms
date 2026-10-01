@@ -98,10 +98,13 @@
                         <div class="space-y-6">
                             <div class="rounded-lg border p-6" style="border-color: var(--card-border);">
                                 <x-input-label for="status" :value="__('Status')" :required="true" />
+                                @php
+                                    $currentStatus = old('status', $blog->status?->value ?? $blog->status);
+                                @endphp
                                 <select id="status" name="status" class="form-select mt-1">
-                                    <option value="draft" {{ old('status', $blog->status) === 'draft' ? 'selected' : '' }}>Draft</option>
-                                    <option value="published" {{ old('status', $blog->status) === 'published' ? 'selected' : '' }}>Published</option>
-                                    <option value="archived" {{ old('status', $blog->status) === 'archived' ? 'selected' : '' }}>Archived</option>
+                                    <option value="draft" {{ $currentStatus === 'draft' ? 'selected' : '' }}>Draft</option>
+                                    <option value="published" {{ $currentStatus === 'published' ? 'selected' : '' }}>Published</option>
+                                    <option value="archived" {{ $currentStatus === 'archived' ? 'selected' : '' }}>Archived</option>
                                 </select>
                                 <x-input-error class="mt-2" :messages="$errors->get('status')" />
                             </div>
