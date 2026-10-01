@@ -36,10 +36,10 @@ class MediaService
         $image->scaleDown(width: 1920);
 
         $encoded = match ($file->getMimeType()) {
-            'image/webp', 'image/jpeg' => $image->encodeUsingFormat(Format::WEBP, quality: 85),
+            'image/webp', 'image/jpeg' => $image->encodeUsingFormat(Format::WEBP, quality: 90),
             'image/png' => $image->encodeUsingFormat(Format::WEBP, quality: 100),
             'image/gif' => $image->encodeUsingFormat(Format::GIF),
-            default => $image->encodeUsingFormat(Format::JPEG, quality: 85),
+            default => $image->encodeUsingFormat(Format::JPEG, quality: 90),
         };
 
         $extension = match ($file->getMimeType()) {
