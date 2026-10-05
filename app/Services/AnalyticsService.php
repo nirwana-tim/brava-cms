@@ -90,9 +90,24 @@ class AnalyticsService
 
         $cacheKey = "analytics.overview.{$days}";
 
-        $result = Cache::store('api')->flexible($cacheKey, $this->ttl(), fn () => $this->fetchFromGA($days));
+        try {
+            $result = Cache::store('api')->flexible($cacheKey, $this->ttl(), function () use ($days, $cacheKey) {
+                try {
+                    return $this->fetchFromGA($days);
+                } catch (\Throwable $e) {
+                    report($e);
+                    Cache::store('api')->forget($cacheKey);
 
-        return $this->normalize($result);
+                    return $this->emptyOverview($days);
+                }
+            });
+
+            return $this->normalize($result);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return $this->normalize($this->emptyOverview($days));
+        }
     }
 
     private function normalize(array $result): array
@@ -174,6 +189,7 @@ class AnalyticsService
 
         $this->client = new BetaAnalyticsDataClient([
             'credentials' => $credentials,
+            'transport' => 'rest',
         ]);
 
         return $this->client;
@@ -222,7 +238,7 @@ class AnalyticsService
 
         $pagesRequest = (new RunRealtimeReportRequest)
             ->setProperty($this->property())
-            ->setDimensions([new Dimension(['name' => 'unregisteredPagePath'])])
+            ->setDimensions([new Dimension(['name' => 'unifiedScreenName'])])
             ->setMetrics([new Metric(['name' => 'activeUsers'])])
             ->setLimit(10);
 
@@ -307,15 +323,14 @@ class AnalyticsService
             endDate: $todayStr,
         );
 
-        $visitorTrend = collect($statsRows)->map(function (array $row) {
-            try {
-                $dateObj = Carbon::createFromFormat('Ymd', $row['date']);
-            } catch (\Exception $e) {
-                $dateObj = Carbon::parse($row['date']);
-            }
+        $trendByDate = collect($statsRows)->keyBy('date');
+        $visitorTrend = collect(range($days - 1, 0))->map(function (int $i) use ($trendByDate) {
+            $date = Carbon::today()->subDays($i);
+            $key = $date->format('Ymd');
+            $row = $trendByDate->get($key);
 
             return [
-                'date' => $dateObj->format('M d'),
+                'date' => $date->format('M d'),
                 'visitors' => (int) ($row['activeUsers'] ?? 0),
                 'pageviews' => (int) ($row['screenPageViews'] ?? 0),
                 'sessions' => (int) ($row['sessions'] ?? 0),
@@ -377,7 +392,7 @@ class AnalyticsService
 
         $topPageRows = $this->runReport(
             dimensions: ['pagePath', 'pageTitle'],
-            metrics: ['screenPageViews', 'averageEngagementTime'],
+            metrics: ['screenPageViews', 'userEngagementDuration'],
             startDate: $startDate,
             endDate: $endDate,
             orderBy: ['metric' => 'screenPageViews', 'desc' => true],
@@ -390,7 +405,7 @@ class AnalyticsService
                 'page' => $row['pagePath'],
                 'title' => ! empty($row['pageTitle']) ? $row['pageTitle'] : $row['pagePath'],
                 'views' => (int) ($row['screenPageViews'] ?? 0),
-                'avgTime' => (int) round((float) ($row['averageEngagementTime'] ?? 0)),
+                'avgTime' => (int) round((float) ($row['userEngagementDuration'] ?? 0) / max(1, (int) ($row['screenPageViews'] ?? 1))),
             ]);
 
         $geoRows = $this->runReport(
@@ -459,6 +474,50 @@ class AnalyticsService
                     ? round($g['sessions'] / $totalSessionsGeo * 100, 1)
                     : 0,
             ])->values()->all(),
+            'period' => $days,
+        ];
+    }
+
+    private function emptyOverview(int $days): array
+    {
+        $visitorTrend = collect(range($days - 1, 0))->map(function (int $i) {
+            $date = Carbon::today()->subDays($i);
+
+            return [
+                'date' => $date->format('M d'),
+                'visitors' => 0,
+                'pageviews' => 0,
+                'sessions' => 0,
+            ];
+        });
+
+        return [
+            'today' => [
+                'visitors' => 0,
+                'pageviews' => 0,
+                'sessions' => 0,
+                'bounceRate' => 0,
+                'avgDuration' => 0,
+            ],
+            'yesterday' => [
+                'visitors' => 0,
+                'pageviews' => 0,
+                'sessions' => 0,
+                'bounceRate' => 0,
+                'avgDuration' => 0,
+            ],
+            'total' => [
+                'visitors' => 0,
+                'pageviews' => 0,
+                'sessions' => 0,
+                'avgBounceRate' => 0,
+                'avgDuration' => 0,
+            ],
+            'visitorTrend' => $visitorTrend->values()->all(),
+            'sources' => [],
+            'devices' => [],
+            'topPages' => [],
+            'geoStats' => [],
             'period' => $days,
         ];
     }
