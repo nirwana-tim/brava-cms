@@ -239,23 +239,27 @@
                     <h3 class="text-sm font-semibold" style="color: var(--heading-text)">Traffic Sources</h3>
                 </div>
                 <div class="card-body flex-1 flex items-center">
-                    <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-6 w-full my-auto">
-                        <div class="h-48 w-full flex items-center justify-center">
-                            <canvas id="trafficSourcesChart"></canvas>
-                        </div>
-                        <div class="w-full flex flex-col justify-center gap-3">
-                            @foreach ($data['sources'] as $source)
-                                <div class="flex items-center justify-between text-sm">
-                                    <div class="flex items-center gap-2">
-                                        <span class="w-2.5 h-2.5 rounded-full inline-block"
-                                            style="background-color: {{ $source['color'] }}"></span>
-                                        <span style="color: var(--table-text)">{{ $source['source'] }}</span>
+                    @if ($data['sources']->isNotEmpty())
+                        <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-6 w-full my-auto">
+                            <div class="h-48 w-full flex items-center justify-center">
+                                <canvas id="trafficSourcesChart"></canvas>
+                            </div>
+                            <div class="w-full flex flex-col justify-center gap-3">
+                                @foreach ($data['sources'] as $source)
+                                    <div class="flex items-center justify-between text-sm">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 rounded-full inline-block"
+                                                style="background-color: {{ $source['color'] }}"></span>
+                                            <span style="color: var(--table-text)">{{ $source['source'] }}</span>
+                                        </div>
+                                        <span style="color: var(--muted-text)">{{ $source['percentage'] }}%</span>
                                     </div>
-                                    <span style="color: var(--muted-text)">{{ $source['percentage'] }}%</span>
-                                </div>
-                            @endforeach
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
+                    @else
+                        <p class="text-xs text-center py-12 w-full" style="color: var(--muted-text)">Belum ada data sumber trafik.</p>
+                    @endif
                 </div>
             </div>
         </div>
@@ -268,7 +272,11 @@
                     <h3 class="text-sm font-semibold" style="color: var(--heading-text)">Device Breakdown</h3>
                 </div>
                 <div class="card-body">
-                    <canvas id="deviceChart" height="200"></canvas>
+                    @if ($data['devices']->isNotEmpty())
+                        <canvas id="deviceChart" height="200"></canvas>
+                    @else
+                        <p class="text-xs text-center py-12" style="color: var(--muted-text)">Belum ada data perangkat.</p>
+                    @endif
                 </div>
             </div>
 
@@ -330,7 +338,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($data['topPages'] as $page)
+                            @forelse ($data['topPages'] as $page)
                                 <tr style="border-bottom: 1px solid var(--table-border)">
                                     <td class="px-4 py-3 text-sm" style="color: var(--table-text)">
                                         <span class="font-medium">{{ $page['title'] }}</span>
@@ -341,7 +349,11 @@
                                     <td class="px-4 py-3 text-sm text-right" style="color: var(--muted-text)">
                                         {{ gmdate('i:s', $page['avgTime']) }}</td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="px-4 py-6 text-center text-xs" style="color: var(--muted-text)">Belum ada data halaman yang terdeteksi.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -352,23 +364,27 @@
                     <h3 class="text-sm font-semibold" style="color: var(--heading-text)">Top Cities</h3>
                 </div>
                 <div class="card-body">
-                    <div class="space-y-3">
-                        @foreach ($data['geoStats'] as $geo)
-                            <div>
-                                <div class="flex justify-between text-sm mb-1">
-                                    <span style="color: var(--table-text)">{{ $geo['city'] }}</span>
-                                    <span style="color: var(--muted-text)">{{ $geo['percentage'] }}%
-                                        ({{ $geo['sessions'] }})
-                                    </span>
-                                </div>
-                                <div class="w-full rounded-full h-2" style="background-color: var(--table-header-bg)">
-                                    <div class="h-2 rounded-full"
-                                        style="width: {{ $geo['percentage'] }}%; background-color: {{ $geo['color'] }}; transition: width 0.5s ease">
+                    @if ($data['geoStats']->isNotEmpty())
+                        <div class="space-y-3">
+                            @foreach ($data['geoStats'] as $geo)
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span style="color: var(--table-text)">{{ $geo['city'] }}</span>
+                                        <span style="color: var(--muted-text)">{{ $geo['percentage'] }}%
+                                            ({{ $geo['sessions'] }})
+                                        </span>
+                                    </div>
+                                    <div class="w-full rounded-full h-2" style="background-color: var(--table-header-bg)">
+                                        <div class="h-2 rounded-full"
+                                            style="width: {{ $geo['percentage'] }}%; background-color: {{ $geo['color'] }}; transition: width 0.5s ease">
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        @endforeach
-                    </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <p class="text-xs text-center py-6" style="color: var(--muted-text)">Belum ada data kota yang terdeteksi.</p>
+                    @endif
                 </div>
             </div>
         </div>

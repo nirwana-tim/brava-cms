@@ -304,7 +304,7 @@ class AnalyticsService
     private function fetchFromGA(int $days): array
     {
         $startDate = Carbon::today()->subDays($days)->format('Y-m-d');
-        $endDate = Carbon::yesterday()->format('Y-m-d');
+        $endDate = Carbon::today()->format('Y-m-d');
         $todayStr = Carbon::today()->format('Y-m-d');
         $yesterdayStr = Carbon::yesterday()->format('Y-m-d');
 
@@ -341,9 +341,11 @@ class AnalyticsService
         $totalPageviews = $visitorTrend->sum('pageviews');
         $totalSessions = $visitorTrend->sum('sessions');
 
-        $today = $todayRows[0] ?? [];
+        $todayKey = Carbon::today()->format('Ymd');
         $yesterdayKey = Carbon::yesterday()->format('Ymd');
-        $yesterday = $trendByDate->get($yesterdayKey) ?? (count($statsRows) > 0 ? end($statsRows) : []);
+
+        $today = $todayRows[0] ?? ($trendByDate->get($todayKey) ?? []);
+        $yesterday = $trendByDate->get($yesterdayKey, []);
 
         $sourceRows = $this->runReport(
             dimensions: ['sessionSource'],
@@ -420,10 +422,10 @@ class AnalyticsService
 
         $geoColors = ['#2336b7', '#4d5ed3', '#7b8cf5', '#faaf36', '#ffd680', '#ffdda6'];
         $geoStats = collect($geoRows)
-            ->filter(fn (array $row) => ! empty($row['city']) && $row['city'] !== '(not set)')
+            ->filter(fn (array $row) => ! empty($row['city']))
             ->values()
             ->map(fn (array $row, int $i) => [
-                'city' => $row['city'],
+                'city' => $row['city'] === '(not set)' ? 'Lainnya / Tidak Terdeteksi' : $row['city'],
                 'sessions' => (int) ($row['sessions'] ?? 0),
                 'color' => $geoColors[$i % count($geoColors)],
             ]);
