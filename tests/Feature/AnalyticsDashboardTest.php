@@ -4,6 +4,9 @@ use App\Enums\UserRole;
 use App\Models\Setting;
 use App\Models\User;
 use App\Services\AnalyticsService;
+use Google\Analytics\Data\V1beta\OrderBy;
+use Google\Analytics\Data\V1beta\OrderBy\DimensionOrderBy;
+use Google\Analytics\Data\V1beta\OrderBy\MetricOrderBy;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -95,4 +98,15 @@ test('admin dashboard falls back to 30 days for invalid preset', function () {
     $response->assertOk();
     $response->assertViewHas('days', 30);
     $response->assertViewHas('data', fn (array $data) => $data['period'] === 30);
+});
+
+test('ga4 orderby classes can be instantiated correctly', function () {
+    $dimOrderBy = new OrderBy;
+    $dimOrderBy->setDimension(new DimensionOrderBy(['dimension_name' => 'date']));
+
+    $metricOrderBy = new OrderBy;
+    $metricOrderBy->setMetric(new MetricOrderBy(['metric_name' => 'sessions']));
+
+    expect($dimOrderBy->getDimension()->getDimensionName())->toBe('date')
+        ->and($metricOrderBy->getMetric()->getMetricName())->toBe('sessions');
 });

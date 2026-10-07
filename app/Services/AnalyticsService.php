@@ -11,8 +11,8 @@ use Google\Analytics\Data\V1beta\DateRange;
 use Google\Analytics\Data\V1beta\Dimension;
 use Google\Analytics\Data\V1beta\Metric;
 use Google\Analytics\Data\V1beta\OrderBy;
-use Google\Analytics\Data\V1beta\OrderByDimension;
-use Google\Analytics\Data\V1beta\OrderByMetric;
+use Google\Analytics\Data\V1beta\OrderBy\DimensionOrderBy;
+use Google\Analytics\Data\V1beta\OrderBy\MetricOrderBy;
 use Google\Analytics\Data\V1beta\RunRealtimeReportRequest;
 use Google\Analytics\Data\V1beta\RunReportRequest;
 use Google\Auth\Credentials\ServiceAccountCredentials;
@@ -269,9 +269,9 @@ class AnalyticsService
         if ($orderBy !== null) {
             $orderByObj = new OrderBy;
             if (isset($orderBy['dimension'])) {
-                $orderByObj->setDimension(new OrderByDimension(['dimension_name' => $orderBy['dimension']]));
+                $orderByObj->setDimension(new DimensionOrderBy(['dimension_name' => $orderBy['dimension']]));
             } elseif (isset($orderBy['metric'])) {
-                $orderByObj->setMetric(new OrderByMetric(['metric_name' => $orderBy['metric']]));
+                $orderByObj->setMetric(new MetricOrderBy(['metric_name' => $orderBy['metric']]));
             }
             $orderByObj->setDesc($orderBy['desc'] ?? true);
             $request->setOrderBys([$orderByObj]);
@@ -342,7 +342,8 @@ class AnalyticsService
         $totalSessions = $visitorTrend->sum('sessions');
 
         $today = $todayRows[0] ?? [];
-        $yesterday = count($statsRows) > 0 ? end($statsRows) : [];
+        $yesterdayKey = Carbon::yesterday()->format('Ymd');
+        $yesterday = $trendByDate->get($yesterdayKey) ?? (count($statsRows) > 0 ? end($statsRows) : []);
 
         $sourceRows = $this->runReport(
             dimensions: ['sessionSource'],
