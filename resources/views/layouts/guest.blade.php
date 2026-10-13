@@ -49,10 +49,20 @@
         </div>
 
         {{-- Right: Auth form --}}
-        <div class="flex-1 flex flex-col">
+        <div class="flex-1 flex flex-col justify-between">
             <div class="flex-1 flex items-center justify-center p-6 sm:p-8 lg:p-12">
                 {{ $slot }}
             </div>
+
+            <footer class="p-4 sm:p-6 text-center lg:text-right text-xs text-slate-400">
+                Developed & Maintained by
+                <a href="https://nirwana.biz.id"
+                   target="_blank"
+                   rel="noopener"
+                   class="font-medium text-slate-500 hover:text-slate-800 hover:underline transition-colors">
+                    JDNirwana
+                </a>
+            </footer>
         </div>
     </div>
 
